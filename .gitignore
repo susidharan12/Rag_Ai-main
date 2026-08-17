@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Generated index artifacts (rebuild with pdf_reader.py)
+vectors.index
+chunks.pkl
+ocr_cache.pkl
+ocr_run.log
+.claude
+week4_eval_dump.json
+sdk_eval_dump.json
+sdk_generation_dump.json
+sdk_bonus_dump.json
