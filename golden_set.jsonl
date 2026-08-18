@@ -1,0 +1,12 @@
+{"id":"G1","question":"How many players per side in Football (Soccer)?","known_chunk":56,"known_page":3,"known_answer":"11 per side","exact_tokens":["11"]}
+{"id":"G2","question":"What is the shot clock limit in the NBA?","known_chunk":379,"known_page":7,"known_answer":"24 seconds","exact_tokens":["24 seconds"]}
+{"id":"G3","question":"How many points is a try worth in Rugby Union?","known_chunk":1088,"known_page":16,"known_answer":"5 points","exact_tokens":["5 points"]}
+{"id":"G4","question":"What is the men's volleyball net height?","known_chunk":574,"known_page":11,"known_answer":"2.43 m","exact_tokens":["2.43 m"]}
+{"id":"G5","question":"How many holes in a standard golf course?","known_chunk":1258,"known_page":19,"known_answer":"18 holes","exact_tokens":["18 holes"]}
+{"id":"G6","question":"How many rounds in a professional boxing bout?","known_chunk":1373,"known_page":20,"known_answer":"3-12 rounds","exact_tokens":["3-12 rounds"]}
+{"id":"G7","question":"What governing body oversees international Badminton?","known_chunk":693,"known_page":13,"known_answer":"BWF","exact_tokens":["BWF"]}
+{"id":"G8","question":"What is the approximate distance of a Formula 1 Grand Prix?","known_chunk":2345,"known_page":33,"known_answer":"~305 km","exact_tokens":["305 km"]}
+{"id":"G9","question":"How many players per side in Kabaddi?","known_chunk":1725,"known_page":25,"known_answer":"7 per side","exact_tokens":["7 per side"]}
+{"id":"G10","question":"How many overs in a T20 cricket match?","known_chunk":207,"known_page":5,"known_answer":"20 overs","exact_tokens":["20 overs"]}
+{"id":"G11","question":"What are the four competitive swimming strokes?","known_chunk":1611,"known_page":24,"known_answer":"Freestyle, backstroke, breaststroke, butterfly","exact_tokens":["Freestyle","backstroke","breaststroke","butterfly"]}
+{"id":"G12","question":"How many periods in an ice hockey game?","known_chunk":1992,"known_page":29,"known_answer":"3 periods of 20 minutes","exact_tokens":["3 periods","20 minutes"]}

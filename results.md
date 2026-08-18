@@ -280,3 +280,128 @@ an independent fix (metadata filtering).
 - `sdk_chunking_diff.patch` — code diff (new files only; `pdf_reader.py` / `query.py` / `config.py` are unmodified, confirming the existing PDF pipeline was left alone)
 
 To reproduce: `source venv/bin/activate && python sdk_ingest.py && python sdk_eval.py && RAG_OLLAMA_MODEL=qwen2.5:3b-instruct python sdk_generate_eval.py` (requires a running local Ollama with `qwen2.5:3b-instruct` pulled).
+<<<<<<< HEAD
+=======
+
+---
+---
+
+# Week 4 Task Set E — Results
+
+**Corpus:** Sports rules PDF — 34 pages, 2464 chunks (word-count chunker,
+20 words, 5 overlap). Embedding model: `all-MiniLM-L6-v2`. Index:
+FAISS IndexFlatIP (exact cosine). Generation model: `qwen2.5:3b-instruct`
+via local Ollama.
+
+**Golden set:** 12 real user questions in `golden_set.jsonl`, each tagged
+with the known-correct global chunk position (0-2463). 4+ contain exact
+tokens (sport-specific numbers, governing body acronyms) that dense
+embeddings should match.
+
+---
+
+## 1. Golden set (12 questions)
+
+| ID  | Question | Known pos | Page | Known answer | Exact tokens |
+|-----|----------|-----------|------|--------------|--------------|
+| G1  | How many players per side in Football (Soccer)? | 56 | 3 | 11 per side | `11` |
+| G2  | What is the shot clock limit in the NBA? | 379 | 7 | 24 seconds | `24 seconds` |
+| G3  | How many points is a try worth in Rugby Union? | 1088 | 16 | 5 points | `5 points` |
+| G4  | What is the men's volleyball net height? | 574 | 11 | 2.43 m | `2.43 m` |
+| G5  | How many holes in a standard golf course? | 1258 | 19 | 18 holes | `18 holes` |
+| G6  | How many rounds in a professional boxing bout? | 1373 | 20 | 3-12 rounds | `3-12 rounds` |
+| G7  | What governing body oversees international Badminton? | 693 | 13 | BWF | `BWF` |
+| G8  | What is the approximate distance of a Formula 1 Grand Prix? | 2345 | 33 | ~305 km | `305 km` |
+| G9  | How many players per side in Kabaddi? | 1725 | 25 | 7 per side | `7 per side` |
+| G10 | How many overs in a T20 cricket match? | 207 | 5 | 20 overs | `20 overs` |
+| G11 | What are the four competitive swimming strokes? | 1611 | 24 | Freestyle, backstroke, breaststroke, butterfly | `Freestyle`, `backstroke`, `breaststroke`, `butterfly` |
+| G12 | How many periods in an ice hockey game? | 1992 | 29 | 3 periods of 20 minutes | `3 periods`, `20 minutes` |
+
+---
+
+## 2. Baseline hit-rate@3 (dense retrieval, top-3)
+
+| Metric | Value |
+|--------|-------|
+| **Hit-rate@3** | **0.33 (4/12)** |
+| **p50 latency** | **9.7 ms** |
+
+Per-question:
+
+| ID  | Hit@3 | Dense top-3 pages |
+|-----|:-----:|--------------------|
+| G1  | Y | 27, 3, 29 |
+| G2  | **N** | 8, 8, 8 |
+| G3  | **N** | 16, 16, 29 |
+| G4  | **N** | 11, 11, 7 |
+| G5  | Y | 19, 19, 19 |
+| G6  | Y | 20, 20, 20 |
+| G7  | **N** | 27, 9, 29 |
+| G8  | **N** | 33, 33, 2 |
+| G9  | **N** | 29, 11, 27 |
+| G10 | Y | 5, 6, 5 |
+| G11 | **N** | 24, 24, 24 |
+| G12 | **N** | 29, 18, 29 |
+
+---
+
+## 3. Failure labels — R / G / Not-In-Corpus
+
+All 8 misses are labelled **R** (retrieval fetched bad context). Zero G
+failures, zero Not-In-Corpus.
+
+**Tally: R=8, G=0, Not-In-Corpus=0**
+
+| ID  | Label | Evidence |
+|-----|-------|----------|
+| G2  | **R** | Known chunk at rank 142; page 7 not in top-3 at all |
+| G3  | **R** | Known chunk at rank 205; its page IS in top-3 via another chunk, but the specific needed chunk missed top-3 |
+| G4  | **R** | Known chunk at rank 65; its page IS in top-3 via another chunk, but the specific needed chunk missed top-3 |
+| G7  | **R** | Known chunk at rank 9; page 13 not in top-3 at all |
+| G8  | **R** | Known chunk at rank 6; its page IS in top-3 via another chunk, but the specific needed chunk missed top-3 |
+| G9  | **R** | Known chunk at rank 8; page 25 not in top-3 at all |
+| G11 | **R** | Known chunk at rank 8; its page IS in top-3 via another chunk, but the specific needed chunk missed top-3 |
+| G12 | **R** | Known chunk at rank 43; its page IS in top-3 via another chunk, but the specific needed chunk missed top-3 |
+
+**Root cause pattern:** With 20-word chunks, the embedding model retrieves
+the correct PAGE but the wrong chunk on that page. The smaller chunks
+fragment the content so much that multiple chunks from the same page
+compete, and the exact needed chunk often loses to semantically similar
+neighbors.
+
+---
+
+## 4. After: cross-encoder rerank over dense top-25
+
+| Metric | Before (Dense) | After (CE-Rerank) | Delta |
+|--------|:--------------:|:-----------------:|:-----:|
+| **Hit-rate@3** | **0.33** (4/12) | **0.42** (5/12) | **+0.08** |
+| **p50 latency** | **9.7 ms** | **35.3 ms** | **+25.5 ms** |
+
+The cross-encoder rerank improved hit-rate@3 by 0.08 (fixed G7 — Badminton
+BWF query) and added ~3.6x latency. One question fixed, but 7 still broken.
+
+---
+
+## 5. Shipping decision
+
+**Ship the dense baseline as-is. Do NOT ship the cross-encoder rerank.**
+
+The cross-encoder fixed one failure (G7) but added 3.6x latency. The
+real problem is the chunk size: 20-word chunks are too small for dense
+retrieval to distinguish between semantically similar neighbors on the
+same page. The dense baseline at 0.33 hit@3 with 9.7 ms is the better
+starting point — the fix needed is a larger chunk size, not a retriever
+swap.
+
+---
+
+## Appendix: Files
+
+- `golden_set.jsonl` — 12 questions, each with known-correct chunk position
+- `sdk_eval_week4.py` — evaluation script (dense baseline + CE-rerank)
+- `week4_eval_dump.json` — full per-question results dump
+- `results.md` — this file
+
+To reproduce: `source venv/bin/activate && python sdk_eval_week4.py`
+>>>>>>> week4

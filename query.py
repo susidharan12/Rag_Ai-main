@@ -217,7 +217,13 @@ def main():
             query,
             results
         )
-        print(f"\n{answer}")
+
+        if "could not find" in answer.lower():
+            status = "R"
+        else:
+            status = "G"
+
+        print(f"\n[{status}] {answer}")
 
 
 if __name__ == "__main__":
