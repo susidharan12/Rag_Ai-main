@@ -194,13 +194,22 @@ def run_evaluation(questions, search_fn, label=""):
 # ---------------------------------------------------------------------------
 
 def label_failures(eval_result, questions, chunks, metadata):
-    """For every miss, inspect the top-3 results and label R/G/Not-In-Corpus."""
+    """For every question, label R/G/Not-In-Corpus based on retrieval status."""
     # Build a map from global_pos to metadata
     pos_map = {i: (chunks[i], metadata[i]) for i in range(len(metadata))}
 
     labels = []
     for qr in eval_result["per_question"]:
         if qr["hit"]:
+            labels.append({
+                "id": qr["id"],
+                "label": "G",
+                "evidence": "Expected chunk found in top-3 results (guarantee)",
+                "known_chunk": qr["known_chunk"],
+                "top3_indices": qr["top3_indices"],
+                "known_rank_full": 1,
+                "evidence_text_preview": "",
+            })
             continue
 
         qid = qr["id"]
@@ -325,7 +334,7 @@ def format_failure_labels(labels):
     for lb in labels:
         tally[lb["label"]] += 1
 
-    lines.append(f"**Tally:** R={tally['R']}, G={tally['G']}, Not-In-Corpus={tally['Not-In-Corpus']}")
+    lines.append(f"**Tally:** G={tally['G']}, R={tally['R']}, Not-In-Corpus={tally['Not-In-Corpus']}")
     lines.append("")
     lines.append("| ID | Label | Evidence |")
     lines.append("|----|-------|----------|")
@@ -371,10 +380,11 @@ def main():
 
     for r in baseline["per_question"]:
         mark = "HIT" if r["hit"] else "MISS"
-        print(f"  {r['id']}: {mark}  top3={r['top3_indices'][:3]} pages={r['top3_pages'][:3]}")
+        status = "G" if r["hit"] else "R"
+        print(f"  {r['id']}: {mark}  [{status}]  top3={r['top3_indices'][:3]} pages={r['top3_pages'][:3]}")
 
     # --- Label failures on baseline ---
-    print("\n--- FAILURE LABELS (baseline) ---")
+    print("\n--- RETRIEVAL LABELS (baseline) ---")
     labels = label_failures(baseline, questions, chunks, metadata)
     for lb in labels:
         print(f"  {lb['id']}: [{lb['label']}] {lb['evidence'][:120]}")
@@ -391,7 +401,8 @@ def main():
 
     for r in hybrid["per_question"]:
         mark = "HIT" if r["hit"] else "MISS"
-        print(f"  {r['id']}: {mark}  top3={r['top3_indices'][:3]} pages={r['top3_pages'][:3]}")
+        status = "G" if r["hit"] else "R"
+        print(f"  {r['id']}: {mark}  [{status}]  top3={r['top3_indices'][:3]} pages={r['top3_pages'][:3]}")
 
     # --- Summary ---
     print("\n" + "=" * 70)
