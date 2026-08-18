@@ -280,6 +280,8 @@ an independent fix (metadata filtering).
 - `sdk_chunking_diff.patch` — code diff (new files only; `pdf_reader.py` / `query.py` / `config.py` are unmodified, confirming the existing PDF pipeline was left alone)
 
 To reproduce: `source venv/bin/activate && python sdk_ingest.py && python sdk_eval.py && RAG_OLLAMA_MODEL=qwen2.5:3b-instruct python sdk_generate_eval.py` (requires a running local Ollama with `qwen2.5:3b-instruct` pulled).
+<<<<<<< HEAD
+=======
 
 ---
 ---
@@ -402,3 +404,4 @@ swap.
 - `results.md` — this file
 
 To reproduce: `source venv/bin/activate && python sdk_eval_week4.py`
+>>>>>>> week4
