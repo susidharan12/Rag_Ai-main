@@ -13,3 +13,13 @@ week4_eval_dump.json
 sdk_eval_dump.json
 sdk_generation_dump.json
 sdk_bonus_dump.json
+
+# Logs
+*.log
+
+# Node / frontend build artifacts
+node_modules/
+frontend/dist/
+
+# Generated index artifacts
+data/index/registry.json

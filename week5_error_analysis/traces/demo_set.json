@@ -1,0 +1,472 @@
+[
+  {
+    "trace_id": "tr_20260824_131637_aa8066",
+    "question": "What is the default value and type of retry_backoff_ms on Client.send()?",
+    "raw_output": "## Notes If the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. [nimbus-sdk-v3-client-send:p4:c0] ## Parameters | parameter | type | default | required | description | |---|---|---|---|---| | message | str | - | yes | Event payload; must be valid JSON-serializable data. [nimbus-sdk-v2-client-send:p2:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-client-send:p2:c1",
+        "score": 0.708,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v2-client-send:p2:c1",
+        "score": 0.7067,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-client-send:p4:c0",
+        "score": 0.6936,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v2-client-send:p2:c0",
+        "score": 0.6349,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v3-client-send:p2:c0",
+        "score": 0.6321,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_cc8793",
+    "question": "What is the default pool_size for Client.connect()?",
+    "raw_output": "## Notes `pool_size` sets the maximum number of concurrent TCP connections held open to the gateway; the v2 default is `5`. [nimbus-sdk-v2-client-connect:p4:c0] ## Example ```python from nimbus import Client client = Client.connect(api_key=\"nk_live_...\", pool_size=5) ``` [nimbus-sdk-v2-client-connect:p3:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v2-client-connect:p1:c0",
+        "score": 0.6615,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-connect:p1:c0",
+        "score": 0.6516,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v2-client-connect:p4:c0",
+        "score": 0.5093,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v3-client-connect:p4:c0",
+        "score": 0.5043,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v2-client-connect:p3:c0",
+        "score": 0.4014,
+        "source_doc": "client_connect.md",
+        "page_number": 3,
+        "sdk_version": "v2"
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_ded86a",
+    "question": "Is HTTP error code 429 (RATE_LIMITED) retryable according to the error reference?",
+    "raw_output": "## Codes | code | http | retryable | meaning | |---|---|---|---| | INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. [nimbus-sdk-v3-errors:p2:c0] ## Notes If the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. [nimbus-sdk-v3-client-send:p4:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-errors:p2:c0",
+        "score": 0.6427,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-send:p2:c1",
+        "score": 0.5506,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v2-client-send:p2:c1",
+        "score": 0.5453,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v3-errors:p4:c0",
+        "score": 0.521,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v3-client-send:p4:c0",
+        "score": 0.517,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_b8b74c",
+    "question": "Show me how to verify a webhook signature in Python.",
+    "raw_output": "## Notes `verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. [nimbus-sdk-v3-webhooks:p4:c0] ## Example ```python from nimbus.webhooks import WebhookVerifier verifier = WebhookVerifier(secret=\"whsec_...\") event = verifier.verify(payload=request.body, signature_header=request.headers[\"X-Nimbus-Signature\"]) ``` [nimbus-sdk-v3-webhooks:p3:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-webhooks:p3:c0",
+        "score": 0.7941,
+        "source_doc": "webhooks.md",
+        "page_number": 3,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-webhooks:p2:c0",
+        "score": 0.7108,
+        "source_doc": "webhooks.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-webhooks:p4:c0",
+        "score": 0.4286,
+        "source_doc": "webhooks.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v2-client-send:p3:c0",
+        "score": 0.4094,
+        "source_doc": "client_send.md",
+        "page_number": 3,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v3-webhooks:p1:c0",
+        "score": 0.3817,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3"
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_e0a03c",
+    "question": "How many players per side in Football (Soccer)?",
+    "raw_output": "Players 11 per side (plus substitutes) Duration 90 minutes (two 45-minute halves) + stoppage time Equipment Football (size 5), goals, shin guards Governing Body FIFA Overview Football is played between two teams of eleven players on a rectangular grass or turf pitch with a goal at each end. [complete-guide-to-major-world-sports:p3:c0] Players 11 per side on field (45+ man rosters) Duration 4 quarters of 15 minutes Equipment Helmet, pads, oval ball Governing Body NFL / national federations Overview American football is played by two teams of eleven, most popular in the United States, where the NFL is the dominant professional league. [complete-guide-to-major-world-sports:p27:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p3:c0",
+        "score": 0.6288,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 3,
+        "sdk_version": ""
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p3:c1",
+        "score": 0.544,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 3,
+        "sdk_version": ""
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p27:c0",
+        "score": 0.5044,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 27,
+        "sdk_version": ""
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p3:c2",
+        "score": 0.4734,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 3,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p30:c0",
+        "score": 0.4633,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 30,
+        "sdk_version": ""
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_f71776",
+    "question": "What is the shot clock limit in the NBA?",
+    "raw_output": "\u007f A shot clock forces the offensive team to attempt a shot within a set time limit (24 seconds in the NBA). [complete-guide-to-major-world-sports:p7:c3] \u007f A shot clock forces the offensive team to attempt a shot within a set time limit (24 seconds in the NBA). [complete-guide-to-major-world-sports:p7:c2]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p7:c3",
+        "score": 0.7421,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 7,
+        "sdk_version": ""
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p7:c2",
+        "score": 0.6954,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 7,
+        "sdk_version": ""
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p8:c0",
+        "score": 0.669,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 8,
+        "sdk_version": ""
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p7:c4",
+        "score": 0.5701,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 7,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p7:c0",
+        "score": 0.5659,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 7,
+        "sdk_version": ""
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_d7daf7",
+    "question": "What governing body oversees international Badminton?",
+    "raw_output": "Players 1v1 (singles) or 2v2 (doubles) Format Best of 3 games to 21 points Equipment Racquet, shuttlecock, net (1.55 m) Governing Body BWF Overview Badminton is played on a court divided by a net, using lightweight racquets to hit a shuttlecock (or 'birdie') back and forth. [complete-guide-to-major-world-sports:p13:c0] THE COMPLETE GUIDE TO Major World Sports Rules, Gameplay & How Each Sport Is Played Football \u00b7 Cricket \u00b7 Basketball \u00b7 Tennis \u00b7 Volleyball \u00b7 Badminton \u00b7 Table Tennis \u00b7 Baseball \u00b7 Rugby \u00b7 Field Hockey \u00b7 Golf \u00b7 Boxing \u00b7 Athletics \u00b7 Swimming \u00b7 Kabaddi \u00b7 American Football \u00b7 Ice Hockey \u00b7 Handball \u00b7 Wrestling \u00b7 Formula 1 [complete-guide-to-major-world-sports:p1:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p13:c0",
+        "score": 0.4506,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 13,
+        "sdk_version": ""
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p13:c3",
+        "score": 0.4483,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 13,
+        "sdk_version": ""
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p13:c2",
+        "score": 0.4394,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 13,
+        "sdk_version": ""
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p1:c0",
+        "score": 0.4322,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 1,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p13:c4",
+        "score": 0.4179,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 13,
+        "sdk_version": ""
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_ca746c",
+    "question": "What is the maximum allowed value of limit in list_events()?",
+    "raw_output": "In SDK v2 the maximum allowed `limit` was `100`; the cap was raised to `200` in v3. [nimbus-sdk-v3-pagination:p4:c0] ## Example ```python page = client.list_events(limit=100, cursor=next_cursor) for event in page.data: process(event) ``` [nimbus-sdk-v3-pagination:p3:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-pagination:p3:c0",
+        "score": 0.5028,
+        "source_doc": "pagination.md",
+        "page_number": 3,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-pagination:p2:c0",
+        "score": 0.4653,
+        "source_doc": "pagination.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-pagination:p4:c0",
+        "score": 0.4642,
+        "source_doc": "pagination.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p22:c5",
+        "score": 0.2912,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 22,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p16:c5",
+        "score": 0.2721,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 16,
+        "sdk_version": ""
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_d97e1b",
+    "question": "What is the default timeout_ms for Client.send()?",
+    "raw_output": "In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents. [nimbus-sdk-v3-client-send:p4:c0] # Client.send() `Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. [nimbus-sdk-v3-client-send:p1:c0]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-client-send:p4:c0",
+        "score": 0.6081,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v2-client-send:p4:c0",
+        "score": 0.5498,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v2"
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-client-connect:p1:c0",
+        "score": 0.5078,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v3-client-send:p1:c0",
+        "score": 0.4653,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3"
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v3-client-send:p2:c1",
+        "score": 0.4632,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3"
+      }
+    ]
+  },
+  {
+    "trace_id": "tr_20260824_131637_ffb7ec",
+    "question": "What is the men's volleyball net height?",
+    "raw_output": "Players 6 per side on court Format Best of 5 sets, first to 25 points (final set to 15) Equipment Volleyball, net (2.43 m men's / 2.24 m women's) Governing Body FIVB Overview Volleyball is played by two teams of six on a court divided by a tall net. [complete-guide-to-major-world-sports:p11:c0] Governing Body FIVB Overview Volleyball is played by two teams of six on a court divided by a tall net. [complete-guide-to-major-world-sports:p11:c1]",
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p11:c0",
+        "score": 0.6573,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 11,
+        "sdk_version": ""
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p11:c1",
+        "score": 0.5516,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 11,
+        "sdk_version": ""
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p14:c5",
+        "score": 0.4928,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 14,
+        "sdk_version": ""
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p11:c3",
+        "score": 0.4573,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 11,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p11:c2",
+        "score": 0.4528,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 11,
+        "sdk_version": ""
+      }
+    ]
+  }
+]
