@@ -2,12 +2,13 @@
 
 Two interchangeable backends behind one interface:
 
-  generate_ollama      — the Week 3/4 stack: local Ollama LLM with the strict
-                         grounded/refuse prompt.
+  generate_groq        — Groq cloud LLM (OpenAI-compatible API) with the
+                         strict grounded/refuse prompt.
   generate_extractive  — deterministic no-LLM fallback: picks the highest
                          query-term-overlap sentences from retrieved chunks.
-                         Used when Ollama is unreachable (it also makes trace
-                         replay bit-for-bit reproducible).
+                         Used when the Groq API is unreachable or no key is
+                         configured (it also makes trace replay bit-for-bit
+                         reproducible).
 
 Both return {"answer": str, "model": str, "prompt_version": str,
              "params": dict, "refused": bool}.
@@ -41,7 +42,7 @@ def _sentences(text):
     return [s.strip() for s in parts if s.strip()]
 
 
-# ---------------------------------------------------------------- ollama ----
+# ----------------------------------------------------------------- groq ----
 
 PROMPT_TEMPLATE = """You are a developer-documentation assistant.
 
@@ -72,36 +73,42 @@ def build_context(results):
     return "\n\n".join(blocks)
 
 
-def generate_ollama(question, results):
+def generate_groq(question, results):
+    params = {"temperature": 0.0, "max_tokens": 300}
+
     if not results:
-        return {"answer": _REFUSAL, "model": settings.OLLAMA_MODEL,
+        return {"answer": _REFUSAL, "model": settings.GROQ_MODEL,
                 "prompt_version": settings.PROMPT_VERSION_LLM,
-                "params": {"temperature": 0.0, "num_predict": 300},
-                "refused": True}
+                "params": params, "refused": True}
 
     prompt = PROMPT_TEMPLATE.format(
         refusal=_REFUSAL, context=build_context(results), question=question
     )
     try:
         response = requests.post(
-            settings.OLLAMA_URL,
-            json={"model": settings.OLLAMA_MODEL, "prompt": prompt,
-                  "stream": False, "options": {"temperature": 0.0}},
-            timeout=(3, settings.OLLAMA_TIMEOUT),
+            settings.GROQ_URL,
+            headers={"Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                     "Content-Type": "application/json"},
+            json={
+                "model": settings.GROQ_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.0,
+                "max_tokens": 300,
+            },
+            timeout=settings.GROQ_TIMEOUT,
         )
         response.raise_for_status()
-        answer = response.json()["response"]
+        answer = response.json()["choices"][0]["message"]["content"].strip()
     except requests.exceptions.RequestException as e:
-        return {"answer": f"Generator error: {e}", "model": settings.OLLAMA_MODEL,
+        return {"answer": f"Generator error: {e}", "model": settings.GROQ_MODEL,
                 "prompt_version": settings.PROMPT_VERSION_LLM,
-                "params": {"temperature": 0.0, "num_predict": 300},
-                "refused": False, "error": type(e).__name__}
+                "params": params, "refused": False,
+                "error": type(e).__name__}
 
     refused = _REFUSAL.lower() in answer.lower()
-    return {"answer": answer, "model": settings.OLLAMA_MODEL,
+    return {"answer": answer, "model": settings.GROQ_MODEL,
             "prompt_version": settings.PROMPT_VERSION_LLM,
-            "params": {"temperature": 0.0, "num_predict": 300},
-            "refused": refused}
+            "params": params, "refused": refused}
 
 
 # ------------------------------------------------------------ extractive ----
@@ -151,6 +158,6 @@ def generate_extractive(question, results):
 
 
 GENERATORS = {
-    "ollama": generate_ollama,
+    "groq": generate_groq,
     "extractive": generate_extractive,
 }

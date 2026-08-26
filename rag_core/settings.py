@@ -6,7 +6,11 @@ Kept separate from config.py on purpose: the legacy Week 3/4 CLI pipeline
 
 import os
 
+from dotenv import load_dotenv
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 DATA_DIR = os.environ.get("RAG_DATA_DIR", os.path.join(BASE_DIR, "data"))
 INDEX_DIR = os.path.join(DATA_DIR, "index")
@@ -29,11 +33,14 @@ CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "250"))
 TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.12"))
 
-OLLAMA_URL = os.environ.get("RAG_OLLAMA_URL", "http://localhost:11434/api/generate")
-OLLAMA_MODEL = os.environ.get("RAG_OLLAMA_MODEL", "llama3.2")
-OLLAMA_TIMEOUT = int(os.environ.get("RAG_OLLAMA_TIMEOUT", "120"))
+GROQ_URL = os.environ.get(
+    "GROQ_URL", "https://api.groq.com/openai/v1/chat/completions"
+)
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
+GROQ_TIMEOUT = int(os.environ.get("GROQ_TIMEOUT", "60"))
 
-DEFAULT_GENERATOR = os.environ.get("RAG_GENERATOR", "ollama")
+DEFAULT_GENERATOR = os.environ.get("RAG_GENERATOR", "groq")
 PROMPT_VERSION_LLM = "grounded-strict-v2"
 PROMPT_VERSION_EXTRACTIVE = "extractive-grounded-v1"
 

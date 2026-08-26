@@ -40,9 +40,7 @@ def replay(trace, store):
     ret = trace["retrieval"]
     results = store.search(trace["question"], top_k=ret["top_k"],
                            min_score=ret["min_score"])
-    gen_name = "extractive" if trace["generation"]["model"] == "extractive-v1" \
-        else "ollama"
-    gen = GENERATORS[gen_name](trace["question"], results)
+    gen = GENERATORS["extractive"](trace["question"], results)
     return results, gen
 
 

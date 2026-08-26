@@ -21,5 +21,8 @@ sdk_bonus_dump.json
 node_modules/
 frontend/dist/
 
+# Secrets
+.env
+
 # Generated index artifacts
 data/index/registry.json

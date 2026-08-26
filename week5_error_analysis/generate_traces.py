@@ -14,10 +14,10 @@ intent so the capture covers how the assistant is actually used:
   H  code-usage                  - "how do I ..." questions
 
 Usage:
-    python -m week5_error_analysis.generate_traces [--generator extractive|ollama]
+    python -m week5_error_analysis.generate_traces
 
-Default generator is extractive because Ollama is not installed on the
-capture machine; every answer is still a real output of the running system.
+Default generator is extractive; every answer is a real output of the
+running system.
 """
 
 import argparse
@@ -99,7 +99,7 @@ QUESTIONS = [
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--generator", default="extractive",
-                        choices=["extractive", "ollama"])
+                        choices=["extractive"])
     parser.add_argument("--out", default=settings.TRACES_PATH)
     args = parser.parse_args()
 

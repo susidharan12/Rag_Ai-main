@@ -52,10 +52,12 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
             "index_chunk_count": stats["chunks"],
             "documents_indexed": stats["documents"],
             "retrieved": [
-                {k: r[k] for k in ("rank", "chunk_id", "score", "source_doc",
-                                   "page_number", "sdk_version")}
+                {**{k: r[k] for k in ("rank", "chunk_id", "score", "source_doc",
+                                      "page_number", "sdk_version")},
+                 "trace_time_ms": round((t1 - t0) * 1000, 1)}
                 for r in results
             ],
+            "latency_ms": round((t1 - t0) * 1000, 1),
             "retrieved_texts": {r["chunk_id"]: r["text"] for r in results},
         },
         "generation": {
@@ -63,6 +65,7 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
             "prompt_version": gen["prompt_version"],
             "params": gen["params"],
             "context_chunk_ids": [r["chunk_id"] for r in results],
+            "latency_ms": round((t2 - t1) * 1000, 1),
         },
         "raw_output": gen["answer"],
         "refused": gen["refused"],
