@@ -10,9 +10,6 @@ CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "250"))
 TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.12"))
 
-OLLAMA_URL = os.environ.get("RAG_OLLAMA_URL", "http://localhost:11434/api/generate")
-OLLAMA_MODEL = os.environ.get("RAG_OLLAMA_MODEL", "llama3.2")
-
 DOCUMENTS_DIR = os.environ.get("RAG_DOCUMENTS_DIR", "documents")
 INDEX_PATH = os.environ.get("RAG_INDEX_PATH", "vectors.index")
 CHUNKS_PATH = os.environ.get("RAG_CHUNKS_PATH", "chunks.pkl")

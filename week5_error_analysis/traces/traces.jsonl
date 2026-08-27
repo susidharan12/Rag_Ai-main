@@ -1,0 +1,69 @@
+{
+  "trace_id": "tr_20260826_141604_f8f24b",
+  "ts_utc": "2026-08-26T14:16:04Z",
+  "surface": "api",
+  "question": "what are the error in the coer data",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 48,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "core-bluetooth-apple-developer-documentation:p5:c2",
+        "score": 0.3174,
+        "source_doc": "Core Bluetooth _ Apple Developer Documentation.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 15469.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "core-bluetooth-apple-developer-documentation:p6:c0",
+        "score": 0.3081,
+        "source_doc": "Core Bluetooth _ Apple Developer Documentation.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 15469.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "core-bluetooth-apple-developer-documentation:p5:c1",
+        "score": 0.2832,
+        "source_doc": "Core Bluetooth _ Apple Developer Documentation.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 15469.4
+      }
+    ],
+    "latency_ms": 15469.4,
+    "retrieved_texts": {
+      "core-bluetooth-apple-developer-documentation:p5:c2": "errors. enum Code The codes for errors that Core Bluetooth returns during Bluetooth transactions. Bluetooth Classic Support Errors26/08/2026, 18:56 Core Bluetooth | Apple Developer Documentation https://developer.apple.com/documentation/corebluetooth 5/7",
+      "core-bluetooth-apple-developer-documentation:p6:c0": "struct CBATTError An error that Core Bluetooth returns while using Attribute Protocol (ATT). let CBATTError Domain: String The domain for Core Bluetooth ATT errors. enum Code The possible errors returned by a GATT server (a remote peripheral) during Bluetooth low energy ATT transactions. struct CBATTError An error that Core Bluetooth returns while using Attribute Protocol (ATT). enum CBCentral ManagerState Values that represent the current state of a central manager object. Deprecated enum CBPeripheral",
+      "core-bluetooth-apple-developer-documentation:p5:c1": "Bluetooth standards. Using Core Bluetooth Classic Discover and communicate with a Bluetooth Classic device by using the Core Bluetooth APIs. struct CBError An error that Core Bluetooth returns during Bluetooth transactions. let CBErrorDomain: String The domain for Core Bluetooth errors. enum Code The codes for errors that Core Bluetooth returns during Bluetooth transactions. Bluetooth Classic Support Errors26/08/2026, 18:56 Core Bluetooth | Apple Developer Documentation https://developer.apple.com/documentation/corebluetooth"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "grounded-strict-v2",
+    "params": {
+      "temperature": 0.0,
+      "max_tokens": 300
+    },
+    "context_chunk_ids": [
+      "core-bluetooth-apple-developer-documentation:p5:c2",
+      "core-bluetooth-apple-developer-documentation:p6:c0",
+      "core-bluetooth-apple-developer-documentation:p5:c1"
+    ],
+    "latency_ms": 1273.7
+  },
+  "raw_output": "Core Bluetooth reports errors through two structures:\n\n* **CBError** – the general error type for Bluetooth transactions, identified by `CBErrorDomain` and an `enum Code` that lists all possible Core Bluetooth transaction error codes【core-bluetooth-apple-developer-documentation:p5:c1】.  \n* **CBATTError** – the error type for Attribute Protocol (ATT) operations, identified by `CBATTErrorDomain` and its own `enum Code` that enumerates the errors a GATT server can return",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 15469.4,
+    "generate": 1273.7,
+    "total": 16743.2
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "seed": 20260824,
+  "trace_id": "tr_20260824_131138_8d8b3b",
+  "index_state_matches": true,
+  "retrieval_identical": true,
+  "scores_within_tolerance": true,
+  "output_identical": true,
+  "original": {
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c0",
+        "score": 0.6843,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 20,
+        "sdk_version": ""
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c2",
+        "score": 0.6719,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 20,
+        "sdk_version": ""
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c3",
+        "score": 0.6434,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 20,
+        "sdk_version": ""
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c5",
+        "score": 0.5672,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 20,
+        "sdk_version": ""
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c4",
+        "score": 0.5638,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 20,
+        "sdk_version": ""
+      }
+    ],
+    "raw_output": "\u007f A bout is divided into rounds, with a short rest period between each. [complete-guide-to-major-world-sports:p20:c3] Competitors 2 (individual) Duration Bouts of 3-12 rounds, each 2-3 minutes Equipment Gloves, mouthguard, boxing ring Governing Body AIBA / various pro sanctioning bodies Overview Boxing pits two fighters of similar weight against each other in a roped ring. [complete-guide-to-major-world-sports:p20:c0]"
+  },
+  "replayed": {
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c0",
+        "score": 0.6843
+      },
+      {
+        "rank": 2,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c2",
+        "score": 0.6719
+      },
+      {
+        "rank": 3,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c3",
+        "score": 0.6434
+      },
+      {
+        "rank": 4,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c5",
+        "score": 0.5672
+      },
+      {
+        "rank": 5,
+        "chunk_id": "complete-guide-to-major-world-sports:p20:c4",
+        "score": 0.5638
+      }
+    ],
+    "raw_output": "\u007f A bout is divided into rounds, with a short rest period between each. [complete-guide-to-major-world-sports:p20:c3] Competitors 2 (individual) Duration Bouts of 3-12 rounds, each 2-3 minutes Equipment Gloves, mouthguard, boxing ring Governing Body AIBA / various pro sanctioning bodies Overview Boxing pits two fighters of similar weight against each other in a roped ring. [complete-guide-to-major-world-sports:p20:c0]"
+  }
+}

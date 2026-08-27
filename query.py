@@ -6,13 +6,22 @@ os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 import pickle
+import re
 
 import faiss
 import numpy as np
-import requests
 from sentence_transformers import SentenceTransformer
 
 import config
+
+_STOPWORDS = {
+    "the", "a", "an", "is", "are", "was", "were", "of", "in", "on", "for",
+    "to", "and", "or", "what", "which", "who", "whom", "how", "does", "do",
+    "did", "can", "could", "should", "would", "when", "where", "why", "with",
+    "by", "at", "from", "as", "be", "been", "it", "its", "this", "that",
+    "these", "those", "there", "their", "them", "they", "i", "you", "we",
+    "my", "your", "our", "me", "us", "not", "no", "yes",
+}
 
 _embedding_model = None
 _index = None
@@ -113,73 +122,52 @@ def generate_answer(query, results):
             "I could not find the answer in the provided document."
         )
 
-    context = ""
+    query_terms = {
+        t for t in re.findall(r"[a-z0-9_.]+", query.lower())
+        if t not in _STOPWORDS and len(t) > 1
+    }
+
+    best = []
 
     for result in results:
 
-        page_number = result["metadata"]["page_number"]
+        sentences = [
+            s.strip()
+            for s in re.split(r"(?<=[.!?])\s+|\n+", result["chunk"])
+            if s.strip()
+        ]
 
-        context += (
-            f"\n--- Document Chunk "
-            f"{result['rank']} "
-            f"(Page {page_number}) ---\n"
-        )
+        for i, sentence in enumerate(sentences):
+            sent_terms = {
+                t for t in re.findall(r"[a-z0-9_.]+", sentence.lower())
+                if t not in _STOPWORDS and len(t) > 1
+            }
+            overlap = len(query_terms & sent_terms)
+            if overlap <= 0:
+                continue
+            score = (overlap / max(1, len(query_terms)) ** 0.5) - 0.01 * i \
+                    - 0.001 * result["rank"]
+            best.append((score, result["rank"], i, sentence))
 
-        context += result["chunk"]
-        context += "\n"
-   
-    prompt = f"""
-You are a helpful question-answering assistant.
-
-Answer the user's question using ONLY the
-information provided in the document context.
-
-If the answer cannot be found in the context,
-say:
-
-"I could not find the answer in the provided document."
-
-Do not make up information. Keep the answer short:
-4 to 5 lines maximum, no headers or bullet lists.
-
-Document context:
-{context}
-
-User question:
-{query}
-
-Answer:
-"""
-
-    print(prompt)
-    try:
-
-        response = requests.post(
-            config.OLLAMA_URL,
-            json={
-                "model": config.OLLAMA_MODEL,
-                "prompt": prompt,
-                "stream": False
-            },
-            timeout=300
-        )
-
-        response.raise_for_status()
-
-        data = response.json()
-
-        return data["response"]
-
-    except requests.exceptions.ConnectionError:
-
+    if not best:
         return (
-            "Could not connect to Ollama.\n\n"
-            "Make sure Ollama is installed and running."
+            "I could not find the answer in the provided document."
         )
 
-    except requests.exceptions.RequestException as e:
+    best.sort(key=lambda t: (-t[0], t[1], t[2]))
 
-        return f"Ollama request failed: {e}"
+    picked = []
+    seen_ranks = set()
+
+    for _, rank, _, sentence in best:
+        if rank in seen_ranks and picked:
+            continue
+        picked.append(sentence)
+        seen_ranks.add(rank)
+        if len(picked) == 2:
+            break
+
+    return " ".join(picked)
 
 
 def main():
