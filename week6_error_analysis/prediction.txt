@@ -1,0 +1,3 @@
+Prediction written 2026-08-27T00:01:00Z, before judge_v1 was run and before judge_v2 was written:
+
+Adding explicit version-conflict, missing-number, and out-of-corpus checks to the judge prompt will catch the stale-v2 and incomplete-answer failures (especially E09, E10, E21, and E22). I predict agreement will move from 80% before the iteration to 92% after it; duplicate and off-topic second-sentence cases will remain difficult because they are still useful-answer cases.
