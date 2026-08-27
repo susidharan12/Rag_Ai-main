@@ -1,0 +1,30 @@
+Docs-answer binary judge v1
+Single judged criterion: does the answer directly and correctly answer the question?
+Deterministic assertions are excluded: code parses, endpoint paths exist, version is stated, and deprecated symbols have migration notes.
+
+id	mode	human	judge	assertions_pass
+E01	stale_v2_default	1	1	True
+E02	stale_v2_default	1	1	True
+E03	stale_v2_default	1	1	True
+E04	stale_v2_default	1	1	True
+E05	change_log_first	1	0	True
+E06	change_log_first	1	1	True
+E07	unrelated_answer_instead_of_refusal	1	0	True
+E08	unrelated_answer_instead_of_refusal	0	0	True
+E09	requested_number_missing	0	1	True
+E10	requested_number_missing	0	1	True
+E11	duplicate_sentences	1	1	True
+E12	duplicate_sentences	1	1	True
+E13	fact_buried_or_truncated	1	1	True
+E14	fact_buried_or_truncated	1	1	True
+E15	second_half_drift	1	1	True
+E16	second_half_drift	1	1	True
+E17	vague_multi_part	1	0	True
+E18	vague_multi_part	1	1	True
+E19	code_usage	1	0	True
+E20	code_usage	1	0	True
+E21	regression_real_trace	0	1	False
+E22	regression_real_trace	0	0	True
+E23	clean_grounded	1	1	True
+E24	clean_grounded	1	1	True
+E25	clean_grounded	1	0	True
