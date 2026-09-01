@@ -28,10 +28,20 @@ EMBEDDING_MODEL_NAME = os.environ.get(
 )
 
 CHUNK_SIZE = int(os.environ.get("RAG_CHUNK_SIZE", "500"))
-CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "250"))
+# Week 5 C2: the old 50%-overlap default duplicated ~half the index text and
+# produced duplicate answer sentences. 20% overlap keeps boundary continuity
+# without the redundancy.
+CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "100"))
 
 TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.12"))
+
+# Version-preference re-rank (Week 5 M1/M2 fix): a small lift for the resolved
+# SDK version so a near-identical v2 page stops outranking the current v3 one.
+VERSION_PREFERENCE_BONUS = float(
+    os.environ.get("RAG_VERSION_BONUS", "0.10"))
+VERSION_PREJUDICE_PENALTY = float(
+    os.environ.get("RAG_VERSION_PENALTY", "0.05"))
 
 GROQ_URL = os.environ.get(
     "GROQ_URL", "https://api.groq.com/openai/v1/chat/completions"
@@ -41,8 +51,18 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 GROQ_TIMEOUT = int(os.environ.get("GROQ_TIMEOUT", "60"))
 
 DEFAULT_GENERATOR = os.environ.get("RAG_GENERATOR", "groq")
-PROMPT_VERSION_LLM = "grounded-strict-v2"
-PROMPT_VERSION_EXTRACTIVE = "extractive-grounded-v1"
+PROMPT_VERSION = os.environ.get("PROMPT_VERSION", "v1")
+
+# Relevance gate for the deterministic extractor (Week 5 M3): the best
+# retrieval score must clear the embedding noise floor before we answer.
+MIN_ANSWER_SCORE = float(os.environ.get("RAG_MIN_ANSWER_SCORE", "0.45"))
+EXTRACTIVE_MAX_SENTENCES = int(
+    os.environ.get("RAG_EXTRACTIVE_MAX_SENTENCES", "2"))
+
+# Generators that get a wider over-fetched retrieval window so structured
+# extraction can reach the parameter/error row even when it is outranked.
+GENERATORS_OVERFETCH = {"extractive"}
+EXTRACTIVE_CONTEXT = int(os.environ.get("RAG_EXTRACTIVE_CONTEXT", "10"))
 
 
 def ensure_dirs():

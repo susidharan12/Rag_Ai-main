@@ -29,13 +29,22 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
     results = store.search(question, top_k=top_k, min_score=min_score)
     t1 = time.perf_counter()
 
-    gen = GENERATORS[gen_name](question, results)
+    # Over-fetch a wider re-ranked window so the extractor's structured lookup
+    # can locate the parameter/error row even when an intro/change-log chunk
+    # outranks the table itself (Week 5 M4/M6). Displayed sources stay at top_k.
+    gen_results = results
+    if gen_name in settings.GENERATORS_OVERFETCH and results:
+        wider = store.search(question, top_k=settings.EXTRACTIVE_CONTEXT,
+                             min_score=min_score)
+        gen_results = wider or results
+
+    gen = GENERATORS[gen_name](question, gen_results)
     if gen.get("error"):
         # Generator backend unreachable/failed: degrade gracefully to the
         # deterministic grounded extractor so the product still answers.
         fallback_note = f"{gen['model']} unavailable ({gen['error']})"
-        gen = GENERATORS["extractive"](question, results)
-        gen["model"] = "extractive-v1 (fallback)"
+        gen = GENERATORS["extractive"](question, gen_results)
+        gen["model"] = "extractive-v2 (fallback)"
         gen["params"]["fallback"] = fallback_note
     t2 = time.perf_counter()
 
@@ -64,7 +73,7 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
             "model": gen["model"],
             "prompt_version": gen["prompt_version"],
             "params": gen["params"],
-            "context_chunk_ids": [r["chunk_id"] for r in results],
+            "context_chunk_ids": [r["chunk_id"] for r in gen_results],
             "latency_ms": round((t2 - t1) * 1000, 1),
         },
         "raw_output": gen["answer"],

@@ -90,14 +90,22 @@ class DocStore:
         return state
 
     def _save(self):
+        # Atomic persistence (Week 5 S1): write to a temp file then rename so a
+        # crash mid-write can never leave a truncated/corrupt chunks.pkl next to
+        # an updated registry.json. Both files are swapped in the same pass.
         state = self._state
-        with open(settings.CHUNKS_PATH, "wb") as f:
-            pickle.dump(state, f)
         import json
 
-        with open(settings.REGISTRY_PATH, "w", encoding="utf-8") as f:
+        chunks_tmp = settings.CHUNKS_PATH + ".tmp"
+        with open(chunks_tmp, "wb") as f:
+            pickle.dump(state, f)
+        os.replace(chunks_tmp, settings.CHUNKS_PATH)
+
+        reg_tmp = settings.REGISTRY_PATH + ".tmp"
+        with open(reg_tmp, "w", encoding="utf-8") as f:
             json.dump(sorted(state["documents"].values(),
                              key=lambda d: d["added_at"]), f, indent=2)
+        os.replace(reg_tmp, settings.REGISTRY_PATH)
 
     def _rebuild_index(self):
         emb = self._state["embeddings"]
@@ -152,7 +160,7 @@ class DocStore:
             for i, (text, meta) in enumerate(pairs):
                 meta.update({
                     "doc_id": doc_id,
-                    "chunk_id": f"{_slug(file_name)}:p{meta['page_number']}:c{meta['chunk_index']}",
+                    "chunk_id": f"{_slug(file_name)}-{doc_id.rsplit('-', 1)[-1]}:p{meta['page_number']}:c{meta['chunk_index']}",
                     "source_file": os.path.basename(file_name),
                 })
                 self._state["chunks"].append(text)
@@ -192,9 +200,20 @@ class DocStore:
                 if keep_idx else np.zeros((0, self._state["embeddings"].shape[1]
                                            or 384), dtype="float32")
             del self._state["documents"][doc_id]
+            self._recompute_offsets()
             self._save()
             self._rebuild_index()
             return info
+
+    def _recompute_offsets(self):
+        """Refresh every document's vector_offset after a delete so consumers
+        never read into another document's vectors (Week 5 S3)."""
+        seen = {}
+        for i, m in enumerate(self._state["metadata"]):
+            if m["doc_id"] not in seen:
+                seen[m["doc_id"]] = i
+        for d in self._state["documents"].values():
+            d["vector_offset"] = seen.get(d["doc_id"], 0)
 
     def list_documents(self):
         self.ensure_loaded()
@@ -224,23 +243,50 @@ class DocStore:
         if self._index is None or not self._state["chunks"]:
             return []
 
+        # Over-fetch a bit more than top_k so version re-ranking has room to
+        # promote a current-value chunk that raw similarity put just below the
+        # cut (the stale-v2 fix from Week 5's pre-registered prediction).
+        fetch = max(top_k * 2 + 4, top_k)
+
         vec = np.array(
             get_embedding_model().encode([query], convert_to_numpy=True),
             dtype="float32",
         )
         faiss.normalize_L2(vec)
 
-        scores, ids = self._index.search(vec, min(top_k, len(self._state["chunks"])))
+        scores, ids = self._index.search(vec, min(fetch, len(self._state["chunks"])))
 
-        results = []
-        for rank, (idx, score) in enumerate(zip(ids[0], scores[0]), start=1):
+        pref = _resolve_version_preference(query)
+        rows = []
+        for idx, score in zip(ids[0], scores[0]):
             if idx == -1 or score < min_score:
                 continue
             meta = self._state["metadata"][idx]
+            version = meta.get("sdk_version", "")
+            score_used = float(score)
+            # Version preference is a re-rank bonus, not a hard filter: the
+            # preferred version gets a small lift so a near-identical v2 page no
+            # longer outranks the current v3 page, while unversioned chunks
+            # (sports PDF, reserved for sdk_version="") and genuinely different
+            # topics keep their raw similarity ordering.
+            if pref and version:
+                if pref == "both":
+                    pass
+                elif version == pref:
+                    score_used += settings.VERSION_PREFERENCE_BONUS
+                elif pref != "both" and version not in (pref, ""):
+                    score_used -= settings.VERSION_PREJUDICE_PENALTY
+            rows.append((score_used, idx, float(score), meta))
+
+        # Stable re-rank by preference-adjusted similarity.
+        rows.sort(key=lambda r: -r[0])
+
+        results = []
+        for rank, (_, idx, raw_score, meta) in enumerate(rows[:top_k], start=1):
             results.append({
                 "rank": rank,
                 "chunk_id": meta["chunk_id"],
-                "score": round(float(score), 4),
+                "score": round(raw_score, 4),
                 "source_doc": meta["source_file"],
                 "doc_id": meta["doc_id"],
                 "page_number": meta["page_number"],
@@ -249,3 +295,27 @@ class DocStore:
                 "text": self._state["chunks"][idx],
             })
         return results
+
+
+def _resolve_version_preference(query):
+    """Return the SDK version the query most likely wants.
+
+    v3 (current) is the default for a versionless question. A query that names
+    v2 (and not v3) prefers v2. A query that names both, or that asks about a
+    change/comparison/difference, needs both and returns 'both'. Unversioned
+    queries with no SDK intent return None (no re-ranking at all).
+    """
+    q = query.lower()
+    mentions_v2 = bool(re.search(r"\bv2\b|\bsdk\s*v2\b", q))
+    mentions_v3 = bool(re.search(r"\bv3\b|\bsdk\s*v3\b", q))
+    wants_both = bool(re.search(
+        r"compare|difference\s+between|changed|differ|\bsdk v2 and v3\b|"
+        r"v2\s+and\s+v3\b|v3\s+and\s+v2\b|vs\.?\s*(v2|v3)|(?:v2|v3)\s*vs",
+        q))
+    if wants_both or (mentions_v2 and mentions_v3):
+        return "both"
+    if mentions_v2:
+        return "v2"
+    if mentions_v3:
+        return "v3"
+    return "v3"
