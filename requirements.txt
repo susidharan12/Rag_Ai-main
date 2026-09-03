@@ -3,5 +3,6 @@ numpy
 PyPDF2
 pymupdf
 pytesseract
+python-dotenv
 sentence-transformers
 requests

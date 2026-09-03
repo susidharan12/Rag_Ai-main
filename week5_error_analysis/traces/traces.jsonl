@@ -1,0 +1,163 @@
+{
+  "trace_id": "tr_20260831_065508_2972c6",
+  "ts_utc": "2026-08-31T06:55:08Z",
+  "surface": "api",
+  "question": "who is akash",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 34,
+    "documents_indexed": 1,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "akash-ios-3-1-1:p1:c0",
+        "score": 0.4166,
+        "source_doc": "Akash-iOS 3+ (1) (1).pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 13459.5
+      }
+    ],
+    "latency_ms": 13459.5,
+    "retrieved_texts": {
+      "akash-ios-3-1-1:p1:c0": "Akash I iOS Developer SUMMARY: ● Over 3+ years of professional experience in iOS application development , building scalable and high-performance mobile applications for iPhone and iPad using Swift, SwiftUI, UIKit, Obj-C and Storyboards . ● Developed API-driven applications by integrating RESTful services and socket-based communication , handling asynchronous operations, JSON/XML parsing, error handling, and seamless user interactions. ● Experienced in implementing robust client-side business logic"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.0,
+      "max_tokens": 300
+    },
+    "context_chunk_ids": [
+      "akash-ios-3-1-1:p1:c0"
+    ],
+    "latency_ms": 902.0
+  },
+  "raw_output": "Akash is an iOS developer with over 3 years of professional experience building scalable, high‑performance mobile applications for iPhone and iPad using Swift, SwiftUI, UIKit, Objective‑C, and Storyboards",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 13459.5,
+    "generate": 902.0,
+    "total": 14361.6
+  }
+}
+{
+  "trace_id": "tr_20260831_065845_95ad2f",
+  "ts_utc": "2026-08-31T06:58:45Z",
+  "surface": "api",
+  "question": "what is Swift",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 60,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "swiftui-apple-developer-documentation:p5:c0",
+        "score": 0.6135,
+        "source_doc": "SwiftUI _ Apple Developer Documentation.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 531.1
+      },
+      {
+        "rank": 2,
+        "chunk_id": "swiftui-apple-developer-documentation:p2:c1",
+        "score": 0.6109,
+        "source_doc": "SwiftUI _ Apple Developer Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 531.1
+      },
+      {
+        "rank": 3,
+        "chunk_id": "swiftui-apple-developer-documentation:p2:c0",
+        "score": 0.5966,
+        "source_doc": "SwiftUI _ Apple Developer Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 531.1
+      }
+    ],
+    "latency_ms": 531.1,
+    "retrieved_texts": {
+      "swiftui-apple-developer-documentation:p5:c0": "Develop in Swift Develop in Swift Tutorials introduce app development with Swift and Xcode to anyone learning to build apps for Apple platforms. SwiftUI updates Learn about important changes to SwiftUI. Landmarks: Building an app with Liquid Glass Enhance your app experience with system-provided and custom Liquid Glass. App organization Define the entry point and top-level structure of your app. Scenes Declare the user interface groupings that make up the parts of your app. Windows Display user",
+      "swiftui-apple-developer-documentation:p2:c1": "different languages, countries, or cultural regions. Tip If youʼre new to SwiftUI, visit the SwiftUI Pathway. Itʼs a collection of tutorials, articles, and sample projects that help you get started with SwiftUI. 26/08/2026, 18:52 SwiftUI | Apple Developer Documentation https://developer.apple.com/documentation/swiftui 2/11",
+      "swiftui-apple-developer-documentation:p2:c0": "You can integrate SwiftUI views with objects from the UIKit, AppKit, and WatchKit frameworks to take further advantage of platform- specific functionality. You can also customize accessibility support in SwiftUI, and localize your appʼs interface for different languages, countries, or cultural regions. Tip If youʼre new to SwiftUI, visit the SwiftUI Pathway. Itʼs a collection of tutorials, articles, and sample projects that help you get started with SwiftUI. 26/08/2026, 18:52 SwiftUI | Apple Developer"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.0,
+      "max_tokens": 300
+    },
+    "context_chunk_ids": [
+      "swiftui-apple-developer-documentation:p5:c0",
+      "swiftui-apple-developer-documentation:p2:c1",
+      "swiftui-apple-developer-documentation:p2:c0"
+    ],
+    "latency_ms": 1039.5
+  },
+  "raw_output": "Swift is a programming language used to build apps for Apple platforms, typically together with Xcode — the “Develop in Swift” tutorials introduce app development with Swift and Xcode for anyone learning to create Apple apps",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 531.1,
+    "generate": 1039.5,
+    "total": 1570.6
+  }
+}
+{
+  "trace_id": "tr_20260831_065856_43c423",
+  "ts_utc": "2026-08-31T06:58:56Z",
+  "surface": "api",
+  "question": "who is akash",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 60,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "akash-ios-3-1-1:p1:c0",
+        "score": 0.4166,
+        "source_doc": "Akash-iOS 3+ (1) (1).pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 449.5
+      }
+    ],
+    "latency_ms": 449.5,
+    "retrieved_texts": {
+      "akash-ios-3-1-1:p1:c0": "Akash I iOS Developer SUMMARY: ● Over 3+ years of professional experience in iOS application development , building scalable and high-performance mobile applications for iPhone and iPad using Swift, SwiftUI, UIKit, Obj-C and Storyboards . ● Developed API-driven applications by integrating RESTful services and socket-based communication , handling asynchronous operations, JSON/XML parsing, error handling, and seamless user interactions. ● Experienced in implementing robust client-side business logic"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.0,
+      "max_tokens": 300
+    },
+    "context_chunk_ids": [
+      "akash-ios-3-1-1:p1:c0"
+    ],
+    "latency_ms": 791.4
+  },
+  "raw_output": "Akash is an iOS developer with more than 3 years of professional experience building scalable, high‑performance iPhone and iPad applications using Swift, SwiftUI, UIKit, Objective‑C, and Storyboards ",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 449.5,
+    "generate": 791.4,
+    "total": 1241.0
+  }
+}
