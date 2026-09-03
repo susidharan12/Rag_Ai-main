@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
-import { MessagesSquare, SendHorizontal } from 'lucide-react'
-import Message, { TypingDots } from './Message.jsx'
+import { Paperclip, SendHorizontal, Sparkles, Wand2 } from 'lucide-react'
+import Message from './Message.jsx'
 import { askQuestion } from '../api.js'
 
 const SUGGESTIONS = [
@@ -11,8 +10,7 @@ const SUGGESTIONS = [
   'Show me how to verify a webhook signature in Python.',
 ]
 
-export default function ChatPanel({ hasDocs }) {
-  const [messages, setMessages] = useState([])
+export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, setMessages }) {
   const [input, setInput] = useState('')
   const [pending, setPending] = useState(false)
   const scrollRef = useRef(null)
@@ -43,35 +41,51 @@ export default function ChatPanel({ hasDocs }) {
           traceId: res.trace_id,
         },
       ])
+      onTurn?.({
+        question: q,
+        traceId: res.trace_id,
+        refused: !!res.refused,
+        error: false,
+        sources: res.sources ?? [],
+        latencyMs: res.latency_ms,
+        trace: res.trace,
+        reason: res.refused ? (res.answer || 'Request refused') : null,
+      })
     } catch (e) {
+      const errMsg = `Error: ${e.message}`
       setMessages((m) => [
         ...m,
-        { id: crypto.randomUUID(), role: 'bot', text: `Error: ${e.message}`, refused: true, sources: [] },
+        { id: crypto.randomUUID(), role: 'bot', text: errMsg, refused: true, sources: [] },
       ])
+      onTurn?.({
+        question: q, traceId: null, refused: true, error: true,
+        sources: [], latencyMs: null, trace: null, reason: e.message,
+      })
     } finally {
       setPending(false)
     }
   }
 
   return (
-    <section className="panel chat">
-      <div className="panel-title">
-        <MessagesSquare /> Ask the corpus
-      </div>
+    <>
+      <header className="chat-header">
+        <div className="chat-header-left">
+          <div className="chat-header-title">{primaryDocName || 'Ask your documents'}</div>
+          <div className="chat-header-sub">
+            {messages.length} {messages.length === 1 ? 'message' : 'messages'} · RAG Assistant
+          </div>
+        </div>
+        <div className="chat-header-right">
+          <span className="pill"><span className="pill-dot" /> Online</span>
+          <button className="btn-ghost" disabled>Save</button>
+          <button className="btn-ghost" disabled>Export</button>
+        </div>
+      </header>
 
       <div className="msg-scroll" ref={scrollRef}>
         {!messages.length ? (
           <div className="hero-empty">
-            <div className="hero-orb">
-              <div>
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="M20 20l-3.2-3.2" />
-                  <path d="M8.5 11h5M11 8.5v5" />
-                </svg>
-              </div>
-            </div>
+            <div className="hero-orb"><Sparkles size={24} /></div>
             <h2>Ask across every document</h2>
             <p>
               Upload one or more PDFs — they are parsed, chunked and embedded
@@ -85,32 +99,34 @@ export default function ChatPanel({ hasDocs }) {
                 </button>
               ))}
             </div>
-            {!hasDocs && (
-              <p style={{ fontSize: 12.5, color: 'var(--text-3)' }}>
-                Tip: upload a document in the library first.
-              </p>
-            )}
           </div>
         ) : (
           messages.map((m) => <Message key={m.id} msg={m} />)
         )}
         {pending && !messages.some((m) => m.id === 'pending') && (
-          <div className="msg bot">
-            <div className="who bot">Assistant</div>
-            <div className="bubble">
-              <TypingDots />
+          <div className="row-msg">
+            <div className="avatar"><Sparkles size={15} /></div>
+            <div className="body">
+              <div className="bubble">
+                <div className="typing">
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                </div>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      <div className="composer">
+      <div className="composer-wrap">
+        <div className="composer-toolbar">
+          <button className="composer-tool"><Paperclip size={14} /> Attach</button>
+          <button className="composer-tool"><Wand2 size={14} /> Enhance</button>
+        </div>
         <form
           className="composer-box"
-          onSubmit={(e) => {
-            e.preventDefault()
-            send()
-          }}
+          onSubmit={(e) => { e.preventDefault(); send() }}
         >
           <input
             value={input}
@@ -119,14 +135,13 @@ export default function ChatPanel({ hasDocs }) {
             disabled={pending}
           />
           <button type="submit" className="send-btn" disabled={pending || !input.trim()}>
-            {pending ? (
-              <span className="spinner" />
-            ) : (
-              <SendHorizontal size={17} />
-            )}
+            {pending ? <span className="spinner" /> : <SendHorizontal size={17} />}
           </button>
         </form>
+        <div className="composer-hint">
+          {hasDocs ? 'Answers cite their sources' : 'Upload a document to get started'}
+        </div>
       </div>
-    </section>
+    </>
   )
 }

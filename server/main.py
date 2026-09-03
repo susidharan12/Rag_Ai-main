@@ -101,6 +101,7 @@ def ask(req: AskRequest):
         surface="ui" if req.generator else "api",
         store=_store,
     )
+    payload["trace"] = trace
     return payload
 
 

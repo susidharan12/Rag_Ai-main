@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import AuroraBackground from './components/AuroraBackground.jsx'
-import Header from './components/Header.jsx'
-import LibraryPanel from './components/LibraryPanel.jsx'
+import IconRail from './components/Sidebar.jsx'
 import ChatPanel from './components/ChatPanel.jsx'
+import StatsPanel from './components/StatsPanel.jsx'
+import AnalyticsView from './components/AnalyticsView.jsx'
 import { fetchDocuments } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
   const [stats, setStats] = useState(null)
   const [toast, setToast] = useState(null)
+  const [activeView, setActiveView] = useState('chat')
+  const [turns, setTurns] = useState([])
+  const [messages, setMessages] = useState([])
 
   const refresh = useCallback(async () => {
     try {
@@ -22,7 +25,7 @@ export default function App() {
   }, [])
 
   const showToast = (msg) => {
-    setToast(msg)
+    setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
   }
 
@@ -30,28 +33,53 @@ export default function App() {
     refresh()
   }, [refresh])
 
+  const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
+
+  const primaryDocName = docs[0]?.name
+
   return (
     <>
-      <AuroraBackground />
-      <div className="shell">
-        <Header stats={stats} />
-        <LibraryPanel
+      <div className="app mesh-bg">
+        <IconRail activeView={activeView} onView={setActiveView} />
+        <motion.div
+          className="main-col"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
+          <AnimatePresence mode="wait">
+            {activeView === 'chat' ? (
+              <ChatPanel
+                key="chat"
+                hasDocs={docs.length > 0}
+                primaryDocName={primaryDocName}
+                onTurn={recordTurn}
+                messages={messages}
+                setMessages={setMessages}
+              />
+            ) : (
+              <AnalyticsView key="analytics" stats={stats} turns={turns} />
+            )}
+          </AnimatePresence>
+        </motion.div>
+        <StatsPanel
           docs={docs}
           stats={stats}
           onChanged={refresh}
           onError={showToast}
         />
-        <ChatPanel hasDocs={docs.length > 0} />
       </div>
       <AnimatePresence>
         {toast && (
           <motion.div
+            key={toast.key}
             className="toast-zone"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
           >
-            <div className="toast">{toast}</div>
+            <div className="toast">{toast.msg}</div>
           </motion.div>
         )}
       </AnimatePresence>
