@@ -6,36 +6,63 @@ boundary), re-implemented here so rag_core has zero imports from the legacy
 pipeline.
 """
 
+import re
+
+
+def _paragraphs(text):
+    blocks = re.split(r"\n\s*\n+", text.strip())
+    cleaned = []
+    for block in blocks:
+        block = block.strip()
+        if block:
+            cleaned.append(block)
+    return cleaned
+
 
 def chunk_page_text(text, chunk_size, chunk_overlap):
-    words = text.split()
-    if not words:
+    paragraphs = _paragraphs(text)
+    if not paragraphs:
         return []
 
     chunks = []
-    current_words = []
+    current = []
     current_len = 0
 
-    for word in words:
-        current_words.append(word)
-        current_len += len(word) + 1
+    for para in paragraphs:
+        para_len = len(para)
+        if not current:
+            current = [para]
+            current_len = para_len
+            continue
 
-        if current_len >= chunk_size:
-            chunks.append(" ".join(current_words))
+        if current_len + 1 + para_len <= chunk_size:
+            current.append(para)
+            current_len += 1 + para_len
+            continue
 
-            overlap_words = []
-            overlap_len = 0
-            for w in reversed(current_words):
-                overlap_len += len(w) + 1
-                overlap_words.insert(0, w)
-                if overlap_len >= chunk_overlap:
-                    break
+        chunks.append("\n\n".join(current))
 
-            current_words = overlap_words
-            current_len = overlap_len
+        overlap_parts = []
+        overlap_len = 0
+        for p in reversed(current):
+            p_len = len(p)
+            overlap_parts.insert(0, p)
+            overlap_len += p_len + 1
+            if overlap_len >= chunk_overlap:
+                break
 
-    if current_words and (not chunks or " ".join(current_words) != chunks[-1]):
-        chunks.append(" ".join(current_words))
+        if para_len > chunk_size:
+            # keep a very long paragraph as a single chunk candidate to avoid
+            # splitting a full code block or heading paragraph in half.
+            current = [para]
+            current_len = para_len
+        else:
+            # Carry the overlap forward into the next chunk
+            current = overlap_parts + [para]
+            current_len = overlap_len + 1 + para_len
+
+    if current:
+        chunks.append("\n\n".join(current))
 
     return chunks
 

@@ -1,4 +1,4 @@
-import { MessageSquareText, Database, Sparkles } from 'lucide-react'
+import { MessageSquareText, Database, Sparkles, BarChart3 } from 'lucide-react'
 
 export default function IconRail({ activeView, onView }) {
   return (
@@ -23,6 +23,13 @@ export default function IconRail({ activeView, onView }) {
           onClick={() => onView('analytics')}
         >
           <Database size={18} strokeWidth={1.8} />
+        </button>
+        <button
+          title="Benchmark"
+          className={`rail-item ${activeView === 'benchmark' ? 'active' : ''}`}
+          onClick={() => onView('benchmark')}
+        >
+          <BarChart3 size={18} strokeWidth={1.8} />
         </button>
       </nav>
     </aside>

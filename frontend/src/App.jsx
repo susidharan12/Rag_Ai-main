@@ -4,7 +4,8 @@ import IconRail from './components/Sidebar.jsx'
 import ChatPanel from './components/ChatPanel.jsx'
 import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
-import { fetchDocuments } from './api.js'
+import BenchmarkView from './components/BenchmarkView.jsx'
+import { fetchDocuments, fetchBenchmark } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
@@ -13,6 +14,7 @@ export default function App() {
   const [activeView, setActiveView] = useState('chat')
   const [turns, setTurns] = useState([])
   const [messages, setMessages] = useState([])
+  const [benchmark, setBenchmark] = useState(null)
 
   const refresh = useCallback(async () => {
     try {
@@ -24,6 +26,15 @@ export default function App() {
     }
   }, [])
 
+  const refreshBenchmark = useCallback(async () => {
+    try {
+      const data = await fetchBenchmark()
+      setBenchmark(data)
+    } catch (e) {
+      showToast(`Benchmark unavailable: ${e.message}`)
+    }
+  }, [])
+
   const showToast = (msg) => {
     setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
@@ -31,7 +42,8 @@ export default function App() {
 
   useEffect(() => {
     refresh()
-  }, [refresh])
+    refreshBenchmark()
+  }, [refresh, refreshBenchmark])
 
   const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
 
@@ -57,6 +69,8 @@ export default function App() {
                 messages={messages}
                 setMessages={setMessages}
               />
+            ) : activeView === 'benchmark' ? (
+              <BenchmarkView key="benchmark" benchmark={benchmark} turns={turns} />
             ) : (
               <AnalyticsView key="analytics" stats={stats} turns={turns} />
             )}

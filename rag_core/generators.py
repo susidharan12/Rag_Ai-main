@@ -63,20 +63,17 @@ def _candidates(text):
 
 # ----------------------------------------------------------------- groq ----
 
-PROMPT_TEMPLATE = """You are a developer-documentation assistant.
+PROMPT_TEMPLATE = """You are a knowledgeable and helpful documentation assistant. Your job is to provide clear, accurate, and comprehensive answers based on the documentation provided below.
 
-Answer the user's question using ONLY the numbered context chunks below.
-
-Rules:
-1. Cite the chunk you used as [chunk_id] right after the claim.
-2. If the context does not contain the answer, reply with exactly one
-   sentence: "{refusal}"
-3. Do not make up parameter names, defaults or code.
-4. Keep the answer short: 4 to 5 lines maximum.
-5. Answer the question directly with only the facts it asks for. Do not add
-   a person's profile, bio, strengths, skills or background, and do not
-   summarize a document, unless the question explicitly asks for that.
-6. Stop writing once the answer to the question is complete.
+Instructions:
+1. Answer the user's question using the context chunks below as your source of truth.
+2. Synthesize information from multiple chunks when needed to give a complete answer.
+3. Provide clear, well-structured explanations — use bullet points, numbered lists, or paragraphs as appropriate.
+4. If the context contains relevant information, use it to give a thorough answer. Do NOT refuse unless the context is completely unrelated to the question.
+5. Only say "I could not find the answer in the provided documents" if the context has absolutely no relevant information.
+6. Do not fabricate parameter names, default values, or code examples — only use what is explicitly stated in the context.
+7. Use a natural, conversational tone. Be helpful and informative like a senior developer explaining documentation.
+8. If the answer requires multiple facts from different chunks, combine them into a cohesive response.
 
 Context chunks:
 {context}
@@ -89,15 +86,19 @@ Answer:"""
 
 def build_context(results):
     blocks = []
-    for r in results:
+    for i, r in enumerate(results, 1):
+        source = r.get('source_doc', 'unknown')
+        page = r.get('page_number', '?')
+        version = r.get('sdk_version', '')
+        version_tag = f" [{version}]" if version else ""
         blocks.append(
-            f"[{r['chunk_id']}] ({r['source_doc']} p{r['page_number']})\n{r['text']}"
+            f"--- Source {i}: {source}, page {page}{version_tag} ---\n{r['text']}"
         )
     return "\n\n".join(blocks)
 
 
 def generate_groq(question, results):
-    params = {"temperature": 0.0, "max_tokens": 300}
+    params = {"temperature": 0.2, "max_tokens": 1024}
 
     if not results:
         return {"answer": _REFUSAL, "model": settings.GROQ_MODEL,
@@ -114,9 +115,13 @@ def generate_groq(question, results):
                      "Content-Type": "application/json"},
             json={
                 "model": settings.GROQ_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 300,
+                "messages": [
+                    {"role": "system", "content": "You are a helpful, accurate, and thorough documentation assistant. Always provide complete answers based on the provided context."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.2,
+                "max_tokens": 1024,
+                "top_p": 0.9,
             },
             timeout=settings.GROQ_TIMEOUT,
         )
@@ -136,15 +141,17 @@ def generate_groq(question, results):
 
 
 def _clean_answer(answer):
-    """Remove citation markers from the answer text and tidy trailing noise."""
+    """Clean up the answer text — remove citation artifacts and tidy formatting."""
     answer = answer.strip()
-    # drop citation tags like 【chunk:pN:cN】 or [chunk:pN:cN], including a
-    # truncated trailing citation (opened but cut off by max_tokens).
+    # Remove citation tags like [chunk:pN:cN] or 【chunk:pN:cN】 if present
     cite = r"[A-Za-z0-9_\-]+(?::p\d+)?(?::c\d+)?"
     answer = re.sub(r"[【\[]\s*" + cite + r"\s*[】\]]?", "", answer)
-    # collapse leftover double spaces / dangling separators
+    # Collapse double spaces
     answer = re.sub(r"[ \t]+", " ", answer)
+    # Remove trailing dangling separators
     answer = re.sub(r"[ \t]+([,.;:])", r"\1", answer)
+    # Strip raw chunk ids appended by extractive fallback
+    answer = re.sub(r"\s+\[[A-Za-z0-9_\-:p.c]+\]\s*$", "", answer)
     return answer.rstrip().rstrip("。.,;:")
 
 
@@ -177,6 +184,17 @@ def generate_extractive(question, results):
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"reason": "no_results"}, "refused": True}
 
+    max_overlap = max((r.get("lexical_overlap", 0.0) for r in results), default=0.0)
+    max_heading = max((r.get("heading_overlap", 0.0) for r in results), default=0.0)
+
+    if max_overlap < 0.05 and max_heading < 0.05:
+        return {"answer": _REFUSAL, "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"reason": "no_question_overlap",
+                           "max_overlap": round(max_overlap, 3),
+                           "max_heading": round(max_heading, 3)},
+                "refused": True}
+
     top_score = max(r["score"] for r in results)
 
     # Relevance gate 1 (M3): if the question names a specific entity that is
@@ -205,6 +223,15 @@ def generate_extractive(question, results):
                            "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
                 "refused": False}
 
+    definition = _definition_answer(question, results)
+    if definition:
+        ans, r = definition
+        return {"answer": ans,
+                "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"strategy": "definition"},
+                "refused": False}
+
     # Relevance gate 2: if no structured answer exists, the single highest
     # retrieval score must clear the embedding noise floor (M3).
     if top_score < settings.MIN_ANSWER_SCORE:
@@ -223,12 +250,11 @@ def generate_extractive(question, results):
             shared = q_terms & c_terms
             if not shared:
                 continue
-            # Prefer candidates that carry a value token for numeric questions
-            # and that mention the exact attribute named in the question.
             has_number = bool(re.search(r"\d", cand))
             qi = (len(shared) * 2.0
                   + (2.0 if has_number and asks_number else 0.0)
-                  - 0.01 * len(cand))
+                  - 0.01 * len(cand)
+                  + _candidate_rank(question, cand, r) * 4.0)
             candidates.append((qi, shared, cand, r))
 
     # Relevance gate 2: nothing on-topic in the retrieved context -> refuse (M3).
@@ -529,3 +555,51 @@ GENERATORS = {
     "groq": generate_groq,
     "extractive": generate_extractive,
 }
+
+
+def _heading_match_bonus(question, text):
+    q = re.sub(r"[^a-z0-9]+", " ", question.lower()).strip()
+    if not q:
+        return 0.0
+    q_tokens = {t for t in q.split() if len(t) > 2 and t not in _STOPWORDS}
+    if not q_tokens:
+        return 0.0
+    t = re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+    matches = sum(1 for tok in q_tokens if tok in t)
+    return matches / max(len(q_tokens), 1)
+
+
+def _candidate_rank(question, cand, result):
+    base = 0.0
+    base += _heading_match_bonus(question, result["text"])
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", result["text"].lower()):
+        base += 0.25
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", (result.get("source_doc") or "").lower()):
+        base += 0.1
+    return base
+
+
+def _definition_answer(question, results):
+    """Handle 'what is X' / 'what are X' definitions from matching section text."""
+    low = question.lower()
+    if not re.search(r"\b(?:what is|what are|define|explain|tell me about)\b", low):
+        return None
+
+    q_norm = re.sub(r"[^a-z0-9]+", " ", low).strip()
+    for r in results:
+        text = r.get("text") or ""
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+        for i, line in enumerate(lines):
+            norm = re.sub(r"[^a-z0-9]+", " ", line.lower()).strip()
+            if not norm:
+                continue
+            if norm == q_norm:
+                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
+                if answer:
+                    return (answer.strip(), r)
+            phrase = q_norm.replace("what is ", "").replace("what are ", "").replace("define ", "").replace("explain ", "").strip()
+            if phrase and (phrase in norm or norm in phrase):
+                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
+                if answer:
+                    return (answer.strip(), r)
+    return None

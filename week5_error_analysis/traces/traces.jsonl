@@ -161,3 +161,1430 @@
     "total": 1241.0
   }
 }
+{
+  "trace_id": "tr_20260903_163403_e62a66",
+  "ts_utc": "2026-09-03T16:34:03Z",
+  "surface": "api",
+  "question": "who is ajith kumar",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 32,
+    "documents_indexed": 1,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-ae8d48:p11:c0",
+        "score": 0.7156,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 11,
+        "sdk_version": "",
+        "trace_time_ms": 46.9
+      },
+      {
+        "rank": 2,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-ae8d48:p1:c0",
+        "score": 0.664,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 46.9
+      },
+      {
+        "rank": 3,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-ae8d48:p10:c0",
+        "score": 0.6565,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 10,
+        "sdk_version": "",
+        "trace_time_ms": 46.9
+      }
+    ],
+    "latency_ms": 46.9,
+    "retrieved_texts": {
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p11:c0": "Thala Ajith Kumar — Life & Career | Page 11 10. LEGACY Why Ajith Kumar remains important Ajith Kumar's story is ultimately a story of transformation. He began with supporting and modest opportunities, became a romantic hero, explored serious and experimental roles, established himself as an action star and continued reinventing his screen identity across decades. His filmography includes Aasai, Kadhal Kottai, Vaali, Amarkalam, Mankatha, Billa, Yennai Arindhaal, Viswasam, Nerkonda Paarvai, Thunivu",
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p1:c0": "Thala Ajith Kumar — Life & Career | Page 1 THALA AJITH KUMAR A 10-Page Journey Through His Life, Cinema & Passion Ajith Kumar is one of the most distinctive stars of Tamil cinema. His journey from a young man who entered the film world without a conventional cinema background to an acclaimed actor and motorsport enthusiast is marked by persistence, reinvention and individuality. Born on 1 May 1971 in Hyderabad, Ajith grew up in Chennai and eventually became one of the leading names in Tamil cinema.",
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p10:c0": "Thala Ajith Kumar — Life & Career | Page 10 9. PERSONAL LIFE & PUBLIC IMAGE Privacy, family and individuality Ajith married actress Shalini on 24 April 2000. They have two children, Anoushka and Aadvik. Unlike many major film personalities, Ajith has generally kept his family life away from constant media exposure. One of the most discussed decisions in his career was his choice to dismantle his organized fan clubs. The decision reflected his preference that fans should not become overly consumed"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p11:c0",
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p1:c0",
+      "thala-ajith-kumar-history-10-pages-1-ae8d48:p10:c0"
+    ],
+    "latency_ms": 1103.6
+  },
+  "raw_output": "Thala Ajith Kumar — Life & Career [thala-ajith-kumar-history-10-pages-1-ae8d48:p11:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 46.9,
+    "generate": 1103.6,
+    "total": 1150.4
+  }
+}
+{
+  "trace_id": "tr_20260903_170804_9f9317",
+  "ts_utc": "2026-09-03T17:08:04Z",
+  "surface": "api",
+  "question": "who is ajith",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 12,
+    "documents_indexed": 1,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-371374:p7:c0",
+        "score": 0.5722,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 50.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-371374:p10:c0",
+        "score": 0.5693,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 10,
+        "sdk_version": "",
+        "trace_time_ms": 50.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "thala-ajith-kumar-history-10-pages-1-371374:p11:c1",
+        "score": 0.5576,
+        "source_doc": "Thala_Ajith_Kumar_History_10_Pages (1).pdf",
+        "page_number": 11,
+        "sdk_version": "",
+        "trace_time_ms": 50.8
+      }
+    ],
+    "latency_ms": 50.8,
+    "retrieved_texts": {
+      "thala-ajith-kumar-history-10-pages-1-371374:p7:c0": "Thala Ajith Kumar — Life & Career | Page 7 6. MANKATHA & THE 2010s Reinventing the commercial star Mankatha (2011), directed by Venkat Prabhu, was a major milestone. Ajith played an unconventional anti-hero in a heist thriller, allowing him to explore a morally ambiguous character rather than a traditional heroic role. Arrambam (2013), Veeram (2014), Yennai Arindhaal (2015), Vedalam (2015), Vivegam (2017) and Viswasam (2019) showed the variety of commercial formats associated with Ajith during the decade. Yennai Arindhaal, directed by Gautham Vasudev Menon, highlighted a more mature emotional side. Viswasam, directed by Siva, focused strongly on family emotion while retaining the mass elements expected by his audience. Ajith's stardom during this period increasingly depended not only on individual films but on the loyalty of audiences who followed him across different genres. His decision to keep a low public profile made his on-screen appearances even more significant.",
+      "thala-ajith-kumar-history-10-pages-1-371374:p10:c0": "Thala Ajith Kumar — Life & Career | Page 10 9. PERSONAL LIFE & PUBLIC IMAGE Privacy, family and individuality Ajith married actress Shalini on 24 April 2000. They have two children, Anoushka and Aadvik. Unlike many major film personalities, Ajith has generally kept his family life away from constant media exposure. One of the most discussed decisions in his career was his choice to dismantle his organized fan clubs. The decision reflected his preference that fans should not become overly consumed by cinema or use fan associations for unrelated activities. Ajith's public image is strongly connected with the idea of living on his own terms. He has often avoided aggressive self-promotion and generally allows films to speak for themselves. His interest in racing, technical hobbies and personal privacy has helped create an identity that is different from the conventional celebrity model. For many admirers, this independence is an important part of what makes him 'Thala Ajith.'",
+      "thala-ajith-kumar-history-10-pages-1-371374:p11:c1": "his legacy. Ajith's journey can be summarized through three ideas: persistence after setbacks, freedom to choose his own path, and the ability to reinvent himself. His story continues to be an important chapter in the history of modern Tamil cinema. Sources: Government of India Padma Awards citation; IMDb biography and film credits. \u0000cite\u0000turn0search23\u0000turn0search0\u0000"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "thala-ajith-kumar-history-10-pages-1-371374:p7:c0",
+      "thala-ajith-kumar-history-10-pages-1-371374:p10:c0",
+      "thala-ajith-kumar-history-10-pages-1-371374:p11:c1"
+    ],
+    "latency_ms": 1246.9
+  },
+  "raw_output": "Thala Ajith Kumar — Life & Career [thala-ajith-kumar-history-10-pages-1-371374:p7:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 50.8,
+    "generate": 1246.9,
+    "total": 1297.7
+  }
+}
+{
+  "trace_id": "tr_20260903_172801_fc1b11",
+  "ts_utc": "2026-09-03T17:28:01Z",
+  "surface": "api",
+  "question": "what is Assignment Operator ?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c2",
+        "score": 0.5757,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 52.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "basic-operators-documentation-dec731:p4:c0",
+        "score": 0.4826,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 52.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c0",
+        "score": 0.4758,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 52.4
+      }
+    ],
+    "latency_ms": 52.4,
+    "retrieved_texts": {
+      "basic-operators-documentation-dec731:p1:c2": "conditional operator ( a ? b : c). The values that operators af fect are operands . In the expression 1 + 2 , the + symbol is an infix operator and its two operands are the values 1 and 2. The assignment operator (a = b ) initializes or updates the value of a with the value of b: Terminology Assignment Operator The Swift Programming …/Basic Operators Basic Operators Perform operations like assignment, arithmetic, and comparison. Documentation9/3/26, 10:55 PM Basic Operators | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 1/11",
+      "basic-operators-documentation-dec731:p4:c0": "Like C, Swift provides compound assignment operators that combine assignment ( =) with another operation. One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . Effectively , the addition and the assignment are combined into one operator that performs both tasks at the same time. Note The compound assignment operators don’t return a value. For example, you can’t write let b = a += 2 . For information about the operators provided by the Swift standard library , see Operator Declarations . Swift supports the following comparison operators: Equal to ( a == b ) Not equal to ( a != b ) Greater than ( a > b ) Less than ( a < b ) Greater than or equal to ( a >= b ) Less than or equal to ( a <= b ) Note Swift also provides two identity operators (=== and !==), which you use to test whether two object references both refer to the same object instance. For more information, see Identity Operators . Each of the comparison operators returns a Bool value to indicate whether or not the statement is true: Comparison operators are often used in conditional statements, such as the if statement:Compound Assignment Operators Comparison Operators 9/3/26,",
+      "basic-operators-documentation-dec731:p1:c0": "Blog Download Getting Started Documentation An operator is a special symbol or phrase that you use to check, change, or combine values. For example, the addition operator (+) adds two numbers, as in let i = 1 + 2 , and the logical AND operator ( &&) combines two Boolean values, as in if entered DoorCode && passed RetinaScan . Swift supports the operators you may already know from languages like C, and improves several capabilities to eliminate common coding errors. The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. Arithmetic operators ( +, -, *, /, % and so forth) detect and disallow value overflow , to avoid unexpected results when working with numbers that become larger or smaller than the allowed value range of the type that stores them. You can opt in to value overflow behavior by using Swift’ s overflow operators, as described in Overflow Operators . Swift also provides range operators that aren’t found in C, such as a..<b and a...b , as a shortcut for expressing a range of values. This chapter describes the common operators in Swift. Advanced Operators covers Swift’ s advanced operators,"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "basic-operators-documentation-dec731:p1:c2",
+      "basic-operators-documentation-dec731:p4:c0",
+      "basic-operators-documentation-dec731:p1:c0"
+    ],
+    "latency_ms": 1082.6
+  },
+  "raw_output": "One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . [basic-operators-documentation-dec731:p4:c0] The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. [basic-operators-documentation-dec731:p1:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 52.4,
+    "generate": 1082.6,
+    "total": 1134.9
+  }
+}
+{
+  "trace_id": "tr_20260903_172902_f5fb3e",
+  "ts_utc": "2026-09-03T17:29:02Z",
+  "surface": "api",
+  "question": "what is java",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-29f72f:p2:c0",
+        "score": 0.1297,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 32.1
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-29f72f:p6:c2",
+        "score": 0.1254,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 32.1
+      }
+    ],
+    "latency_ms": 32.1,
+    "retrieved_texts": {
+      "the-basics-documentation-29f72f:p2:c0": "“Declare a new constant called maximumNumberOfLoginAttempts , and give it a value of 10. Then, declare a new variable called currentLoginAttempt , and give it an initial value of 0.” In this example, the maximum number of allowed login attempts is declared as a constant, because the maximum value never changes. The current login attempt counter is declared as a variable, because this value must be incremented after each failed login attempt. If a stored value in your code won’t change, always declare it as a constant with the let keyword. Use variables only for storing values that change. When you declare a constant or a variable, you can give it a value as part of that declaration, like the examples above. Alternatively , you can assign its initial value later in the program, as long as it’ s guaranteed to have a value before the first time you read from it. In this example, the maximum number of login attempts is constant, and its value depends on the environment. In the development environment, it has a value of 100; in any other environment, its value is 10. Both branches of the if statement initialize maximum NumberOfLoginAttempts with some value, guaranteeing that the constant",
+      "the-basics-documentation-29f72f:p6:c2": "Float32 or Float64 . For example, graphics code often uses Float to match the GPU’ s fastest data type. Some floating-point types are supported only by certain platforms, but Float and Double are available on all platforms. Floating-point numbers let you work with very small and very large numbers, but can’t represent every possible value in that range. Unlike integer calculations, which always produce an exact result, floating-point math rounds results to the nearest representable number . For example, when storing the number 10,000 as a Float , the next largest number you can represent is 10,000.001 –– values between these two numbers round to one or the other . The space between numbers is also variable; there are larger spaces between large numbers than between small numbers. For example, the next Float value after 0.001 is 0.0010000002, which is smaller than the spacing after 10,000. Floating-point numbers have values for negative zero, infinity , and negative infinity , which represent overflow and underflow in calculations. They also have not-a-number (NaN) values to represent an invalid or undefined result, such as dividing zero by zero. This behavior is dif ferent from integers,"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "java",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-29f72f:p2:c0",
+      "the-basics-documentation-29f72f:p6:c2"
+    ],
+    "latency_ms": 938.9
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 32.1,
+    "generate": 938.9,
+    "total": 970.9
+  }
+}
+{
+  "trace_id": "tr_20260903_173947_a07d06",
+  "ts_utc": "2026-09-03T17:39:47Z",
+  "surface": "api",
+  "question": "what is assignment operator?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c2",
+        "score": 0.5757,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 44.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "basic-operators-documentation-dec731:p4:c0",
+        "score": 0.4826,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 44.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c0",
+        "score": 0.4758,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 44.0
+      }
+    ],
+    "latency_ms": 44.0,
+    "retrieved_texts": {
+      "basic-operators-documentation-dec731:p1:c2": "conditional operator ( a ? b : c). The values that operators af fect are operands . In the expression 1 + 2 , the + symbol is an infix operator and its two operands are the values 1 and 2. The assignment operator (a = b ) initializes or updates the value of a with the value of b: Terminology Assignment Operator The Swift Programming …/Basic Operators Basic Operators Perform operations like assignment, arithmetic, and comparison. Documentation9/3/26, 10:55 PM Basic Operators | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 1/11",
+      "basic-operators-documentation-dec731:p4:c0": "Like C, Swift provides compound assignment operators that combine assignment ( =) with another operation. One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . Effectively , the addition and the assignment are combined into one operator that performs both tasks at the same time. Note The compound assignment operators don’t return a value. For example, you can’t write let b = a += 2 . For information about the operators provided by the Swift standard library , see Operator Declarations . Swift supports the following comparison operators: Equal to ( a == b ) Not equal to ( a != b ) Greater than ( a > b ) Less than ( a < b ) Greater than or equal to ( a >= b ) Less than or equal to ( a <= b ) Note Swift also provides two identity operators (=== and !==), which you use to test whether two object references both refer to the same object instance. For more information, see Identity Operators . Each of the comparison operators returns a Bool value to indicate whether or not the statement is true: Comparison operators are often used in conditional statements, such as the if statement:Compound Assignment Operators Comparison Operators 9/3/26,",
+      "basic-operators-documentation-dec731:p1:c0": "Blog Download Getting Started Documentation An operator is a special symbol or phrase that you use to check, change, or combine values. For example, the addition operator (+) adds two numbers, as in let i = 1 + 2 , and the logical AND operator ( &&) combines two Boolean values, as in if entered DoorCode && passed RetinaScan . Swift supports the operators you may already know from languages like C, and improves several capabilities to eliminate common coding errors. The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. Arithmetic operators ( +, -, *, /, % and so forth) detect and disallow value overflow , to avoid unexpected results when working with numbers that become larger or smaller than the allowed value range of the type that stores them. You can opt in to value overflow behavior by using Swift’ s overflow operators, as described in Overflow Operators . Swift also provides range operators that aren’t found in C, such as a..<b and a...b , as a shortcut for expressing a range of values. This chapter describes the common operators in Swift. Advanced Operators covers Swift’ s advanced operators,"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "basic-operators-documentation-dec731:p1:c2",
+      "basic-operators-documentation-dec731:p4:c0",
+      "basic-operators-documentation-dec731:p1:c0"
+    ],
+    "latency_ms": 1121.7
+  },
+  "raw_output": "One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . [basic-operators-documentation-dec731:p4:c0] The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. [basic-operators-documentation-dec731:p1:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 44.0,
+    "generate": 1121.7,
+    "total": 1165.8
+  }
+}
+{
+  "trace_id": "tr_20260903_174045_a3cf1c",
+  "ts_utc": "2026-09-03T17:40:45Z",
+  "surface": "api",
+  "question": "what is java ?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-29f72f:p6:c2",
+        "score": 0.1674,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 59.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-29f72f:p2:c0",
+        "score": 0.1575,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 59.4
+      }
+    ],
+    "latency_ms": 59.4,
+    "retrieved_texts": {
+      "the-basics-documentation-29f72f:p6:c2": "Float32 or Float64 . For example, graphics code often uses Float to match the GPU’ s fastest data type. Some floating-point types are supported only by certain platforms, but Float and Double are available on all platforms. Floating-point numbers let you work with very small and very large numbers, but can’t represent every possible value in that range. Unlike integer calculations, which always produce an exact result, floating-point math rounds results to the nearest representable number . For example, when storing the number 10,000 as a Float , the next largest number you can represent is 10,000.001 –– values between these two numbers round to one or the other . The space between numbers is also variable; there are larger spaces between large numbers than between small numbers. For example, the next Float value after 0.001 is 0.0010000002, which is smaller than the spacing after 10,000. Floating-point numbers have values for negative zero, infinity , and negative infinity , which represent overflow and underflow in calculations. They also have not-a-number (NaN) values to represent an invalid or undefined result, such as dividing zero by zero. This behavior is dif ferent from integers,",
+      "the-basics-documentation-29f72f:p2:c0": "“Declare a new constant called maximumNumberOfLoginAttempts , and give it a value of 10. Then, declare a new variable called currentLoginAttempt , and give it an initial value of 0.” In this example, the maximum number of allowed login attempts is declared as a constant, because the maximum value never changes. The current login attempt counter is declared as a variable, because this value must be incremented after each failed login attempt. If a stored value in your code won’t change, always declare it as a constant with the let keyword. Use variables only for storing values that change. When you declare a constant or a variable, you can give it a value as part of that declaration, like the examples above. Alternatively , you can assign its initial value later in the program, as long as it’ s guaranteed to have a value before the first time you read from it. In this example, the maximum number of login attempts is constant, and its value depends on the environment. In the development environment, it has a value of 100; in any other environment, its value is 10. Both branches of the if statement initialize maximum NumberOfLoginAttempts with some value, guaranteeing that the constant"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "java",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-29f72f:p6:c2",
+      "the-basics-documentation-29f72f:p2:c0"
+    ],
+    "latency_ms": 944.7
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 59.4,
+    "generate": 944.7,
+    "total": 1004.2
+  }
+}
+{
+  "trace_id": "tr_20260903_174314_12c8f4",
+  "ts_utc": "2026-09-03T17:43:14Z",
+  "surface": "api",
+  "question": "assignment operator",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c2",
+        "score": 0.5717,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 22.3
+      },
+      {
+        "rank": 2,
+        "chunk_id": "basic-operators-documentation-dec731:p2:c0",
+        "score": 0.4992,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 22.3
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-dec731:p4:c0",
+        "score": 0.4644,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 22.3
+      }
+    ],
+    "latency_ms": 22.3,
+    "retrieved_texts": {
+      "basic-operators-documentation-dec731:p1:c2": "conditional operator ( a ? b : c). The values that operators af fect are operands . In the expression 1 + 2 , the + symbol is an infix operator and its two operands are the values 1 and 2. The assignment operator (a = b ) initializes or updates the value of a with the value of b: Terminology Assignment Operator The Swift Programming …/Basic Operators Basic Operators Perform operations like assignment, arithmetic, and comparison. Documentation9/3/26, 10:55 PM Basic Operators | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 1/11",
+      "basic-operators-documentation-dec731:p2:c0": "If the right side of the assignment is a tuple with multiple values, its elements can be decomposed into multiple constants or variables at once: Unlike the assignment operator in C and Objective-C, the assignment operator in Swift doesn’t itself return a value. The following statement isn’t valid: This feature prevents the assignment operator ( =) from being used by accident when the equal to operator ( ==) is actually intended. By making if x = y invalid, Swift helps you to avoid these kinds of errors in your code. Swift supports the four standard arithmetic operators for all number types: Addition ( +) Subtraction ( -) Multiplication ( *) Division (/) Unlike the arithmetic operators in C and Objective-C, the Swift arithmetic operators don’t allow values to overflow by default. You can opt in to value overflow behavior by using Swift’ s overflow operators (such as a &+ b ). See Overflow Operators . The addition operator is also supported for String concatenation: The remainder operator (a % b ) works out how many multiples of b will fit inside a and returns the value that’ s left over (known as the remainder ). Note The remainder operator ( %) is also known as a modulo operator in",
+      "basic-operators-documentation-dec731:p4:c0": "Like C, Swift provides compound assignment operators that combine assignment ( =) with another operation. One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . Effectively , the addition and the assignment are combined into one operator that performs both tasks at the same time. Note The compound assignment operators don’t return a value. For example, you can’t write let b = a += 2 . For information about the operators provided by the Swift standard library , see Operator Declarations . Swift supports the following comparison operators: Equal to ( a == b ) Not equal to ( a != b ) Greater than ( a > b ) Less than ( a < b ) Greater than or equal to ( a >= b ) Less than or equal to ( a <= b ) Note Swift also provides two identity operators (=== and !==), which you use to test whether two object references both refer to the same object instance. For more information, see Identity Operators . Each of the comparison operators returns a Bool value to indicate whether or not the statement is true: Comparison operators are often used in conditional statements, such as the if statement:Compound Assignment Operators Comparison Operators 9/3/26,"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "basic-operators-documentation-dec731:p1:c2",
+      "basic-operators-documentation-dec731:p2:c0",
+      "basic-operators-documentation-dec731:p4:c0"
+    ],
+    "latency_ms": 1522.0
+  },
+  "raw_output": "One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . [basic-operators-documentation-dec731:p4:c0] The following statement isn’t valid: This feature prevents the assignment operator ( =) from being used by accident when the equal to operator ( ==) is actually intended. [basic-operators-documentation-dec731:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 22.3,
+    "generate": 1522.0,
+    "total": 1544.3
+  }
+}
+{
+  "trace_id": "tr_20260903_175717_2c9f8f",
+  "ts_utc": "2026-09-03T17:57:17Z",
+  "surface": "api",
+  "question": "what is assignment operator?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c2",
+        "score": 0.5757,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 29381.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "basic-operators-documentation-dec731:p4:c0",
+        "score": 0.4826,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 29381.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-dec731:p1:c0",
+        "score": 0.4758,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 29381.5
+      }
+    ],
+    "latency_ms": 29381.5,
+    "retrieved_texts": {
+      "basic-operators-documentation-dec731:p1:c2": "conditional operator ( a ? b : c). The values that operators af fect are operands . In the expression 1 + 2 , the + symbol is an infix operator and its two operands are the values 1 and 2. The assignment operator (a = b ) initializes or updates the value of a with the value of b: Terminology Assignment Operator The Swift Programming …/Basic Operators Basic Operators Perform operations like assignment, arithmetic, and comparison. Documentation9/3/26, 10:55 PM Basic Operators | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 1/11",
+      "basic-operators-documentation-dec731:p4:c0": "Like C, Swift provides compound assignment operators that combine assignment ( =) with another operation. One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . Effectively , the addition and the assignment are combined into one operator that performs both tasks at the same time. Note The compound assignment operators don’t return a value. For example, you can’t write let b = a += 2 . For information about the operators provided by the Swift standard library , see Operator Declarations . Swift supports the following comparison operators: Equal to ( a == b ) Not equal to ( a != b ) Greater than ( a > b ) Less than ( a < b ) Greater than or equal to ( a >= b ) Less than or equal to ( a <= b ) Note Swift also provides two identity operators (=== and !==), which you use to test whether two object references both refer to the same object instance. For more information, see Identity Operators . Each of the comparison operators returns a Bool value to indicate whether or not the statement is true: Comparison operators are often used in conditional statements, such as the if statement:Compound Assignment Operators Comparison Operators 9/3/26,",
+      "basic-operators-documentation-dec731:p1:c0": "Blog Download Getting Started Documentation An operator is a special symbol or phrase that you use to check, change, or combine values. For example, the addition operator (+) adds two numbers, as in let i = 1 + 2 , and the logical AND operator ( &&) combines two Boolean values, as in if entered DoorCode && passed RetinaScan . Swift supports the operators you may already know from languages like C, and improves several capabilities to eliminate common coding errors. The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. Arithmetic operators ( +, -, *, /, % and so forth) detect and disallow value overflow , to avoid unexpected results when working with numbers that become larger or smaller than the allowed value range of the type that stores them. You can opt in to value overflow behavior by using Swift’ s overflow operators, as described in Overflow Operators . Swift also provides range operators that aren’t found in C, such as a..<b and a...b , as a shortcut for expressing a range of values. This chapter describes the common operators in Swift. Advanced Operators covers Swift’ s advanced operators,"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "basic-operators-documentation-dec731:p1:c2",
+      "basic-operators-documentation-dec731:p4:c0",
+      "basic-operators-documentation-dec731:p1:c0"
+    ],
+    "latency_ms": 920.1
+  },
+  "raw_output": "One example is the addition assignment operator (+=): The expression a += 2 is shorthand for a = a + 2 . [basic-operators-documentation-dec731:p4:c0] The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to operator ( ==) is intended. [basic-operators-documentation-dec731:p1:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 29381.5,
+    "generate": 920.1,
+    "total": 30301.7
+  }
+}
+{
+  "trace_id": "tr_20260903_180056_16296b",
+  "ts_utc": "2026-09-03T18:00:56Z",
+  "surface": "api",
+  "question": "Functions and Closures ?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-29f72f:p12:c0",
+        "score": 0.2397,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 12,
+        "sdk_version": "",
+        "trace_time_ms": 30.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-29f72f:p17:c3",
+        "score": 0.2832,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 17,
+        "sdk_version": "",
+        "trace_time_ms": 30.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "the-basics-documentation-29f72f:p18:c0",
+        "score": 0.2626,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 18,
+        "sdk_version": "",
+        "trace_time_ms": 30.4
+      }
+    ],
+    "latency_ms": 30.4,
+    "retrieved_texts": {
+      "the-basics-documentation-29f72f:p12:c0": "You can name the individual elements in a tuple when the tuple is defined: If you name the elements in a tuple, you can use the element names to access the values of those elements: Tuples are particularly useful as the return values of functions. A function that tries to retrieve a web page might return the (Int, String) tuple type to describe the success or failure of the page retrieval. By returning a tuple with two distinct values, each of a different type, the function provides more useful information about its outcome than if it could only return a single value of a single type. For more information, see Functions with Multiple Return V alues . Note Tuples are useful for simple groups of related values. They’re not suited to the creation of complex data structures. If your data structure is likely to be more complex, model it as a class or structure, rather than as a tuple. For more information, see Structures and Classes . You use optionals in situations where a value may be absent. An optional represents two possibilities: Either there is a value of a specified type, and you can unwrap the optional to access that value, or there isn’t a value at all. As an example of a value",
+      "the-basics-documentation-29f72f:p17:c3": "function encounters an error condition, it throws an error . That function’ s caller can then catch the error and respond appropriately . Memory Safety Error Handling 9/3/26, 10:55 PM The Basics | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 17/20",
+      "the-basics-documentation-29f72f:p18:c0": "A function indicates that it can throw an error by including the throws keyword in its declaration. When you call a function that can throw an error , you prepend the try keyword to the expression. Swift automatically propagates errors out of their current scope until they’re handled by a catch clause. A do statement creates a new containing scope, which allows errors to be propagated to one or more catch clauses. Here’ s an example of how error handling can be used to respond to dif ferent error conditions: In this example, the makeASandwich() function will throw an error if no clean dishes are available or if any ingredients are missing. Because makeASandwich() can throw an error , the function call is wrapped in a try expression. By wrapping the function call in a do statement, any errors that are thrown will be propagated to the provided catch clauses. If no error is thrown, the eatASandwich() function is called. If an error is thrown and it matches the Sandwich Error.outOfClean Dishes case, then the washDishes() function will be called. If an error is thrown and it matches the Sandwich Error.missing Ingredients case, then the buyGroceries(_:) function is called with the associated"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "Closures",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-29f72f:p12:c0",
+      "the-basics-documentation-29f72f:p17:c3",
+      "the-basics-documentation-29f72f:p18:c0"
+    ],
+    "latency_ms": 925.0
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 30.4,
+    "generate": 925.0,
+    "total": 955.4
+  }
+}
+{
+  "trace_id": "tr_20260903_180144_5d40f9",
+  "ts_utc": "2026-09-03T18:01:44Z",
+  "surface": "api",
+  "question": "what is Functions and Closures",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 80,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-29f72f:p12:c0",
+        "score": 0.2617,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 12,
+        "sdk_version": "",
+        "trace_time_ms": 71.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-29f72f:p18:c0",
+        "score": 0.2884,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 18,
+        "sdk_version": "",
+        "trace_time_ms": 71.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "the-basics-documentation-29f72f:p17:c3",
+        "score": 0.3073,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 17,
+        "sdk_version": "",
+        "trace_time_ms": 71.7
+      }
+    ],
+    "latency_ms": 71.7,
+    "retrieved_texts": {
+      "the-basics-documentation-29f72f:p12:c0": "You can name the individual elements in a tuple when the tuple is defined: If you name the elements in a tuple, you can use the element names to access the values of those elements: Tuples are particularly useful as the return values of functions. A function that tries to retrieve a web page might return the (Int, String) tuple type to describe the success or failure of the page retrieval. By returning a tuple with two distinct values, each of a different type, the function provides more useful information about its outcome than if it could only return a single value of a single type. For more information, see Functions with Multiple Return V alues . Note Tuples are useful for simple groups of related values. They’re not suited to the creation of complex data structures. If your data structure is likely to be more complex, model it as a class or structure, rather than as a tuple. For more information, see Structures and Classes . You use optionals in situations where a value may be absent. An optional represents two possibilities: Either there is a value of a specified type, and you can unwrap the optional to access that value, or there isn’t a value at all. As an example of a value",
+      "the-basics-documentation-29f72f:p18:c0": "A function indicates that it can throw an error by including the throws keyword in its declaration. When you call a function that can throw an error , you prepend the try keyword to the expression. Swift automatically propagates errors out of their current scope until they’re handled by a catch clause. A do statement creates a new containing scope, which allows errors to be propagated to one or more catch clauses. Here’ s an example of how error handling can be used to respond to dif ferent error conditions: In this example, the makeASandwich() function will throw an error if no clean dishes are available or if any ingredients are missing. Because makeASandwich() can throw an error , the function call is wrapped in a try expression. By wrapping the function call in a do statement, any errors that are thrown will be propagated to the provided catch clauses. If no error is thrown, the eatASandwich() function is called. If an error is thrown and it matches the Sandwich Error.outOfClean Dishes case, then the washDishes() function will be called. If an error is thrown and it matches the Sandwich Error.missing Ingredients case, then the buyGroceries(_:) function is called with the associated",
+      "the-basics-documentation-29f72f:p17:c3": "function encounters an error condition, it throws an error . That function’ s caller can then catch the error and respond appropriately . Memory Safety Error Handling 9/3/26, 10:55 PM The Basics | Documentation https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 17/20"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "Closures",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-29f72f:p12:c0",
+      "the-basics-documentation-29f72f:p18:c0",
+      "the-basics-documentation-29f72f:p17:c3"
+    ],
+    "latency_ms": 926.4
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 71.7,
+    "generate": 926.4,
+    "total": 998.1
+  }
+}
+{
+  "trace_id": "tr_20260903_181421_b15658",
+  "ts_utc": "2026-09-03T18:14:21Z",
+  "surface": "api",
+  "question": "what is function in swift",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 31,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-82ce3a:p1:c0",
+        "score": 0.6176,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 32.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-82ce3a:p18:c0",
+        "score": 0.6034,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 18,
+        "sdk_version": "",
+        "trace_time_ms": 32.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-b7815c:p11:c0",
+        "score": 0.5532,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 11,
+        "sdk_version": "",
+        "trace_time_ms": 32.4
+      }
+    ],
+    "latency_ms": 32.4,
+    "retrieved_texts": {
+      "the-basics-documentation-82ce3a:p1:c0": "Blog  Download  Getting Started  Documentation\nSwift provides many fundamental data types, including Int for integers, Double  for floating-point values, Bool  for Boolean values,\nand String  for text. Swift also provides powerful versions of the three primary collection types, Array , Set, and Dictionary , as\ndescribed in Collection Types .\nSwift uses variables to store and refer to values by an identifying name. Swift also makes extensive use of variables whose values\ncan’t be changed. These are known as constants, and are used throughout Swift to make code safer and clearer in intent when\nyou work with values that don’t need to change.\nIn addition to familiar types, Swift introduces advanced types such as tuples. Tuples enable you to create and pass around\ngroupings of values. You can use a tuple to return multiple values from a function as a single compound value.\nSwift handles the absence of a value using optional types. Optionals say either “there is a value, which is x” or “there isn’t a value\nat all”. Optionals ensure that code always checks whether a value is missing before using the value, and non-optional values are\nguaranteed to never be missing.\nSwift is a safe language, which means it makes it easier for you to find and fix several categories of bugs as early as possible\nduring the development process, and lets you guarantee that certain kinds of bugs can’t happen. Type safety enables you to be\nclear about the types of values your code works with. If part of your code requires a String , type safety prevents you from passing\nit an Int by mistake. Memory safety ensures that you work with valid data only , not uninitialized memory or deinitialized objects,\nand ensures that you work with that data in safe ways — even in programs that run multiple pieces of code at the same time. Swift\nperforms most of its safety checks while building your code, and in some cases performs additional checks while your code is\nrunning.\nConstants and variables associate a name (such as maximumNumberOfLoginAttempts  or welcomeMessage ) with a value of a\nparticular type (such as the number 10 or the string \"Hello\" ). The value of a constant  can’t be changed once it’ s set, whereas a\nvariable  can be set to a dif ferent value in the future.\nConstants and variables must be declared before they’re used. You declare constants with the let keyword and variables with the\nvar keyword. Here’ s an example of how constants and variables can be used to track the number of login attempts a user has\nmade:\nThis code can be read as:\nConstants and V ariables\nDeclaring Constants and V ariables\nThe Swift Programming …/The Basics\nThe Basics\nWork with common kinds of data and write basic syntax.\nDocumentation9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 1/20",
+      "the-basics-documentation-82ce3a:p18:c0": "A function indicates that it can throw an error by including the throws  keyword in its declaration. When you call a function that can\nthrow an error , you prepend the try keyword to the expression.\nSwift automatically propagates errors out of their current scope until they’re handled by a catch  clause.\nA do statement creates a new containing scope, which allows errors to be propagated to one or more catch  clauses.\nHere’ s an example of how error handling can be used to respond to dif ferent error conditions:\nIn this example, the makeASandwich()  function will throw an error if no clean dishes are available or if any ingredients are missing.\nBecause makeASandwich()  can throw an error , the function call is wrapped in a try expression. By wrapping the function call in a\ndo statement, any errors that are thrown will be propagated to the provided catch  clauses.\nIf no error is thrown, the eatASandwich()  function is called. If an error is thrown and it matches the Sandwich Error.outOfClean\nDishes  case, then the washDishes()  function will be called. If an error is thrown and it matches the Sandwich Error.missing\nIngredients  case, then the buyGroceries(_:)  function is called with the associated [String]  value captured by the catch\npattern.\nThrowing, catching, and propagating errors is covered in greater detail in Error Handling .\nAssertions  and preconditions  are checks that happen at runtime. You use them to make sure an essential condition is satisfied\nbefore executing any further code. If the Boolean condition in the assertion or precondition evaluates to true , code execution\ncontinues as usual. If the condition evaluates to false , the current state of the program is invalid; code execution ends, and your\napp is terminated.\nAssertions and Preconditions9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 18/20",
+      "basic-operators-documentation-b7815c:p11:c0": "The parentheses make it clear that the first two values are considered as part of a separate possible state in the overall logic. The\noutput of the compound expression doesn’t change, but the overall intention is clearer to the reader . Readability is always\npreferred over brevity; use parentheses where they help to make your intentions clear .Copyright © 2014–2026 Apple Inc. and the Swift project authors. All rights reserved.\nThis document is made available under a Creative Commons Attribution 4.0 International (CC BY  4.0) License .\nSwift and the Swift logo are trademarks of Apple Inc.\nPrivacy Policy  CookiesLight Dark Auto\n9/3/26, 10:55 PM Basic Operators | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 11/11"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 2,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-82ce3a:p1:c0",
+      "the-basics-documentation-82ce3a:p18:c0",
+      "basic-operators-documentation-b7815c:p11:c0"
+    ],
+    "latency_ms": 1184.7
+  },
+  "raw_output": "Swift [the-basics-documentation-82ce3a:p1:c0] When you call a function that can [the-basics-documentation-82ce3a:p18:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 32.4,
+    "generate": 1184.7,
+    "total": 1217.1
+  }
+}
+{
+  "trace_id": "tr_20260903_181532_c6ad4f",
+  "ts_utc": "2026-09-03T18:15:32Z",
+  "surface": "api",
+  "question": "Functions and Closures",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 31,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-82ce3a:p12:c0",
+        "score": 0.2135,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 12,
+        "sdk_version": "",
+        "trace_time_ms": 42.3
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-82ce3a:p18:c0",
+        "score": 0.2389,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 18,
+        "sdk_version": "",
+        "trace_time_ms": 42.3
+      },
+      {
+        "rank": 3,
+        "chunk_id": "the-basics-documentation-82ce3a:p4:c0",
+        "score": 0.197,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 42.3
+      }
+    ],
+    "latency_ms": 42.3,
+    "retrieved_texts": {
+      "the-basics-documentation-82ce3a:p12:c0": "You can name the individual elements in a tuple when the tuple is defined:\nIf you name the elements in a tuple, you can use the element names to access the values of those elements:\nTuples are particularly useful as the return values of functions. A function that tries to retrieve a web page might return the (Int,\nString)  tuple type to describe the success or failure of the page retrieval. By returning a tuple with two distinct values, each of a\ndifferent type, the function provides more useful information about its outcome than if it could only return a single value of a single\ntype. For more information, see Functions with Multiple Return V alues .\nNote\nTuples are useful for simple groups of related values. They’re not suited to the creation of complex data structures. If your\ndata structure is likely to be more complex, model it as a class or structure, rather than as a tuple. For more information, see\nStructures and Classes .\nYou use optionals  in situations where a value may be absent. An optional represents two possibilities: Either there is a value of a\nspecified type, and you can unwrap the optional to access that value, or there isn’t a value at all.\nAs an example of a value that might be missing, Swift’ s Int type has an initializer that tries to convert a String  value into an Int\nvalue. However , only some strings can be converted into integers. The string \"123\"  can be converted into the numeric value 123,\nbut the string \"hello, world\"  doesn’t have a corresponding numeric value. The example below uses the initializer to try to\nconvert a String  into an Int:\nBecause the initializer in the code above might fail, it returns an optional  Int, rather than an Int.\nTo write an optional type, you write a question mark ( ?) after the name of the type that the optional contains — for example, the\ntype of an optional Int is Int? . An optional Int always contains either some Int value or no value at all. It can’t contain anything\nelse, like a Bool  or String  value.\nYou set an optional variable to a valueless state by assigning it the special value nil:\nOptionals\nnil\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 12/20",
+      "the-basics-documentation-82ce3a:p18:c0": "A function indicates that it can throw an error by including the throws  keyword in its declaration. When you call a function that can\nthrow an error , you prepend the try keyword to the expression.\nSwift automatically propagates errors out of their current scope until they’re handled by a catch  clause.\nA do statement creates a new containing scope, which allows errors to be propagated to one or more catch  clauses.\nHere’ s an example of how error handling can be used to respond to dif ferent error conditions:\nIn this example, the makeASandwich()  function will throw an error if no clean dishes are available or if any ingredients are missing.\nBecause makeASandwich()  can throw an error , the function call is wrapped in a try expression. By wrapping the function call in a\ndo statement, any errors that are thrown will be propagated to the provided catch  clauses.\nIf no error is thrown, the eatASandwich()  function is called. If an error is thrown and it matches the Sandwich Error.outOfClean\nDishes  case, then the washDishes()  function will be called. If an error is thrown and it matches the Sandwich Error.missing\nIngredients  case, then the buyGroceries(_:)  function is called with the associated [String]  value captured by the catch\npattern.\nThrowing, catching, and propagating errors is covered in greater detail in Error Handling .\nAssertions  and preconditions  are checks that happen at runtime. You use them to make sure an essential condition is satisfied\nbefore executing any further code. If the Boolean condition in the assertion or precondition evaluates to true , code execution\ncontinues as usual. If the condition evaluates to false , the current state of the program is invalid; code execution ends, and your\napp is terminated.\nAssertions and Preconditions9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 18/20",
+      "the-basics-documentation-82ce3a:p4:c0": "You can print the current value of a constant or variable with the print(_: separator: terminator:)  function:\nThe print(_: separator: terminator:)  function is a global function that prints one or more values to an appropriate output. In\nXcode, for example, the print(_: separator: terminator:)  function prints its output in Xcode’ s “console” pane. The separator\nand terminator  parameter have default values, so you can omit them when you call this function. By default, the function\nterminates the line it prints by adding a line break. To print a value without a line break after it, pass an empty string as the\nterminator — for example, print(some Value, terminator: \"\") . For information about parameters with default values, see\nDefault Parameter V alues .\nSwift uses string interpolation  to include the name of a constant or variable as a placeholder in a longer string, and to prompt Swift\nto replace it with the current value of that constant or variable. W rap the name in parentheses and escape it with a backslash\nbefore the opening parenthesis:\nNote\nAll options you can use with string interpolation are described in String Interpolation .\nUse comments to include nonexecutable text in your code, as a note or reminder to yourself. Comments are ignored by the Swift\ncompiler when your code is compiled.\nComments in Swift are very similar to comments in C. Single-line comments begin with two forward-slashes ( //):\nMultiline comments start with a forward-slash followed by an asterisk ( /*) and end with an asterisk followed by a forward-slash\n(*/):\nUnlike multiline comments in C, multiline comments in Swift can be nested inside other multiline comments. You write nested\ncomments by starting a multiline comment block and then starting a second multiline comment within the first block. The second\nblock is then closed, followed by the first block:Printing Constants and V ariables\nComments\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 4/20"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "Closures",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-82ce3a:p12:c0",
+      "the-basics-documentation-82ce3a:p18:c0",
+      "the-basics-documentation-82ce3a:p4:c0"
+    ],
+    "latency_ms": 1056.4
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 42.3,
+    "generate": 1056.4,
+    "total": 1098.7
+  }
+}
+{
+  "trace_id": "tr_20260903_181548_b069c8",
+  "ts_utc": "2026-09-03T18:15:48Z",
+  "surface": "api",
+  "question": "what is Functions and Closures",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 3,
+    "min_score": 0.12,
+    "index_chunk_count": 31,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-82ce3a:p12:c0",
+        "score": 0.2617,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 12,
+        "sdk_version": "",
+        "trace_time_ms": 40.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-82ce3a:p18:c0",
+        "score": 0.2884,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 18,
+        "sdk_version": "",
+        "trace_time_ms": 40.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "basic-operators-documentation-b7815c:p1:c0",
+        "score": 0.2055,
+        "source_doc": "Basic Operators _ Documentation.pdf",
+        "page_number": 1,
+        "sdk_version": "",
+        "trace_time_ms": 40.0
+      }
+    ],
+    "latency_ms": 40.0,
+    "retrieved_texts": {
+      "the-basics-documentation-82ce3a:p12:c0": "You can name the individual elements in a tuple when the tuple is defined:\nIf you name the elements in a tuple, you can use the element names to access the values of those elements:\nTuples are particularly useful as the return values of functions. A function that tries to retrieve a web page might return the (Int,\nString)  tuple type to describe the success or failure of the page retrieval. By returning a tuple with two distinct values, each of a\ndifferent type, the function provides more useful information about its outcome than if it could only return a single value of a single\ntype. For more information, see Functions with Multiple Return V alues .\nNote\nTuples are useful for simple groups of related values. They’re not suited to the creation of complex data structures. If your\ndata structure is likely to be more complex, model it as a class or structure, rather than as a tuple. For more information, see\nStructures and Classes .\nYou use optionals  in situations where a value may be absent. An optional represents two possibilities: Either there is a value of a\nspecified type, and you can unwrap the optional to access that value, or there isn’t a value at all.\nAs an example of a value that might be missing, Swift’ s Int type has an initializer that tries to convert a String  value into an Int\nvalue. However , only some strings can be converted into integers. The string \"123\"  can be converted into the numeric value 123,\nbut the string \"hello, world\"  doesn’t have a corresponding numeric value. The example below uses the initializer to try to\nconvert a String  into an Int:\nBecause the initializer in the code above might fail, it returns an optional  Int, rather than an Int.\nTo write an optional type, you write a question mark ( ?) after the name of the type that the optional contains — for example, the\ntype of an optional Int is Int? . An optional Int always contains either some Int value or no value at all. It can’t contain anything\nelse, like a Bool  or String  value.\nYou set an optional variable to a valueless state by assigning it the special value nil:\nOptionals\nnil\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 12/20",
+      "the-basics-documentation-82ce3a:p18:c0": "A function indicates that it can throw an error by including the throws  keyword in its declaration. When you call a function that can\nthrow an error , you prepend the try keyword to the expression.\nSwift automatically propagates errors out of their current scope until they’re handled by a catch  clause.\nA do statement creates a new containing scope, which allows errors to be propagated to one or more catch  clauses.\nHere’ s an example of how error handling can be used to respond to dif ferent error conditions:\nIn this example, the makeASandwich()  function will throw an error if no clean dishes are available or if any ingredients are missing.\nBecause makeASandwich()  can throw an error , the function call is wrapped in a try expression. By wrapping the function call in a\ndo statement, any errors that are thrown will be propagated to the provided catch  clauses.\nIf no error is thrown, the eatASandwich()  function is called. If an error is thrown and it matches the Sandwich Error.outOfClean\nDishes  case, then the washDishes()  function will be called. If an error is thrown and it matches the Sandwich Error.missing\nIngredients  case, then the buyGroceries(_:)  function is called with the associated [String]  value captured by the catch\npattern.\nThrowing, catching, and propagating errors is covered in greater detail in Error Handling .\nAssertions  and preconditions  are checks that happen at runtime. You use them to make sure an essential condition is satisfied\nbefore executing any further code. If the Boolean condition in the assertion or precondition evaluates to true , code execution\ncontinues as usual. If the condition evaluates to false , the current state of the program is invalid; code execution ends, and your\napp is terminated.\nAssertions and Preconditions9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 18/20",
+      "basic-operators-documentation-b7815c:p1:c0": "Blog  Download  Getting Started  Documentation\nAn operator  is a special symbol or phrase that you use to check, change, or combine values. For example, the addition operator\n(+) adds two numbers, as in let i = 1 + 2 , and the logical AND operator ( &&) combines two Boolean values, as in if entered\nDoorCode && passed RetinaScan .\nSwift supports the operators you may already know from languages like C, and improves several capabilities to eliminate common\ncoding errors. The assignment operator ( =) doesn’t return a value, to prevent it from being mistakenly used when the equal to\noperator ( ==) is intended. Arithmetic operators ( +, -, *, /, % and so forth) detect and disallow value overflow , to avoid unexpected\nresults when working with numbers that become larger or smaller than the allowed value range of the type that stores them. You\ncan opt in to value overflow behavior by using Swift’ s overflow operators, as described in Overflow Operators .\nSwift also provides range operators that aren’t found in C, such as a..<b  and a...b , as a shortcut for expressing a range of\nvalues.\nThis chapter describes the common operators in Swift. Advanced Operators  covers Swift’ s advanced operators, and describes\nhow to define your own custom operators and implement the standard operators for your own custom types.\nOperators are unary , binary , or ternary:\nUnary  operators operate on a single target (such as -a). Unary prefix  operators appear immediately before their target (such as\n!b), and unary postfix  operators appear immediately after their target (such as c!).\nBinary  operators operate on two targets (such as 2 + 3 ) and are infix because they appear in between their two targets.\nTernary  operators operate on three targets. Like C, Swift has only one ternary operator , the ternary conditional operator ( a ? b\n: c).\nThe values that operators af fect are operands . In the expression 1 + 2 , the + symbol is an infix operator and its two operands are\nthe values 1 and 2.\nThe assignment operator  (a = b ) initializes or updates the value of a with the value of b:\nTerminology\nAssignment Operator\nThe Swift Programming …/Basic Operators\nBasic Operators\nPerform operations like assignment, arithmetic, and comparison.\nDocumentation9/3/26, 10:55 PM Basic Operators | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/basicoperators 1/11"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "Closures",
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-82ce3a:p12:c0",
+      "the-basics-documentation-82ce3a:p18:c0",
+      "basic-operators-documentation-b7815c:p1:c0"
+    ],
+    "latency_ms": 1040.6
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 40.0,
+    "generate": 1040.6,
+    "total": 1080.6
+  }
+}
+{
+  "trace_id": "tr_20260903_184411_eb354b",
+  "ts_utc": "2026-09-03T18:44:11Z",
+  "surface": "test",
+  "question": "what is the maximum number of retries on send?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "the-basics-documentation-82ce3a:p2:c0",
+        "score": 0.2705,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 2,
+        "sdk_version": "",
+        "trace_time_ms": 29944.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "the-basics-documentation-82ce3a:p5:c0",
+        "score": 0.1092,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 29944.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "the-basics-documentation-82ce3a:p11:c0",
+        "score": 0.1398,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 11,
+        "sdk_version": "",
+        "trace_time_ms": 29944.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "the-basics-documentation-82ce3a:p6:c0",
+        "score": 0.1212,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 29944.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "the-basics-documentation-82ce3a:p3:c0",
+        "score": 0.0836,
+        "source_doc": "The Basics _ Documentation.pdf",
+        "page_number": 3,
+        "sdk_version": "",
+        "trace_time_ms": 29944.7
+      }
+    ],
+    "latency_ms": 29944.7,
+    "retrieved_texts": {
+      "the-basics-documentation-82ce3a:p2:c0": "“Declare a new constant called maximumNumberOfLoginAttempts , and give it a value of 10. Then, declare a new variable called\ncurrentLoginAttempt , and give it an initial value of 0.”\nIn this example, the maximum number of allowed login attempts is declared as a constant, because the maximum value never\nchanges. The current login attempt counter is declared as a variable, because this value must be incremented after each failed\nlogin attempt.\nIf a stored value in your code won’t change, always declare it as a constant with the let keyword. Use variables only for storing\nvalues that change.\nWhen you declare a constant or a variable, you can give it a value as part of that declaration, like the examples above.\nAlternatively , you can assign its initial value later in the program, as long as it’ s guaranteed to have a value before the first time you\nread from it.\nIn this example, the maximum number of login attempts is constant, and its value depends on the environment. In the development\nenvironment, it has a value of 100; in any other environment, its value is 10. Both branches of the if statement initialize maximum\nNumberOfLoginAttempts  with some value, guaranteeing that the constant always gets a value. For information about how Swift\nchecks your code when you set an initial value this way , see Constant Declaration .\nYou can declare multiple constants or multiple variables on a single line, separated by commas:\nYou can provide a type annotation  when you declare a constant or variable, to be clear about the kind of values the constant or\nvariable can store. W rite a type annotation by placing a colon after the constant or variable name, followed by a space, followed by\nthe name of the type to use.\nThis example provides a type annotation for a variable called welcomeMessage , to indicate that the variable can store String\nvalues:\nThe colon in the declaration means “…of type…,” so the code above can be read as:\n“Declare a variable called welcomeMessage  that’ s of type String .”\nThe phrase “of type String ” means “can store any String  value.” Think of it as meaning “the type of thing” (or “the kind of thing”)\nthat can be stored.\nThe welcomeMessage  variable can now be set to any string value without error:\nType Annotations\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 2/20",
+      "the-basics-documentation-82ce3a:p5:c0": "Nested multiline comments enable you to comment out large blocks of code quickly and easily , even if the code already contains\nmultiline comments.\nUnlike many other languages, Swift doesn’t require you to write a semicolon ( ;) after each statement in your code, although you\ncan do so if you wish. However , semicolons are required if you want to write multiple separate statements on a single line:\nIntegers  are whole numbers with no fractional component, such as 42 and -23. Integers are either signed  (positive, zero, or\nnegative) or unsigned  (positive or zero), and their maximum and minimum value depends on their size (the number of bits used to\nstore values). The integer types include their size and sign in their names — for example, an 8-bit unsigned integer is of type\nUInt8 , and a 32-bit signed integer is of type Int32 . Like all types in Swift, these integer types have capitalized names. In most\ncases, when you don’t need to specify the exact integer size, you use the Int type described below .\nInteger types behave like most arithmetic you do by hand; integer math produces results without approximating. These\ncharacteristics make integers suitable for counting and other calculations that represent exact amounts — for example, finding the\nlongest line in a text file, applying a score multiplier in a game, or totaling prices on a receipt.\nAlthough integers don’t have a fractional component, you can use integers to represent quantities with fractions by counting a\nfractional part. For example, you can represent $1.23 by storing the number 123 in an integer that counts cents. This approach is\nknown as fixed-point math  because the decimal point is at a fixed position in the number . In the example above, the number 123 is\nunderstood to have a decimal point before the last two digits.\nNote\nFor calculations in a regulated area like finance or construction, or in a domain that has an expectation of high-precision\nresults, you might need a special-purpose numeric type that implements behaviors such as rounding and truncation,\naccording to that area’ s requirements.\nYou can access the minimum and maximum values of each integer type with its min and max properties:\nThe values of these properties are of the appropriate-sized number type (such as UInt8  in the example above) and can therefore\nbe used in expressions alongside other values of the same type.\nCalculations that produce out-of-bounds results, like a number larger than the max property , stop the program’ s execution instead\nof storing an invalid result. You can explicitly make the operation overflow instead, as described in Overflow Operators .Semicolons\nIntegers\nInteger Bounds\nInt9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 5/20",
+      "the-basics-documentation-82ce3a:p11:c0": "The result of the i == 1  comparison is of type Bool , and so this second example passes the type checking. Comparisons like i\n== 1  are discussed in Basic Operators .\nAs with other examples of type safety in Swift, this approach avoids accidental errors and ensures that the intention of a particular\nsection of code is always clear .\nTuples  group multiple values into a single compound value. The values within a tuple can be of any type and don’t have to be of\nthe same type as each other .\nIn this example, (404, \"Not Found\")  is a tuple that describes an HTTP  status code . An HTTP  status code is a special value\nreturned by a web server whenever you request a web page. A status code of 404 Not Found  is returned if you request a\nwebpage that doesn’t exist.\nThe (404, \"Not Found\")  tuple groups together an Int and a String  to give the HTTP  status code two separate values: a\nnumber and a human-readable description. It can be described as “a tuple of type (Int, String) ”.\nYou can create tuples from any permutation of types, and they can contain as many dif ferent types as you like. There’ s nothing\nstopping you from having a tuple of type (Int, Int, Int) , or (String, Bool) , or indeed any other permutation you require.\nYou can decompose  a tuple’ s contents into separate constants or variables, which you then access as usual:\nIf you only need some of the tuple’ s values, ignore parts of the tuple with an underscore ( _) when you decompose the tuple:\nAlternatively , access the individual element values in a tuple using index numbers starting at zero:\nTuples\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 11/20",
+      "the-basics-documentation-82ce3a:p6:c0": "In most cases, you don’t need to pick a specific size of integer to use in your code. Swift provides an additional integer type, Int,\nwhich has the same size as the current platform’ s native word size:\nOn a 32-bit platform, Int is the same size as Int32 .\nOn a 64-bit platform, Int is the same size as Int64 .\nUnless you need to work with a specific size of integer , always use Int for integer values in your code. This aids code consistency\nand interoperability . Even on 32-bit platforms, Int can store any value between -2,147,483,648  and 2,147,483,647 , and is\nlarge enough for many integer ranges.\nSwift also provides an unsigned integer type, UInt , which has the same size as the current platform’ s native word size:\nOn a 32-bit platform, UInt  is the same size as UInt32 .\nOn a 64-bit platform, UInt  is the same size as UInt64 .\nNote\nUse UInt  only when you specifically need an unsigned integer type with the same size as the platform’ s native word size. If\nthis isn’t the case, Int is preferred, even when the values to be stored are known to be nonnegative. A consistent use of Int\nfor integer values aids code interoperability , avoids the need to convert between dif ferent number types, and matches integer\ntype inference, as described in Type Safety and Type Inference .\nFloating-point numbers  have a fractional component, such as 3.14159 , 0.1, and -273.15. Swift provides a variety of floating-point\ntypes that support dif ferent sizes of numbers, just like it has dif ferent sizes of integers. If you don’t need to specify an exact size,\nuse Double . Otherwise, use the type that includes the needed size in its name, such as Float16  or Float80 . Following common\nterminology for floating-point math, Float  uses 32 bits and Double  uses 64 bits. You can also write these types as Float32  or\nFloat64 . For example, graphics code often uses Float  to match the GPU’ s fastest data type. Some floating-point types are\nsupported only by certain platforms, but Float  and Double  are available on all platforms.\nFloating-point numbers let you work with very small and very large numbers, but can’t represent every possible value in that range.\nUnlike integer calculations, which always produce an exact result, floating-point math rounds results to the nearest representable\nnumber . For example, when storing the number 10,000 as a Float , the next largest number you can represent is 10,000.001 ––\nvalues between these two numbers round to one or the other . The space between numbers is also variable; there are larger\nspaces between large numbers than between small numbers. For example, the next Float  value after 0.001 is 0.0010000002,\nwhich is smaller than the spacing after 10,000.\nFloating-point numbers have values for negative zero, infinity , and negative infinity , which represent overflow and underflow in\ncalculations. They also have not-a-number (NaN) values to represent an invalid or undefined result, such as dividing zero by zero.\nThis behavior is dif ferent from integers, which stop the program if they can’t represent the result.\nIf you need the same spacing between all possible values, or if the calculations you’re doing require exact results and don’t call for\nthe special values listed above, a floating-point number might not be the right data type. Consider using fixed-point numbers\ninstead, as described in Integers .\nEvery value in a Swift program has a type. Every place you store a value — including constants, variables, and properties — also\nhas a type. You might write the type explicitly using a type annotation, or Swift might infer the type from an initial value. Every placeUInt\nFloating-Point Numbers\nType Safety and Type Inference9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 6/20",
+      "the-basics-documentation-82ce3a:p3:c0": "You can define multiple related variables of the same type on a single line, separated by commas, with a single type annotation\nafter the final variable name:\nNote\nIt’s rare that you need to write type annotations in practice. If you provide an initial value for a constant or variable at the point\nthat it’ s defined, Swift can almost always infer the type to be used for that constant or variable, as described in Type Safety\nand Type Inference . In the welcomeMessage  example above, no initial value is provided, and so the type of the welcome\nMessage  variable is specified with a type annotation rather than being inferred from an initial value.\nConstant and variable names can contain almost any character , including Unicode characters:\nConstant and variable names can’t contain whitespace characters, mathematical symbols, arrows, private-use Unicode scalar\nvalues, or line- and box-drawing characters. Nor can they begin with a number , although numbers may be included elsewhere\nwithin the name.\nOnce you’ve declared a constant or variable of a certain type, you can’t declare it again with the same name, or change it to store\nvalues of a dif ferent type. Nor can you change a constant into a variable or a variable into a constant.\nNote\nIf you need to give a constant or variable the same name as a reserved Swift keyword, surround the keyword with backticks\n(`) when using it as a name. However , avoid using keywords as names unless you have absolutely no choice.\nYou can change the value of an existing variable to another value of a compatible type. In this example, the value of friendly\nWelcome  is changed from \"Hello!\"  to \"Bonjour!\" :\nUnlike a variable, the value of a constant can’t be changed after it’ s set. Attempting to do so is reported as an error when your code\nis compiled:\nNaming Constants and V ariables\n9/3/26, 10:55 PM The Basics | Documentation\nhttps://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics 3/20"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "the-basics-documentation-82ce3a:p2:c0",
+      "the-basics-documentation-82ce3a:p5:c0",
+      "the-basics-documentation-82ce3a:p11:c0",
+      "the-basics-documentation-82ce3a:p6:c0",
+      "the-basics-documentation-82ce3a:p3:c0"
+    ],
+    "latency_ms": 1861.8
+  },
+  "raw_output": "I could not find the answer in the provided documents",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 29944.7,
+    "generate": 1861.8,
+    "total": 31806.4
+  }
+}
+{
+  "trace_id": "tr_20260903_184717_869c10",
+  "ts_utc": "2026-09-03T18:47:17Z",
+  "surface": "test",
+  "question": "what is the maximum number of retries on send?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 97,
+    "documents_indexed": 11,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p2:c0",
+        "score": 0.5081,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 24325.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p4:c0",
+        "score": 0.5421,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 24325.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p4:c0",
+        "score": 0.5017,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 24325.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+        "score": 0.5085,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 24325.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p4:c0",
+        "score": 0.5285,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 24325.5
+      }
+    ],
+    "latency_ms": 24325.5,
+    "retrieved_texts": {
+      "nimbus-sdk-v3-client-send-d37530:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "nimbus-sdk-v3-errors-132936:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0": "## Notes\n\nIn v2 the send path retries at most 3 times with a 250 ms base backoff. v3 raises the defaults to 5 retries with 500 ms base backoff and halves the total timeout from 30000 ms to 15000 ms. Migration guide: set the v2 values explicitly before upgrading if your service depends on the old timing behavior."
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "nimbus-sdk-v3-client-send-d37530:p2:c0",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0",
+      "nimbus-sdk-v3-errors-132936:p4:c0",
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0"
+    ],
+    "latency_ms": 2342.4
+  },
+  "raw_output": "The SDK’s **`Client.send()`** method has a `max_retries` parameter that controls how many retry attempts are made before a `SendError` is raised.\n\n| SDK version | Default `max_retries` | What it means |\n|-------------|----------------------|----------------|\n| **v3** (current) | **5** | The method will automatically retry up to 5 times (including the initial attempt) for retry‑able error codes (e.g., `429 RATE_LIMITED`). If all retries are exhausted, a `SendError` is raised. |\n| **v2** (legacy) | **3** | In the previous major version the default was 3 retries. The behavior is the same, just with a lower retry count. |\n\nYou can override the default by passing a different value for `max_retries` when calling `Client.send()`:\n\n```python\nclient.send(message=payload, topic=\"order.created\", max_retries=7)\n```\n\nSo, **the maximum number of retries by default is 5 in v3 (3 in v2), but you can set any integer you need via the `max_retries` argument.**",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 24325.5,
+    "generate": 2342.4,
+    "total": 26668.0
+  }
+}
+{
+  "trace_id": "tr_20260903_184755_890708",
+  "ts_utc": "2026-09-03T18:47:55Z",
+  "surface": "test",
+  "question": "what is the maximum number of retries on send?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 97,
+    "documents_indexed": 11,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p2:c0",
+        "score": 0.5081,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 25806.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p4:c0",
+        "score": 0.5421,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 25806.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p4:c0",
+        "score": 0.5017,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 25806.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+        "score": 0.5085,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 25806.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p4:c0",
+        "score": 0.5285,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 25806.7
+      }
+    ],
+    "latency_ms": 25806.7,
+    "retrieved_texts": {
+      "nimbus-sdk-v3-client-send-d37530:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "nimbus-sdk-v3-errors-132936:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0": "## Notes\n\nIn v2 the send path retries at most 3 times with a 250 ms base backoff. v3 raises the defaults to 5 retries with 500 ms base backoff and halves the total timeout from 30000 ms to 15000 ms. Migration guide: set the v2 values explicitly before upgrading if your service depends on the old timing behavior."
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "nimbus-sdk-v3-client-send-d37530:p2:c0",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0",
+      "nimbus-sdk-v3-errors-132936:p4:c0",
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0"
+    ],
+    "latency_ms": 2357.8
+  },
+  "raw_output": "The SDK’s **`Client.send()`** method has a `max_retries` parameter that controls how many retry attempts are made before a `SendError` is raised.\n\n| SDK version | Default `max_retries` value |\n|-------------|-----------------------------|\n| **v3** (current) | **5** retries |\n| **v2** (legacy) | **3** retries |\n\n- **What the value means** – The method will try the send operation up to `max_retries` times (the initial attempt plus the specified number of retries). If all attempts fail, it raises a `SendError` with the last gateway response attached.\n- **Customizing** – You can override the default by passing your own `max_retries` argument when calling `Client.send()`.\n\nSo, unless you explicitly set a different value, the maximum number of retries is **5 in v3** (the default for the current SDK) and **3 in v2**",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 25806.7,
+    "generate": 2357.8,
+    "total": 28164.5
+  }
+}
+{
+  "trace_id": "tr_20260903_184834_774b50",
+  "ts_utc": "2026-09-03T18:48:34Z",
+  "surface": "test",
+  "question": "compare v2 and v3 send retry",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 97,
+    "documents_indexed": 11,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+        "score": 0.5359,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 25133.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p2:c0",
+        "score": 0.5293,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 25133.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p4:c0",
+        "score": 0.5641,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 25133.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p4:c0",
+        "score": 0.5058,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 25133.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v2-client-send-e528c5:p4:c0",
+        "score": 0.44,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 25133.2
+      }
+    ],
+    "latency_ms": 25133.2,
+    "retrieved_texts": {
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v3-client-send-d37530:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\r\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\r\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\r\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\r\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "nimbus-sdk-v3-errors-132936:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0": "## Notes\n\nIn v2 the send path retries at most 3 times with a 250 ms base backoff. v3 raises the defaults to 5 retries with 500 ms base backoff and halves the total timeout from 30000 ms to 15000 ms. Migration guide: set the v2 values explicitly before upgrading if your service depends on the old timing behavior."
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "nimbus-sdk-v2-client-send-e528c5:p2:c0",
+      "nimbus-sdk-v3-client-send-d37530:p2:c0",
+      "nimbus-sdk-v3-errors-132936:p4:c0",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0",
+      "nimbus-sdk-v2-client-send-e528c5:p4:c0"
+    ],
+    "latency_ms": 2872.1
+  },
+  "raw_output": "**Send‑retry behavior in the SDK – v2 vs. v3**\n\n| Aspect | v2 (client_send.md) | v3 (client_send.md) |\n|--------|---------------------|---------------------|\n| **Default `max_retries`** | **3** retries | **5** retries |\n| **Default `retry_backoff_ms`** | **250 ms** base back‑off between attempts | **500 ms** base back‑off between attempts |\n| **Default `timeout_ms`** | **30 000 ms** (30 s) total wall‑clock budget for the whole send (including retries) | **15 000 ms** (15 s) total wall‑clock budget (half of v2) |\n| **Automatic retry logic** | `Client.send()` automatically retries retry‑able error codes (as indicated in `errors.md`) up to `max_retries`. | Same automatic retry mechanism, but with the higher retry count and longer back‑off. |\n| **Rate‑limit handling (`429 RATE_LIMITED`)** | Retries up to `max_retries` with the 250 ms back‑off. | Retries up to `max_retries` with the 500 ms back‑off. |\n| **Error raised after exhausting retries** | `SendError` with the last gateway response attached (`e.response`). | Same behavior. |\n| **Migration note** | Default behavior is 3 retries, 250 ms back‑off, 30 s timeout. | Defaults were changed to be more aggressive (5 retries, 500 ms back‑off) and faster‑failing (15 s timeout). If your service relied on the v2 timing, you should set the v2 values explicitly after upgrading. |\n\n### Summary of the differences\n- **More retries** in v3 (5 vs. 3) → gives the SDK a better chance to succeed under transient failures.\n- **Longer back‑off** in v3 (500 ms vs. 250 ms) → spreads out retry attempts, reducing pressure on a throttled broker.\n- **Shorter overall timeout** in v3 (15 s vs. 30 s) → the operation will fail faster if the retries cannot succeed within the tighter budget.\n- The underlying retry mechanism (automatic handling of retryable error codes, raising `SendError` after the final attempt) remains the same across both versions.\n\nIf you need the exact v2 timing after moving to v3, simply pass the older values (`max_retries=3`, `retry_backoff_ms=250`, `timeout_ms=30000`) when calling `Client.send()`",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 25133.2,
+    "generate": 2872.1,
+    "total": 28005.3
+  }
+}
+{
+  "trace_id": "tr_20260903_184837_f9047c",
+  "ts_utc": "2026-09-03T18:48:37Z",
+  "surface": "test",
+  "question": "is the 429 error retryable?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 97,
+    "documents_indexed": 11,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p1:c0",
+        "score": 0.5315,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 29.6
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p2:c0",
+        "score": 0.5146,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 29.6
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p4:c0",
+        "score": 0.5708,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 29.6
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v3-client-send-d37530:p4:c0",
+        "score": 0.4753,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 29.6
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v3-errors-132936:p3:c0",
+        "score": 0.3541,
+        "source_doc": "errors.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 29.6
+      }
+    ],
+    "latency_ms": 29.6,
+    "retrieved_texts": {
+      "nimbus-sdk-v3-errors-132936:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "nimbus-sdk-v3-errors-132936:p2:c0": "## Codes\n\n| code | http | retryable | meaning |\r\n|---|---|---|---|\r\n| INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. |\r\n| UNAUTHENTICATED | 401 | no | Missing or revoked API key. |\r\n| INSUFFICIENT_SCOPE | 403 | no | Key lacks the requested scope. |\r\n| RATE_LIMITED | 429 | yes | Too many requests; back off and retry. |\r\n| POOL_QUOTA_EXCEEDED | 429 | yes | Concurrent connection quota exceeded. |\r\n| INTERNAL | 500 | yes | Gateway-side fault. |",
+      "nimbus-sdk-v3-errors-132936:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "nimbus-sdk-v3-errors-132936:p3:c0": "## Example\n\n```python\r\nfrom nimbus.errors import ApiError, TransportError\n\ntry:\r\n    client.send(message=\"ping\", topic=\"health\")\r\nexcept ApiError as e:\r\n    if e.retryable:\r\n        schedule_retry(e.code)\r\nexcept TransportError:\r\n    schedule_retry(\"TRANSPORT\")\r\n```"
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "nimbus-sdk-v3-errors-132936:p1:c0",
+      "nimbus-sdk-v3-errors-132936:p2:c0",
+      "nimbus-sdk-v3-errors-132936:p4:c0",
+      "nimbus-sdk-v3-client-send-d37530:p4:c0",
+      "nimbus-sdk-v3-errors-132936:p3:c0"
+    ],
+    "latency_ms": 2166.0
+  },
+  "raw_output": "Yes – a **429** response is considered retry‑able.\n\n**Why**\n\n| code | HTTP status | retryable |\n|---------------------|-------------|-----------|\n| `RATE_LIMITED` | 429 | **yes** |\n| `POOL_QUOTA_EXCEEDED`| 429 | **yes** |\n\nThe `retryable` column in the error‑code table is the definitive source for the SDK’s automatic‑retry logic. The SDK’s `Client.send()` method will automatically back‑off (using `retry_backoff_ms`) and retry these 429 errors up to `max_retries` times. When the retries are exhausted, a `SendError` is raised with the final response attached.\n\nSo, if you encounter a 429 (`RATE_LIMITED` or `POOL_QUOTA_EXCEEDED`) you can safely retry the request after the appropriate back‑off",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 29.6,
+    "generate": 2166.0,
+    "total": 2195.7
+  }
+}
+{
+  "trace_id": "tr_20260903_184838_ae29fc",
+  "ts_utc": "2026-09-03T18:48:38Z",
+  "surface": "test",
+  "question": "what is the default pool size for connect in v3?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 97,
+    "documents_indexed": 11,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "nimbus-sdk-v3-client-connect-2f5259:p4:c0",
+        "score": 0.4722,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 28.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nimbus-sdk-v3-client-connect-2f5259:p1:c0",
+        "score": 0.3944,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 28.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "nimbus-sdk-v3-client-connect-2f5259:p2:c0",
+        "score": 0.3235,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 28.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "nimbus-sdk-v2-client-connect-4bec95:p4:c0",
+        "score": 0.4993,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 28.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "nimbus-sdk-v2-client-connect-4bec95:p1:c0",
+        "score": 0.5224,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 28.7
+      }
+    ],
+    "latency_ms": 28.7,
+    "retrieved_texts": {
+      "nimbus-sdk-v3-client-connect-2f5259:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "nimbus-sdk-v3-client-connect-2f5259:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "nimbus-sdk-v3-client-connect-2f5259:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\r\n|---|---|---|---|---|\r\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\r\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\r\n| pool_size | int | 10 | no | Maximum concurrent connections held open to the gateway. |\r\n| keepalive_ms | int | 60000 | no | Interval between keepalive pings on idle connections. |",
+      "nimbus-sdk-v2-client-connect-4bec95:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway; the v2 default is `5`. v2 is in maintenance mode, and v3 doubles the default `pool_size` to `10`. The `keepalive_ms` parameter does not exist in v2; keepalive behavior is fixed at 30 second intervals.",
+      "nimbus-sdk-v2-client-connect-4bec95:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key."
+    }
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [
+      "nimbus-sdk-v3-client-connect-2f5259:p4:c0",
+      "nimbus-sdk-v3-client-connect-2f5259:p1:c0",
+      "nimbus-sdk-v3-client-connect-2f5259:p2:c0",
+      "nimbus-sdk-v2-client-connect-4bec95:p4:c0",
+      "nimbus-sdk-v2-client-connect-4bec95:p1:c0"
+    ],
+    "latency_ms": 1584.3
+  },
+  "raw_output": "The default **`pool_size`** for `Client.connect()` in SDK **v3** is **10**.\n\n- In the v3 parameter table, `pool_size` is listed with a default value of **10**. \n- The notes confirm that v2 used a default of 5 and that v3 “doubled it to 10.”\n\nSo, unless you override it, a v3 client will open up to **10 concurrent TCP connections** to the gateway",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 28.7,
+    "generate": 1584.3,
+    "total": 1613.0
+  }
+}

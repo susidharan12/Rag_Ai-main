@@ -52,3 +52,7 @@ export async function askQuestion(question) {
 export async function fetchHealth() {
   return json(await fetch(`${BASE}/api/health`))
 }
+
+export async function fetchBenchmark() {
+  return json(await fetch(`${BASE}/api/benchmark`))
+}
