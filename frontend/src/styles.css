@@ -541,50 +541,15 @@ body {
 
 .hero-blob-glow {
   position: absolute;
-  inset: -60px;
+  inset: -70px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 65%);
-  filter: blur(6px);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.32), rgba(124, 58, 237, 0.12) 55%, transparent 72%);
+  filter: blur(8px);
   animation: blob-pulse 6s ease-in-out infinite;
 }
 
-.hero-blob {
-  position: absolute;
-  inset: 20px;
-  border-radius: 42% 58% 65% 35% / 45% 45% 55% 55%;
-}
-
-.blob-a {
-  background: radial-gradient(circle at 32% 28%, #818cf8, #4f46e5 45%, #0d9488 100%);
-  animation: blob-morph 11s ease-in-out infinite, blob-spin 26s linear infinite;
-  box-shadow: 0 0 90px 14px rgba(79, 70, 229, 0.32);
-}
-
-.blob-b {
-  inset: 44px;
-  opacity: 0.55;
-  mix-blend-mode: screen;
-  background: radial-gradient(circle at 65% 70%, #2dd4bf, transparent 60%);
-  animation: blob-morph 9s ease-in-out infinite reverse, blob-spin 18s linear infinite reverse;
-}
-
-.blob-c {
-  inset: 64px;
-  opacity: 0.5;
-  background: radial-gradient(circle at 40% 60%, #a5b4fc, transparent 55%);
-  animation: blob-morph 14s ease-in-out infinite;
-}
-
-.hero-blob-grain {
-  position: absolute;
-  inset: 20px;
-  border-radius: 42% 58% 65% 35% / 45% 45% 55% 55%;
-  opacity: 0.15;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  animation: blob-spin 30s linear infinite;
-}
+.blob-orb { position: relative; z-index: 1; filter: drop-shadow(0 0 46px rgba(147, 51, 234, 0.45)); }
+.blob-orb-spin { animation: blob-spin 90s linear infinite; }
 
 .hero-blob-copy {
   position: relative;
@@ -596,12 +561,6 @@ body {
 .hero-blob-title { font-family: var(--display); font-size: 32px; font-weight: 800; letter-spacing: 0.06em; }
 .hero-blob-sub { font-size: 13px; color: rgba(255, 255, 255, 0.88); margin-top: 4px; }
 
-@keyframes blob-morph {
-  0%, 100% { border-radius: 42% 58% 65% 35% / 45% 45% 55% 55%; }
-  25% { border-radius: 58% 42% 35% 65% / 55% 65% 35% 45%; }
-  50% { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; }
-  75% { border-radius: 35% 65% 55% 45% / 40% 55% 45% 60%; }
-}
 @keyframes blob-spin { to { transform: rotate(360deg); } }
 @keyframes blob-pulse {
   0%, 100% { opacity: 0.7; transform: scale(1); }
