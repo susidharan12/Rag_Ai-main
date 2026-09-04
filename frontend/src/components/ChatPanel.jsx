@@ -1,9 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Database, Mic, Paperclip, SendHorizontal, Sparkles, Wand2 } from 'lucide-react'
+import {
+  Database,
+  FileSearch,
+  FileText,
+  GitCompare,
+  Layers,
+  ListChecks,
+  Mic,
+  Paperclip,
+  SendHorizontal,
+  Sparkles,
+  SquareCode,
+  Trophy,
+  Wand2,
+} from 'lucide-react'
 import Message from './Message.jsx'
 import HeroOrb from './HeroOrb.jsx'
 import { askQuestion } from '../api.js'
+
+const LEFT_SUGGESTIONS = [
+  { label: 'Summarize my documents', query: 'Summarize what these documents cover.', Icon: FileText },
+  { label: 'Find specific information', query: 'What is the default timeout_ms for Client.send()?', Icon: FileSearch },
+  { label: 'Compare approaches', query: 'What changed for pool_size between SDK v2 and v3?', Icon: GitCompare },
+  { label: 'Explain a concept', query: 'Explain how cursor pagination works for list_events().', Icon: SquareCode },
+]
+
+const RIGHT_SUGGESTIONS = [
+  { label: 'Mobile platform facts', query: 'What year was Jetpack Compose announced stable?', Icon: Layers },
+  { label: 'Show a code example', query: 'Show me how to verify a webhook signature in Python.', Icon: Wand2 },
+  { label: 'Check error handling', query: 'Is HTTP error code 429 retryable?', Icon: ListChecks },
+  { label: 'Sports golden set', query: 'How many players per side in Football (Soccer)?', Icon: Trophy },
+]
 
 export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, setMessages }) {
   const [input, setInput] = useState('')
@@ -64,6 +92,24 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
   if (!messages.length) {
     return (
       <div className="hero-screen">
+        <div className="hero-suggestions left">
+          <div className="hero-suggestions-label">Suggestions</div>
+          {LEFT_SUGGESTIONS.map(({ label, query, Icon }, i) => (
+            <motion.button
+              key={label}
+              className="hero-suggestion"
+              onClick={() => send(query)}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15 + i * 0.06 }}
+              whileHover={{ x: 3 }}
+            >
+              <span className="hero-suggestion-icon"><Icon size={15} /></span>
+              {label}
+            </motion.button>
+          ))}
+        </div>
+
         <div className="hero-center">
           <div className="hero-blob-wrap">
             <div className="hero-blob-glow" />
@@ -101,6 +147,24 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
               {pending ? <span className="spinner tiny" /> : <SendHorizontal size={15} />}
             </button>
           </motion.form>
+        </div>
+
+        <div className="hero-suggestions right">
+          <div className="hero-suggestions-label">Suggestions</div>
+          {RIGHT_SUGGESTIONS.map(({ label, query, Icon }, i) => (
+            <motion.button
+              key={label}
+              className="hero-suggestion"
+              onClick={() => send(query)}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15 + i * 0.06 }}
+              whileHover={{ x: -3 }}
+            >
+              <span className="hero-suggestion-icon"><Icon size={15} /></span>
+              {label}
+            </motion.button>
+          ))}
         </div>
       </div>
     )
