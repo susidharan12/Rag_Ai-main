@@ -177,7 +177,8 @@ def generate_extractive(question, results):
     asks_number = bool(re.search(r"\b(how many|what is the (default|maximum|"
                                  r"minimum)|what's the|how much|what value|"
                                  r"how big|limit|size|timeout|pool|how often|"
-                                 r"how long)\b", question.lower()))
+                                 r"how long|what year|which year|what date)\b",
+                                 question.lower()))
 
     if not results:
         return {"answer": _REFUSAL, "model": "extractive-v2",
@@ -276,6 +277,12 @@ def generate_extractive(question, results):
             continue
         picked.append((cand, r))
         used_chunks.add(r["chunk_id"])
+        # A number/year question is fully answered the moment its top-ranked
+        # candidate actually contains a number - stop instead of padding the
+        # answer with lower-relevance sentences from other chunks just to
+        # fill the quota.
+        if asks_number and re.search(r"\d", cand):
+            break
         if len(picked) >= settings.EXTRACTIVE_MAX_SENTENCES:
             break
 
