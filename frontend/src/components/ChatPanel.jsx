@@ -113,7 +113,7 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
         <div className="hero-center">
           <div className="hero-blob-wrap">
             <div className="hero-blob-glow" />
-            <BlobOrb size={320} className="hero-orb-svg" />
+            <BlobOrb className="hero-orb-svg" />
             <div className="hero-blob-copy">
               <div className="hero-blob-title">NIMBUS</div>
               <div className="hero-blob-sub">Ask your documents anything</div>

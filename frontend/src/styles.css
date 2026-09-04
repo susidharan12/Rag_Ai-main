@@ -470,13 +470,13 @@ body {
 .hero-screen {
   flex: 1;
   display: grid;
-  grid-template-columns: 258px 1fr 258px;
+  grid-template-columns: 240px 1fr 240px;
   align-items: center;
   justify-items: center;
-  gap: 16px;
-  padding: 24px 28px 16px;
+  gap: 12px;
+  padding: 18px 24px 14px;
   position: relative;
-  overflow: hidden;
+  overflow: hidden auto;
   min-height: 0;
 }
 
@@ -531,24 +531,27 @@ body {
   flex-shrink: 0;
 }
 
-.hero-center { display: flex; flex-direction: column; align-items: center; gap: 22px; z-index: 2; min-width: 0; }
+.hero-center { display: flex; flex-direction: column; align-items: center; gap: 14px; z-index: 2; min-width: 0; width: 100%; }
 
 .hero-blob-wrap {
   position: relative;
-  width: 320px; height: 320px;
+  width: min(64vh, 660px);
+  height: min(64vh, 660px);
+  max-width: 92%;
   display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
 
 .hero-blob-glow {
   position: absolute;
-  inset: -70px;
+  inset: -14%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.32), rgba(124, 58, 237, 0.12) 55%, transparent 72%);
-  filter: blur(8px);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.34), rgba(124, 58, 237, 0.14) 55%, transparent 72%);
+  filter: blur(10px);
   animation: blob-pulse 6s ease-in-out infinite;
 }
 
-.blob-orb { position: relative; z-index: 1; filter: drop-shadow(0 0 46px rgba(147, 51, 234, 0.45)); }
+.blob-orb { position: relative; z-index: 1; filter: drop-shadow(0 0 4vh rgba(147, 51, 234, 0.45)); }
 .blob-orb-spin { animation: blob-spin 90s linear infinite; }
 
 .hero-blob-copy {
@@ -556,10 +559,10 @@ body {
   z-index: 3;
   text-align: center;
   color: #fff;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 }
-.hero-blob-title { font-family: var(--display); font-size: 32px; font-weight: 800; letter-spacing: 0.06em; }
-.hero-blob-sub { font-size: 13px; color: rgba(255, 255, 255, 0.88); margin-top: 4px; }
+.hero-blob-title { font-family: var(--display); font-size: clamp(28px, 5vh, 52px); font-weight: 800; letter-spacing: 0.06em; }
+.hero-blob-sub { font-size: clamp(12px, 1.8vh, 17px); color: rgba(255, 255, 255, 0.9); margin-top: 6px; }
 
 @keyframes blob-spin { to { transform: rotate(360deg); } }
 @keyframes blob-pulse {
