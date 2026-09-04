@@ -107,7 +107,66 @@ def _chunk_gist(text, max_chars=220):
     return ""
 
 
-def _broad_overview_answer(question, results):
+_NAME_LINE_RE = re.compile(r"^[A-Z][a-zA-Z.'-]+(?:\s+[A-Z][a-zA-Z.'-]*){0,3}$")
+# Job-title words that would otherwise false-positive-match _NAME_LINE_RE
+# (e.g. a running page header like "Senior CMS Developer") as a person's
+# name, since both are just a few capitalized words with no punctuation.
+_TITLE_WORDS = {
+    "developer", "engineer", "manager", "director", "specialist",
+    "consultant", "analyst", "designer", "architect", "lead", "senior",
+    "junior", "administrator", "coordinator", "officer", "executive",
+    "president", "founder", "intern", "associate", "head", "chief",
+}
+
+
+def _document_opening_chunks(store, doc_id, limit=2):
+    """The document's own first `limit` chunks, in true page/chunk order -
+    regardless of whether they were retrieved for this query. A resume's
+    name/title/summary lives on its opening page, but a short identity
+    block doesn't necessarily win a similarity search against longer
+    project-description prose, so it can be genuinely absent from the
+    retrieved set even when it's exactly what a "tell me about X"
+    question wants. Returns [] if store is unavailable - callers must
+    keep working (just without this enrichment) when it is."""
+    if not store or not doc_id:
+        return []
+    try:
+        store.ensure_loaded()
+        chunks, metadata = store._state["chunks"], store._state["metadata"]
+    except Exception:
+        return []
+    matches = sorted(
+        (
+            (meta.get("page_number", 0), meta.get("chunk_index", 0), text, meta)
+            for text, meta in zip(chunks, metadata)
+            if meta.get("doc_id") == doc_id
+        ),
+        key=lambda m: (m[0], m[1]),
+    )
+    return [
+        {"chunk_id": meta["chunk_id"], "source_doc": meta.get("source_file", ""),
+         "text": text, "score": 1.0, "rank": 0}
+        for _page, _idx, text, meta in matches[:limit]
+    ]
+
+
+def _guess_name(text):
+    """A short, title-case, label-free, digit-free line near the top of a
+    document's opening chunk - works well for a resume's name line
+    ("Susidharan A"), harmlessly finds nothing for most other documents."""
+    for line in text.splitlines():
+        line = line.strip(" \t|")
+        if not line or ":" in line or any(ch.isdigit() for ch in line) or "@" in line:
+            continue
+        if not (2 <= len(line) <= 40 and _NAME_LINE_RE.match(line)):
+            continue
+        if any(w in _TITLE_WORDS for w in line.lower().split()):
+            continue
+        return line
+    return None
+
+
+def _broad_overview_answer(question, results, store=None):
     """A generic 'tell me about X' / 'summarize this' question shares almost
     no literal vocabulary with detailed source text (a resume never
     literally says "this is about the candidate") even when the retrieval
@@ -119,12 +178,17 @@ def _broad_overview_answer(question, results):
     Instead of trusting the near-zero overlap score here, use a different
     signal: if most of the retrieved chunks come from the SAME document
     (and there's at least a little real semantic signal, not pure noise),
-    that document is almost certainly what's being asked about. Synthesize
-    across every distinct section of that document present in the
-    retrieved chunks (deduped by _chunk_label, since one section/project
-    commonly spans multiple chunks) rather than just the single top chunk,
-    so a resume with several projects gets an overview spanning all of
-    them instead of one fragment of the first.
+    that document is almost certainly what's being asked about.
+
+    A document's own opening chunk(s) - name, title, summary - are fetched
+    directly from the store (bypassing retrieval ranking entirely) and
+    always led with, because a "tell me about X" answer should say who/
+    what X is before its first project, even when that identity block
+    didn't score highly enough to be retrieved for this specific query.
+    The rest of the answer synthesizes across every distinct section of
+    the document present in the retrieved chunks (deduped by
+    _chunk_label, since one section/project commonly spans multiple
+    chunks), not just the single top chunk.
     """
     if not _BROAD_INTENT_RE.search(question.lower()):
         return None
@@ -138,8 +202,26 @@ def _broad_overview_answer(question, results):
     if not doc_chunks or doc_chunks[0]["score"] < 0.12:
         return None
 
+    doc_id = doc_chunks[0].get("doc_id")
+    opening = _document_opening_chunks(store, doc_id)
+    opening_ids = {o["chunk_id"] for o in opening}
+    ordered = opening + [r for r in doc_chunks if r["chunk_id"] not in opening_ids]
+
+    name, name_chunk_id = None, None
+    for o in opening:
+        name = _guess_name(o["text"])
+        if name:
+            name_chunk_id = o["chunk_id"]
+            break
+
     parts, used, seen = [], [], set()
-    for r in doc_chunks:
+    if name:
+        parts.append(f"Name: {name}.")
+        used.append(next(o for o in opening if o["chunk_id"] == name_chunk_id))
+
+    for r in ordered:
+        if r["chunk_id"] == name_chunk_id:
+            continue  # already represented by the Name: line above
         label = _chunk_label(r["text"])
         dedupe_key = (label or r["text"][:30]).strip().lower()
         if dedupe_key in seen:
@@ -150,10 +232,10 @@ def _broad_overview_answer(question, results):
         seen.add(dedupe_key)
         parts.append(f"{label}: {gist}" if label else gist)
         used.append(r)
-        if len(parts) >= 4:
+        if len(parts) >= 5:
             break
 
-    if not parts:
+    if not parts or (name and len(parts) < 2):
         return None
     return " ".join(parts), used
 
@@ -214,7 +296,7 @@ def build_context(results):
     return "\n\n".join(blocks)
 
 
-def generate_groq(question, results):
+def generate_groq(question, results, store=None):  # noqa: ARG001 - store unused, kept for a uniform GENERATORS call signature
     params = {"temperature": 0.2, "max_tokens": 1024}
 
     if not results:
@@ -275,7 +357,7 @@ def _clean_answer(answer):
 # ------------------------------------------------------------ extractive ----
 
 
-def generate_extractive(question, results):
+def generate_extractive(question, results, store=None):
     """Deterministic, question-aware extractive reader.
 
     Unlike v1 (which returned the first 2 term-overlapping sentences, dragging
@@ -306,7 +388,7 @@ def generate_extractive(question, results):
     max_heading = max((r.get("heading_overlap", 0.0) for r in results), default=0.0)
 
     if max_overlap < 0.05 and max_heading < 0.05:
-        broad = _broad_overview_answer(question, results)
+        broad = _broad_overview_answer(question, results, store)
         if broad:
             ans, chunks_used = broad
             cites = "".join(f" [{c['chunk_id']}]" for c in chunks_used)

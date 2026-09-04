@@ -42,12 +42,12 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
                              min_score=min_score)
         gen_results = wider or results
 
-    gen = GENERATORS[gen_name](question, gen_results)
+    gen = GENERATORS[gen_name](question, gen_results, store=store)
     if gen.get("error"):
         # Generator backend unreachable/failed: degrade gracefully to the
         # deterministic grounded extractor so the product still answers.
         fallback_note = f"{gen['model']} unavailable ({gen['error']})"
-        gen = GENERATORS["extractive"](question, gen_results)
+        gen = GENERATORS["extractive"](question, gen_results, store=store)
         gen["model"] = "extractive-v2 (fallback)"
         gen["params"]["fallback"] = fallback_note
     t2 = time.perf_counter()

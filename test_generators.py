@@ -32,8 +32,21 @@ from rag_core.generators import (  # noqa: E402
     _chunk_gist,
     _chunk_label,
     _dominant_source_doc,
+    _document_opening_chunks,
+    _guess_name,
     generate_extractive,
 )
+
+
+class _FakeStore:
+    """Minimal stand-in for rag_core.store.DocStore: only what
+    _document_opening_chunks() touches (ensure_loaded() + _state)."""
+
+    def __init__(self, chunks, metadata):
+        self._state = {"chunks": chunks, "metadata": metadata}
+
+    def ensure_loaded(self):
+        pass
 
 
 def _chunk(source_doc, text, score=0.18, chunk_id=None, rank=1,
@@ -84,6 +97,26 @@ THINKARGUMENTS_RESPONSIBILITIES_TEXT = (
     "Project Name: Thinkarguments  \n"
     "Responsibilities:  \n"
     " Built a robust backend application to support frontend functionalities."
+)
+
+# Verbatim shape of the real resume's page 1 - a running "Senior CMS
+# Developer" page-header line (NOT the person's name, despite also being
+# a few capitalized words) followed by the actual name on its own line,
+# then contact info; this is what caught the "picked up the job title
+# instead of the name" bug.
+PAGE1_HEADER_TEXT = (
+    "Senior CMS Developer\n\n"
+    "Susidharan A  \n"
+    "WordPress  | Drupal |  PHP Developer | 5+ Years  \n"
+    "+91 9360689659  | susidharan @softsuave.org  \n"
+    "  Senior CMS Developer"
+)
+
+PAGE1_SUMMARY_TEXT = (
+    "SUMMARY :   \n"
+    " 5+ years of extensive experience in Content Management System (CMS) \n"
+    "development, customization, and maintenance using Drupal and WordPress.  \n"
+    " Strong expertise in Drupal 8/9/10 /11, WordPress."
 )
 
 
@@ -176,15 +209,15 @@ class BroadOverviewAnswerTests(unittest.TestCase):
         self.assertEqual(overview.count("Thinkarguments:"), 1)
         self.assertEqual(len(chunks_used), 2)  # Thinkarguments (once) + Socrat.AI
 
-    def test_caps_at_four_sections(self):
+    def test_caps_the_number_of_parts(self):
         results = [
             _chunk("resume.pdf", f"Project Name: Project{i}  \nDescription:  \n Project {i} is a "
                                   f"real substantive description sentence about the work done.",
                    rank=i, chunk_id=f"resume.pdf:c{i}")
-            for i in range(6)
+            for i in range(8)
         ]
         overview, chunks_used = _broad_overview_answer("tell me about the candidate", results)
-        self.assertLessEqual(len(chunks_used), 4)
+        self.assertLessEqual(len(chunks_used), 5)
 
     def test_matches_several_broad_intent_phrasings(self):
         results = [_chunk("resume.pdf", SOCRAT_TEXT, chunk_id=f"resume.pdf:c{i}") for i in range(5)]
@@ -196,6 +229,90 @@ class BroadOverviewAnswerTests(unittest.TestCase):
         ):
             with self.subTest(question=question):
                 self.assertIsNotNone(_broad_overview_answer(question, results))
+
+
+def _resume_store():
+    """A fake store whose _state mirrors the real resume: page 1 (header
+    + name, then a SUMMARY section) followed by project pages 3-6 -
+    exactly what _document_opening_chunks() needs to find page 1 even
+    when it isn't among the retrieved chunks."""
+    chunks = [PAGE1_HEADER_TEXT, PAGE1_SUMMARY_TEXT, THINKARGUMENTS_TEXT, SOCRAT_TEXT]
+    metadata = [
+        {"chunk_id": "resume.pdf:p1:c0", "source_file": "resume.pdf", "doc_id": "doc1",
+         "page_number": 1, "chunk_index": 0},
+        {"chunk_id": "resume.pdf:p1:c1", "source_file": "resume.pdf", "doc_id": "doc1",
+         "page_number": 1, "chunk_index": 1},
+        {"chunk_id": "resume.pdf:p3:c0", "source_file": "resume.pdf", "doc_id": "doc1",
+         "page_number": 3, "chunk_index": 0},
+        {"chunk_id": "resume.pdf:p4:c0", "source_file": "resume.pdf", "doc_id": "doc1",
+         "page_number": 4, "chunk_index": 0},
+    ]
+    return _FakeStore(chunks, metadata)
+
+
+class GuessNameTests(unittest.TestCase):
+    def test_finds_the_name_line_not_the_repeated_job_title(self):
+        """Real reported bug: 'Senior CMS Developer' (a running page
+        header, also just a few capitalized words) was being returned
+        instead of the actual name 'Susidharan A' on the next line."""
+        self.assertEqual(_guess_name(PAGE1_HEADER_TEXT), "Susidharan A")
+
+    def test_skips_lines_with_digits_or_email(self):
+        text = "Contact 2024\nsomeone@example.com\nReal Name Here"
+        self.assertEqual(_guess_name(text), "Real Name Here")
+
+    def test_returns_none_when_no_name_like_line_exists(self):
+        self.assertIsNone(_guess_name("Project Name: X\nTechnologies: Y, Z\nTeam Size: 10"))
+
+
+class DocumentOpeningChunksTests(unittest.TestCase):
+    def test_returns_first_chunks_in_page_order_regardless_of_retrieval(self):
+        opening = _document_opening_chunks(_resume_store(), "doc1", limit=2)
+        self.assertEqual([o["chunk_id"] for o in opening],
+                          ["resume.pdf:p1:c0", "resume.pdf:p1:c1"])
+
+    def test_returns_empty_list_without_a_store(self):
+        self.assertEqual(_document_opening_chunks(None, "doc1"), [])
+
+    def test_returns_empty_list_without_a_doc_id(self):
+        self.assertEqual(_document_opening_chunks(_resume_store(), None), [])
+
+
+class BroadOverviewAnswerWithStoreTests(unittest.TestCase):
+    """The real reported gap: retrieval surfaced only project chunks, not
+    the resume's own name/summary on page 1 - the answer must still lead
+    with who the document is about."""
+
+    def test_leads_with_the_documents_own_name_and_summary(self):
+        # Retrieval only found project pages (3 and 4), the realistic
+        # shape of the real bug - page 1 never made the top-k for this
+        # vague a query.
+        results = [
+            _chunk("resume.pdf", THINKARGUMENTS_TEXT, score=0.17, rank=1,
+                   chunk_id="resume.pdf:p3:c0"),
+            _chunk("resume.pdf", SOCRAT_TEXT, score=0.16, rank=2,
+                   chunk_id="resume.pdf:p4:c0"),
+        ]
+        for r in results:
+            r["doc_id"] = "doc1"
+
+        overview, chunks_used = _broad_overview_answer(
+            "tell me about the candidate", results, store=_resume_store())
+
+        self.assertTrue(overview.startswith("Name: Susidharan A."))
+        self.assertIn("extensive experience in Content Management System", overview)
+        self.assertIn("Thinkarguments:", overview)
+        self.assertIn("Socrat.AI:", overview)
+        cited_ids = {c["chunk_id"] for c in chunks_used}
+        self.assertIn("resume.pdf:p1:c0", cited_ids)  # the name line's chunk
+        self.assertIn("resume.pdf:p1:c1", cited_ids)  # the summary chunk
+
+    def test_works_without_a_store_falling_back_to_retrieved_chunks_only(self):
+        """store is optional - callers (and the existing test suite) that
+        don't pass one must keep working, just without the enrichment."""
+        results = [_chunk("resume.pdf", SOCRAT_TEXT, chunk_id=f"resume.pdf:c{i}") for i in range(3)]
+        result = _broad_overview_answer("tell me about the candidate", results, store=None)
+        self.assertIsNotNone(result)
 
 
 class GenerateExtractiveBroadQuestionTests(unittest.TestCase):
