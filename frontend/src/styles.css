@@ -553,6 +553,10 @@ body {
   background: radial-gradient(circle, rgba(168, 85, 247, 0.34), rgba(124, 58, 237, 0.14) 55%, transparent 72%);
   filter: blur(10px);
   animation: blob-pulse 6s ease-in-out infinite;
+  /* Purely decorative; its negative inset deliberately spills past
+     .hero-blob-wrap's own edges, which would otherwise sit on top of
+     (and swallow clicks meant for) the composer below it. */
+  pointer-events: none;
 }
 
 .hero-orb-canvas {
@@ -560,6 +564,9 @@ body {
   inset: 0;
   z-index: 1;
   filter: drop-shadow(0 0 4vh rgba(147, 51, 234, 0.5));
+  /* Decorative only - never intercept clicks/focus meant for anything
+     below or around it. */
+  pointer-events: none;
 }
 .hero-orb-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
 
