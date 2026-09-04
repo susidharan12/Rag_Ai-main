@@ -540,9 +540,9 @@ body {
 
 .hero-blob-wrap {
   position: relative;
-  width: min(64vh, 660px);
-  height: min(64vh, 660px);
-  max-width: 92%;
+  width: min(78vh, 780px);
+  height: min(78vh, 780px);
+  max-width: 94%;
   flex-shrink: 0;
 }
 
@@ -576,8 +576,8 @@ body {
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
-.hero-blob-title { font-family: var(--display); font-size: clamp(28px, 5vh, 52px); font-weight: 800; letter-spacing: 0.06em; }
-.hero-blob-sub { font-size: clamp(12px, 1.8vh, 17px); color: rgba(255, 255, 255, 0.9); margin-top: 6px; }
+.hero-blob-title { font-family: var(--display); font-size: clamp(28px, 6vh, 62px); font-weight: 800; letter-spacing: 0.06em; }
+.hero-blob-sub { font-size: clamp(12px, 2vh, 18px); color: rgba(255, 255, 255, 0.9); margin-top: 6px; }
 
 @keyframes blob-pulse {
   0%, 100% { opacity: 0.7; transform: scale(1); }
@@ -588,8 +588,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  /* ~88% of .hero-blob-wrap's width (min(64vh, 660px)) */
-  width: min(56vh, 580px);
+  /* ~88% of .hero-blob-wrap's width (min(78vh, 780px)) */
+  width: min(68vh, 686px);
   max-width: 88vw;
   padding: 9px 10px;
   border-radius: 18px;

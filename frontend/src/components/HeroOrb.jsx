@@ -3,14 +3,17 @@ import * as THREE from 'three'
 import { createNoise3D } from 'simplex-noise'
 
 /**
- * A real 3D organic blob rendered with Three.js/WebGL - not a CSS
- * gradient or an SVG approximation. An icosahedron's vertices are
- * displaced along their normals by 3D simplex noise (sampled per-vertex,
- * animated over time), giving genuinely irregular, continuously-morphing
- * organic geometry. Lit with a physically-based glossy/clearcoat
- * material plus several colored point lights (violet key, magenta rim,
- * white top highlight) so the wavy specular highlights that trace the
- * bumps come from real 3D lighting, not a hand-painted texture.
+ * A real 3D faceted asteroid/gem, rendered with Three.js/WebGL - not a
+ * CSS gradient or an SVG approximation. A low-detail icosahedron's
+ * vertices are displaced along their normals by 3D simplex noise
+ * (sampled per-vertex, animated over time, re-normaled every frame), and
+ * flatShading keeps each triangle a crisp, distinct facet instead of
+ * smoothing them into an organic blob - the low poly count is
+ * deliberate, not a limitation. Lit with a physically-based glossy/
+ * clearcoat material plus several colored point lights (violet key,
+ * magenta rim, white top highlight) so the bright facets that catch the
+ * light come from real 3D lighting hitting real geometry, not a
+ * hand-painted texture.
  *
  * Self-contained: creates and tears down its own renderer/scene/RAF loop
  * in a plain useEffect (no extra React-Three-Fiber dependency), sized to
@@ -38,7 +41,10 @@ export default function HeroOrb({ className = '' }) {
     renderer.toneMappingExposure = 1.15
     mount.appendChild(renderer.domElement)
 
-    const DETAIL = 4 // ~2562 vertices: smooth enough, cheap enough to re-displace every frame
+    // Lower detail than a smooth blob needs, on purpose: fewer, larger
+    // triangles read as deliberate rock/asteroid facets once flatShading
+    // is on, instead of being smoothed away.
+    const DETAIL = 3 // ~642 vertices
     const geometry = new THREE.IcosahedronGeometry(1.35, DETAIL)
     const basePositions = Float32Array.from(geometry.attributes.position.array)
 
@@ -50,6 +56,7 @@ export default function HeroOrb({ className = '' }) {
       clearcoatRoughness: 0.14,
       emissive: new THREE.Color(0x3b0764),
       emissiveIntensity: 0.32,
+      flatShading: true,
     })
 
     const mesh = new THREE.Mesh(geometry, material)
@@ -94,7 +101,7 @@ export default function HeroOrb({ className = '' }) {
           noise3D(tmpNormal.x * 1.6 + t * 0.12, tmpNormal.y * 1.6 + t * 0.12, tmpNormal.z * 1.6 + t * 0.12) * 0.65 +
           noise3D(tmpNormal.x * 3.4 - t * 0.18, tmpNormal.y * 3.4 - t * 0.18, tmpNormal.z * 3.4 - t * 0.18) * 0.35
 
-        const scale = 1 + n * 0.24
+        const scale = 1 + n * 0.3
         arr[i] = ox * scale
         arr[i + 1] = oy * scale
         arr[i + 2] = oz * scale
