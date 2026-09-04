@@ -1,0 +1,207 @@
+{
+  "protocol": "Blind human labels written and committed before any judge script exists or runs. 25-case subset of the 28 in eval_cases.json (excludes eval_003, eval_010, eval_013 - redundant factual_lookup cases; every other case, and every taxonomy mode, is represented).",
+  "criterion": "Does the answer directly and correctly answer the question, using only what's in the retrieved documents? Binary only, no 1-10 scale.",
+  "created_utc": "2026-09-04T07:22:37Z",
+  "labels": [
+    {
+      "id": "eval_001",
+      "mode": "factual_lookup",
+      "question": "What is the default value and type of retry_backoff_ms on Client.send()?",
+      "answer": "retry_backoff_ms default is 500. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_002",
+      "mode": "factual_lookup",
+      "question": "What is the default timeout_ms for Client.send()?",
+      "answer": "timeout_ms default is 15000. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_004",
+      "mode": "factual_lookup",
+      "question": "What is the default pool_size for Client.connect()?",
+      "answer": "pool_size default is 10. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_005",
+      "mode": "factual_lookup",
+      "question": "What is the keepalive interval for Client.connect() connections?",
+      "answer": "keepalive_ms default is 60000. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_006",
+      "mode": "factual_lookup",
+      "question": "What is the default tolerance_seconds for webhook verification?",
+      "answer": "tolerance_seconds default is 300. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_007",
+      "mode": "factual_lookup",
+      "question": "What is the maximum allowed value of limit in list_events()?",
+      "answer": "limit maximum allowed value is 200. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_008",
+      "mode": "factual_lookup",
+      "question": "What is the default page size for list_events()?",
+      "answer": "limit default is 50. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_009",
+      "mode": "factual_lookup",
+      "question": "What is the default scope when calling TokenProvider.refresh()?",
+      "answer": "scope default is \"read:events\". [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_011",
+      "mode": "factual_lookup",
+      "question": "Is HTTP error code 429 (RATE_LIMITED) retryable according to the error reference?",
+      "answer": "HTTP 429 (RATE_LIMITED) is retryable per the error reference. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_012",
+      "mode": "factual_lookup",
+      "question": "Which error code does the gateway return when the connection pool quota is exceeded?",
+      "answer": "Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_014",
+      "mode": "conceptual_explanation",
+      "question": "Explain how Client.send() handles a RATE_LIMITED response from the gateway.",
+      "answer": "`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "human_label": 0,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_015",
+      "mode": "conceptual_explanation",
+      "question": "Explain what happens when a webhook signature fails verification.",
+      "answer": "Value of the `X-Nimbus-Signature` header. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0] signature_header=request.headers[\"X-Nimbus-Signature\"]) [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0] `verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0] The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0]",
+      "human_label": 0,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_016",
+      "mode": "conceptual_explanation",
+      "question": "Explain how cursor pagination works for list_events(), including has_more.",
+      "answer": "List endpoints in the Nimbus API are cursor-paginated. Every list response contains `data`, a `next_cursor` for the following page, and has_more. Pass the cursor back via the `cursor` parameter until `has_more` is false. Cursors expire after 24 hours; treat them as opaque strings and never construct them yourself.",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_017",
+      "mode": "conceptual_explanation",
+      "question": "Explain what changed in Client.connect()'s defaults between SDK v2 and v3.",
+      "answer": "**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "human_label": 0,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_018",
+      "mode": "conceptual_explanation",
+      "question": "Explain why API keys are scoped in the Nimbus SDK authentication model.",
+      "answer": "The SDK authenticates with API keys. Keys are scoped: a key issued for read-only dashboards cannot publish events. Create and rotate keys in the Nimbus dashboard under Settings, API keys. The SDK never transmits the key to any endpoint other than the gateway of your selected region.",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_019",
+      "mode": "unsupported_question",
+      "question": "What is the default retry backoff for the Nimbus SDK's Go client?",
+      "answer": "I could not find the answer in the provided documents.",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_020",
+      "mode": "unsupported_question",
+      "question": "How do I deploy the Nimbus gateway to Kubernetes?",
+      "answer": "I could not find the answer in the provided documents.",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_021",
+      "mode": "unsupported_question",
+      "question": "Who won the 1998 FIFA World Cup final?",
+      "answer": "I could not find the answer in the provided documents.",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_022",
+      "mode": "unsupported_question",
+      "question": "What is the maximum webhook payload size accepted by WebhookVerifier?",
+      "answer": "Page size, accepted range 1 to 200. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+      "human_label": 0,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_023",
+      "mode": "version_specific",
+      "question": "In Nimbus SDK v2, what is the default retry_backoff_ms on Client.send()?",
+      "answer": "retry_backoff_ms default is 250. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_024",
+      "mode": "version_specific",
+      "question": "For SDK v2, what pool_size does Client.connect() use by default?",
+      "answer": "pool_size default is 5. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_025",
+      "mode": "version_specific",
+      "question": "Is SDK v2 still supported?",
+      "answer": "Yes - **v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_026",
+      "mode": "ambiguous_question",
+      "question": "How many retries do I get when I send a message?",
+      "answer": "max_retries default is 5. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+      "human_label": 1,
+      "source": "hand-authored"
+    },
+    {
+      "id": "eval_027",
+      "mode": "ambiguous_question",
+      "question": "What is the default pool_size for Client.connect()?",
+      "answer": "pool_size default is 10. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+      "human_label": 1,
+      "source": "week5_failure"
+    },
+    {
+      "id": "eval_028",
+      "mode": "ambiguous_question",
+      "question": "what are the error in the coer data",
+      "answer": "I could not find the answer in the provided documents.",
+      "human_label": 1,
+      "source": "week5_failure"
+    }
+  ]
+}
