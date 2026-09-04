@@ -5,8 +5,8 @@ EMBEDDING_MODEL_NAME = os.environ.get(
     "RAG_EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
 )
 
-CHUNK_SIZE = int(os.environ.get("RAG_CHUNK_SIZE", "500"))
-CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "250"))
+CHUNK_SIZE = int(os.environ.get("RAG_CHUNK_SIZE", "1200"))
+CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "300"))
 TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.12"))
 

@@ -29,12 +29,16 @@ def ask_sync(question, generator=None, top_k=None, min_score=None,
     results = store.search(question, top_k=top_k, min_score=min_score)
     t1 = time.perf_counter()
 
-    # Over-fetch a wider re-ranked window so the extractor's structured lookup
-    # can locate the parameter/error row even when an intro/change-log chunk
-    # outranks the table itself (Week 5 M4/M6). Displayed sources stay at top_k.
+    # Over-fetch a wider re-ranked window so the generator has more context
+    # to synthesize a comprehensive answer.
     gen_results = results
     if gen_name in settings.GENERATORS_OVERFETCH and results:
         wider = store.search(question, top_k=settings.EXTRACTIVE_CONTEXT,
+                             min_score=min_score)
+        gen_results = wider or results
+    elif results:
+        # Always provide at least 5 chunks of context for LLM generators
+        wider = store.search(question, top_k=max(top_k, 5),
                              min_score=min_score)
         gen_results = wider or results
 

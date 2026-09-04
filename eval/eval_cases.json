@@ -1,0 +1,44 @@
+{
+  "protocol": "Track E eval set. Every question and expected fact is grounded in corpus/nimbus_sdk/{v2,v3}/*.md (verbatim), reused/cross-checked against week6_error_analysis/classify.py's already-verified EXPECT list where applicable. eval_027 and eval_028 are verbatim Week 5 regression traces, not hand-authored.",
+  "taxonomy_counts": {
+    "factual_lookup": 13,
+    "conceptual_explanation": 5,
+    "unsupported_question": 4,
+    "ambiguous_question": 3,
+    "version_specific": 3
+  },
+  "cases": [
+    {"id": "eval_001", "mode": "factual_lookup", "question": "What is the default value and type of retry_backoff_ms on Client.send()?", "expect": "answer", "expected_tokens": ["500"], "source": "hand-authored"},
+    {"id": "eval_002", "mode": "factual_lookup", "question": "What is the default timeout_ms for Client.send()?", "expect": "answer", "expected_tokens": ["15000"], "source": "hand-authored"},
+    {"id": "eval_003", "mode": "factual_lookup", "question": "How many times does Client.send() retry by default?", "expect": "answer", "expected_tokens": ["5"], "source": "hand-authored"},
+    {"id": "eval_004", "mode": "factual_lookup", "question": "What is the default pool_size for Client.connect()?", "expect": "answer", "expected_tokens": ["10"], "source": "hand-authored"},
+    {"id": "eval_005", "mode": "factual_lookup", "question": "What is the keepalive interval for Client.connect() connections?", "expect": "answer", "expected_tokens": ["60000"], "source": "hand-authored"},
+    {"id": "eval_006", "mode": "factual_lookup", "question": "What is the default tolerance_seconds for webhook verification?", "expect": "answer", "expected_tokens": ["300"], "source": "hand-authored"},
+    {"id": "eval_007", "mode": "factual_lookup", "question": "What is the maximum allowed value of limit in list_events()?", "expect": "answer", "expected_tokens": ["200"], "source": "hand-authored"},
+    {"id": "eval_008", "mode": "factual_lookup", "question": "What is the default page size for list_events()?", "expect": "answer", "expected_tokens": ["50"], "source": "hand-authored"},
+    {"id": "eval_009", "mode": "factual_lookup", "question": "What is the default scope when calling TokenProvider.refresh()?", "expect": "answer", "expected_tokens": ["read:events"], "source": "hand-authored"},
+    {"id": "eval_010", "mode": "factual_lookup", "question": "Is HTTP error code 500 retryable according to the error reference?", "expect": "answer", "expected_tokens": ["retryable"], "source": "hand-authored"},
+    {"id": "eval_011", "mode": "factual_lookup", "question": "Is HTTP error code 429 (RATE_LIMITED) retryable according to the error reference?", "expect": "answer", "expected_tokens": ["retryable"], "source": "hand-authored"},
+    {"id": "eval_012", "mode": "factual_lookup", "question": "Which error code does the gateway return when the connection pool quota is exceeded?", "expect": "answer", "expected_tokens": ["POOL_QUOTA"], "source": "hand-authored"},
+    {"id": "eval_013", "mode": "factual_lookup", "question": "What is the default ttl_seconds for an access token minted by TokenProvider.refresh()?", "expect": "answer", "expected_tokens": ["3600"], "source": "hand-authored"},
+
+    {"id": "eval_014", "mode": "conceptual_explanation", "question": "Explain how Client.send() handles a RATE_LIMITED response from the gateway.", "expect": "answer", "expected_tokens": ["retry_backoff_ms"], "source": "hand-authored"},
+    {"id": "eval_015", "mode": "conceptual_explanation", "question": "Explain what happens when a webhook signature fails verification.", "expect": "answer", "expected_tokens": ["SignatureVerificationError"], "source": "hand-authored"},
+    {"id": "eval_016", "mode": "conceptual_explanation", "question": "Explain how cursor pagination works for list_events(), including has_more.", "expect": "answer", "expected_tokens": ["cursor"], "source": "hand-authored"},
+    {"id": "eval_017", "mode": "conceptual_explanation", "question": "Explain what changed in Client.connect()'s defaults between SDK v2 and v3.", "expect": "answer", "expected_tokens": ["pool_size"], "source": "hand-authored"},
+    {"id": "eval_018", "mode": "conceptual_explanation", "question": "Explain why API keys are scoped in the Nimbus SDK authentication model.", "expect": "answer", "expected_tokens": ["scope"], "source": "hand-authored"},
+
+    {"id": "eval_019", "mode": "unsupported_question", "question": "What is the default retry backoff for the Nimbus SDK's Go client?", "expect": "refuse", "source": "hand-authored"},
+    {"id": "eval_020", "mode": "unsupported_question", "question": "How do I deploy the Nimbus gateway to Kubernetes?", "expect": "refuse", "source": "hand-authored"},
+    {"id": "eval_021", "mode": "unsupported_question", "question": "Who won the 1998 FIFA World Cup final?", "expect": "refuse", "source": "hand-authored"},
+    {"id": "eval_022", "mode": "unsupported_question", "question": "What is the maximum webhook payload size accepted by WebhookVerifier?", "expect": "refuse", "source": "hand-authored"},
+
+    {"id": "eval_023", "mode": "version_specific", "question": "In Nimbus SDK v2, what is the default retry_backoff_ms on Client.send()?", "expect": "answer", "expected_tokens": ["250"], "expected_version": "v2", "source": "hand-authored"},
+    {"id": "eval_024", "mode": "version_specific", "question": "For SDK v2, what pool_size does Client.connect() use by default?", "expect": "answer", "expected_tokens": ["5"], "expected_version": "v2", "source": "hand-authored"},
+    {"id": "eval_025", "mode": "version_specific", "question": "Is SDK v2 still supported?", "expect": "answer", "expected_tokens": ["maintenance"], "expected_version": "v2", "source": "hand-authored"},
+
+    {"id": "eval_026", "mode": "ambiguous_question", "question": "How many retries do I get when I send a message?", "expect": "answer", "expected_tokens": ["5"], "source": "hand-authored"},
+    {"id": "eval_027", "mode": "ambiguous_question", "question": "What is the default pool_size for Client.connect()?", "expect": "answer", "expected_tokens": ["10"], "expected_version": "v3", "source": "week5_failure", "trace_id": "tr_20260824_131138_576c5d", "note": "Week 5 M1: this exact versionless question originally answered with the stale v2 value (5); re-run here against the current pipeline to verify the fix."},
+    {"id": "eval_028", "mode": "ambiguous_question", "question": "what are the error in the coer data", "expect": "refuse", "source": "week5_failure", "trace_id": "tr_20260826_141604_f8f24b", "note": "Week 5 vague/misspelled query that originally returned an incomplete off-topic (Core Bluetooth) answer from content no longer in this corpus; re-run here to verify it now refuses instead of confidently answering off-topic."}
+  ]
+}

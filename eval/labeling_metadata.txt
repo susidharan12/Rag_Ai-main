@@ -1,0 +1,31 @@
+Track E blind-labeling protocol
+================================
+
+Order of operations (verifiable via git log --oneline -- eval/):
+
+1. eval/eval_cases.json authored (28 cases, 5 taxonomy modes, 2 verbatim
+   Week 5 regression traces).
+2. eval/run_eval.py executed once against the live deterministic
+   extractive-v2 pipeline (no LLM key required - fully replayable) to
+   capture eval/results.json: the real answer text for all 28 cases.
+3. 25 of the 28 cases were selected for blind labeling (excludes eval_003,
+   eval_010, eval_013 - redundant factual_lookup questions; every other
+   case and every taxonomy mode is represented in the 25).
+4. eval/labels_25.json was hand-labeled by reading each of the 25 captured
+   answers from step 2 and judging, blind to any judge output (no judge
+   script existed yet at this point), whether it directly and correctly
+   answers its question. Binary only (0/1), no scale.
+5. This file and labels_25.json are committed to git BEFORE any judge
+   script (eval/judge.py or equivalent) is written or run.
+6. Only after that commit exists does Judge V1 get written and executed.
+
+No label in eval/labels_25.json was written, viewed, or changed after any
+judge output existed. If a label ever needs correcting, that correction is
+a new, separately committed change with its own justification - never a
+silent edit made to agree with a judge score.
+
+Timestamp of the labels file: 2026-09-04T07:22:37Z (see eval/labels_25.json
+created_utc). This file is committed in the same commit as labels_25.json;
+the commit hash is discoverable via `git log --oneline -1 -- eval/labels_25.json`
+after that commit lands, and is recorded in eval/TRACK_E_REPORT.md once the
+full protocol (through Judge V2) is complete.
