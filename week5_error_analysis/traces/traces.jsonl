@@ -5403,3 +5403,2827 @@
     "total": 13.2
   }
 }
+{
+  "trace_id": "tr_20260904_073325_1b9146",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default value and type of retry_backoff_ms on Client.send()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.6936,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 10050.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.62,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 10050.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+        "score": 0.623,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 10050.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+        "score": 0.4564,
+        "source_doc": "client_send.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 10050.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.4768,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 10050.5
+      }
+    ],
+    "latency_ms": 10050.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\nresponse = client.send(\n    message=\"order.created\",\n    topic=\"orders\",\n    retry_backoff_ms=750,\n)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0"
+    ],
+    "latency_ms": 10.7
+  },
+  "raw_output": "retry_backoff_ms default is 500. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 10050.5,
+    "generate": 10.7,
+    "total": 10061.2
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_21169c",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default timeout_ms for Client.send()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.6081,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.5078,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.4653,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.4161,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.4617,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.7
+      }
+    ],
+    "latency_ms": 6.7,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0"
+    ],
+    "latency_ms": 6.8
+  },
+  "raw_output": "timeout_ms default is 15000. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.7,
+    "generate": 6.8,
+    "total": 13.5
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_72756b",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "How many times does Client.send() retry by default?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.6691,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.5895,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.4736,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.5249,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+        "score": 0.4597,
+        "source_doc": "errors.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      }
+    ],
+    "latency_ms": 6.7,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0": "## Example\n\n```python\nfrom nimbus.errors import ApiError, TransportError\n\ntry:\n    client.send(message=\"ping\", topic=\"health\")\nexcept ApiError as e:\n    if e.retryable:\n        schedule_retry(e.code)\nexcept TransportError:\n    schedule_retry(\"TRANSPORT\")\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0"
+    ],
+    "latency_ms": 8.1
+  },
+  "raw_output": "max_retries default is 5. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.7,
+    "generate": 8.1,
+    "total": 14.8
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_459280",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default pool_size for Client.connect()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.6516,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.6615,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.5043,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+        "score": 0.3624,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+        "score": 0.3182,
+        "source_doc": "client_connect.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      }
+    ],
+    "latency_ms": 6.9,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\n| pool_size | int | 10 | no | Maximum concurrent connections held open to the gateway. |\n| keepalive_ms | int | 60000 | no | Interval between keepalive pings on idle connections. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client.connect(\n    api_key=\"nk_live_...\",\n    region=\"us-east\",\n    pool_size=20,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0"
+    ],
+    "latency_ms": 8.7
+  },
+  "raw_output": "pool_size default is 10. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.9,
+    "generate": 8.7,
+    "total": 15.6
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_a9ecc6",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the keepalive interval for Client.connect() connections?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.6669,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+        "score": 0.4761,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+        "score": 0.6062,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.4
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.5911,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.4
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.411,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.4
+      }
+    ],
+    "latency_ms": 7.4,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\n| pool_size | int | 10 | no | Maximum concurrent connections held open to the gateway. |\n| keepalive_ms | int | 60000 | no | Interval between keepalive pings on idle connections. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway; the v2 default is `5`. v2 is in maintenance mode, and v3 doubles the default `pool_size` to `10`. The `keepalive_ms` parameter does not exist in v2; keepalive behavior is fixed at 30 second intervals.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0"
+    ],
+    "latency_ms": 7.9
+  },
+  "raw_output": "keepalive_ms default is 60000. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.4,
+    "generate": 7.9,
+    "total": 15.3
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_cbdb78",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default tolerance_seconds for webhook verification?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+        "score": 0.6874,
+        "source_doc": "webhooks.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+        "score": 0.5022,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+        "score": 0.4942,
+        "source_doc": "webhooks.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.4181,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.323,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.5
+      }
+    ],
+    "latency_ms": 6.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0": "## WebhookVerifier.verify()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| payload | bytes | - | yes | Raw request body exactly as received. |\n| signature_header | str | - | yes | Value of the `X-Nimbus-Signature` header. |\n| secret | str | - | yes | The endpoint signing secret (`whsec_...`). |\n| tolerance_seconds | int | 300 | no | Maximum allowed clock skew for signed timestamps. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0": "# Webhooks\n\nNimbus delivers event callbacks to HTTPS endpoints you register in the dashboard. Every delivery is signed with the endpoint's signing secret so your server can verify the payload was produced by Nimbus and was not replayed. Deliveries are retried by the Nimbus delivery worker for up to 24 hours with exponential backoff, independent of anything configured in the SDK.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0": "## Notes\n\n`verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. The tolerance protects you against replay attacks; it does not need to match any server-side setting.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0"
+    ],
+    "latency_ms": 8.0
+  },
+  "raw_output": "tolerance_seconds default is 300. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.5,
+    "generate": 8.0,
+    "total": 14.5
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_0e11c6",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the maximum allowed value of limit in list_events()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+        "score": 0.4642,
+        "source_doc": "pagination.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.1
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+        "score": 0.5028,
+        "source_doc": "pagination.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.1
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+        "score": 0.4653,
+        "source_doc": "pagination.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.1
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0",
+        "score": 0.1885,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 7.1
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.2656,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.1
+      }
+    ],
+    "latency_ms": 7.1,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0": "## Notes\n\n`limit` accepts any integer from `1` to `200`. Requesting a `limit` above `200` raises a client-side `ValueError` before any request is sent; the server additionally rejects such requests with `400 INVALID_ARGUMENT`. In SDK v2 the maximum allowed `limit` was `100`; the cap was raised to `200` in v3.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0": "## Example\n\n```python\npage = client.list_events(limit=100, cursor=next_cursor)\nfor event in page.data:\n    process(event)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0": "## Parameters (list_events)\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| cursor | str | None | no | Opaque cursor from a previous response. |\n| limit | int | 50 | no | Page size, accepted range 1 to 200. |\n| created_after | str | None | no | ISO-8601 timestamp filter. |",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0": "5\n\nIn limited-overs cricket, each bowler can bowl only a fixed maximum number of overs.\n\nThe captain who wins the pre-match coin toss chooses whether to bat or field first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0"
+    ],
+    "latency_ms": 8.1
+  },
+  "raw_output": "limit maximum allowed value is 200. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.1,
+    "generate": 8.1,
+    "total": 15.2
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_cfbb13",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default page size for list_events()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+        "score": 0.4829,
+        "source_doc": "pagination.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 5.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+        "score": 0.5008,
+        "source_doc": "pagination.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 5.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+        "score": 0.2785,
+        "source_doc": "pagination.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 5.8
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.2335,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 5.8
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.1271,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 5.8
+      }
+    ],
+    "latency_ms": 5.8,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0": "## Parameters (list_events)\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| cursor | str | None | no | Opaque cursor from a previous response. |\n| limit | int | 50 | no | Page size, accepted range 1 to 200. |\n| created_after | str | None | no | ISO-8601 timestamp filter. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0": "## Example\n\n```python\npage = client.list_events(limit=100, cursor=next_cursor)\nfor event in page.data:\n    process(event)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0": "# Pagination\n\nList endpoints in the Nimbus API are cursor-paginated. Every list response contains `data`, a `next_cursor` for the following page, and has_more. Pass the cursor back via the `cursor` parameter until `has_more` is false. Cursors expire after 24 hours; treat them as opaque strings and never construct them yourself.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p22:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0"
+    ],
+    "latency_ms": 7.1
+  },
+  "raw_output": "limit default is 50. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 5.8,
+    "generate": 7.1,
+    "total": 12.9
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_1f78d8",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default scope when calling TokenProvider.refresh()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+        "score": 0.6337,
+        "source_doc": "auth.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+        "score": 0.607,
+        "source_doc": "auth.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+        "score": 0.4134,
+        "source_doc": "auth.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.3007,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.2328,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      }
+    ],
+    "latency_ms": 7.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0": "## TokenProvider.refresh()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | The key to exchange for a short-lived access token. |\n| scope | str | \"read:events\" | no | Requested scope; must be a subset of the key's scopes. |\n| ttl_seconds | int | 3600 | no | Lifetime of the minted access token. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0": "## Notes\n\n`refresh()` mints an access token valid for `ttl_seconds`. When `scope` is omitted the token defaults to `read:events`; requesting a scope outside the key's grants raises `InsufficientScopeError`. Access tokens are cached per (scope, ttl) pair until 60 seconds before expiry.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0": "## Example\n\n```python\nfrom nimbus.auth import TokenProvider\n\nprovider = TokenProvider(api_key=\"nk_live_...\")\ntoken = provider.refresh(scope=\"write:events\", ttl_seconds=1800)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0"
+    ],
+    "latency_ms": 8.1
+  },
+  "raw_output": "scope default is \"read:events\". [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.5,
+    "generate": 8.1,
+    "total": 15.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_c3e8e2",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Is HTTP error code 500 retryable according to the error reference?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+        "score": 0.6087,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.1
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.5446,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.1
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.5309,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.1
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.4403,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.1
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.464,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.1
+      }
+    ],
+    "latency_ms": 8.1,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0": "## Codes\n\n| code | http | retryable | meaning |\n|---|---|---|---|\n| INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. |\n| UNAUTHENTICATED | 401 | no | Missing or revoked API key. |\n| INSUFFICIENT_SCOPE | 403 | no | Key lacks the requested scope. |\n| RATE_LIMITED | 429 | yes | Too many requests; back off and retry. |\n| POOL_QUOTA_EXCEEDED | 429 | yes | Concurrent connection quota exceeded. |\n| INTERNAL | 500 | yes | Gateway-side fault. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0"
+    ],
+    "latency_ms": 8.2
+  },
+  "raw_output": "HTTP 500 (INTERNAL) is retryable per the error reference. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 8.1,
+    "generate": 8.2,
+    "total": 16.3
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_0d494e",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Is HTTP error code 429 (RATE_LIMITED) retryable according to the error reference?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+        "score": 0.6427,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.5036,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.521,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.517,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.4766,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      }
+    ],
+    "latency_ms": 7.8,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0": "## Codes\n\n| code | http | retryable | meaning |\n|---|---|---|---|\n| INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. |\n| UNAUTHENTICATED | 401 | no | Missing or revoked API key. |\n| INSUFFICIENT_SCOPE | 403 | no | Key lacks the requested scope. |\n| RATE_LIMITED | 429 | yes | Too many requests; back off and retry. |\n| POOL_QUOTA_EXCEEDED | 429 | yes | Concurrent connection quota exceeded. |\n| INTERNAL | 500 | yes | Gateway-side fault. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0"
+    ],
+    "latency_ms": 8.4
+  },
+  "raw_output": "HTTP 429 (RATE_LIMITED) is retryable per the error reference. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.8,
+    "generate": 8.4,
+    "total": 16.2
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_6c0c65",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Which error code does the gateway return when the connection pool quota is exceeded?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.6506,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+        "score": 0.6109,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.4834,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+        "score": 0.562,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.4514,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      }
+    ],
+    "latency_ms": 7.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0": "## Codes\n\n| code | http | retryable | meaning |\n|---|---|---|---|\n| INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. |\n| UNAUTHENTICATED | 401 | no | Missing or revoked API key. |\n| INSUFFICIENT_SCOPE | 403 | no | Key lacks the requested scope. |\n| RATE_LIMITED | 429 | yes | Too many requests; back off and retry. |\n| POOL_QUOTA_EXCEEDED | 429 | yes | Concurrent connection quota exceeded. |\n| INTERNAL | 500 | yes | Gateway-side fault. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway; the v2 default is `5`. v2 is in maintenance mode, and v3 doubles the default `pool_size` to `10`. The `keepalive_ms` parameter does not exist in v2; keepalive behavior is fixed at 30 second intervals.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0"
+    ],
+    "latency_ms": 9.7
+  },
+  "raw_output": "Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.5,
+    "generate": 9.7,
+    "total": 17.1
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_efdf42",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default ttl_seconds for an access token minted by TokenProvider.refresh()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+        "score": 0.7202,
+        "source_doc": "auth.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+        "score": 0.6759,
+        "source_doc": "auth.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+        "score": 0.4585,
+        "source_doc": "auth.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.2977,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+        "score": 0.2355,
+        "source_doc": "webhooks.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      }
+    ],
+    "latency_ms": 8.2,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0": "## TokenProvider.refresh()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | The key to exchange for a short-lived access token. |\n| scope | str | \"read:events\" | no | Requested scope; must be a subset of the key's scopes. |\n| ttl_seconds | int | 3600 | no | Lifetime of the minted access token. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0": "## Notes\n\n`refresh()` mints an access token valid for `ttl_seconds`. When `scope` is omitted the token defaults to `read:events`; requesting a scope outside the key's grants raises `InsufficientScopeError`. Access tokens are cached per (scope, ttl) pair until 60 seconds before expiry.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0": "## Example\n\n```python\nfrom nimbus.auth import TokenProvider\n\nprovider = TokenProvider(api_key=\"nk_live_...\")\ntoken = provider.refresh(scope=\"write:events\", ttl_seconds=1800)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0": "## WebhookVerifier.verify()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| payload | bytes | - | yes | Raw request body exactly as received. |\n| signature_header | str | - | yes | Value of the `X-Nimbus-Signature` header. |\n| secret | str | - | yes | The endpoint signing secret (`whsec_...`). |\n| tolerance_seconds | int | 300 | no | Maximum allowed clock skew for signed timestamps. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0"
+    ],
+    "latency_ms": 10.1
+  },
+  "raw_output": "ttl_seconds default is 3600. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 8.2,
+    "generate": 10.1,
+    "total": 18.3
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_d4e526",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Explain how Client.send() handles a RATE_LIMITED response from the gateway.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.6047,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.4495,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+        "score": 0.3685,
+        "source_doc": "errors.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.3986,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.8
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.4627,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.8
+      }
+    ],
+    "latency_ms": 7.8,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0": "## Codes\n\n| code | http | retryable | meaning |\n|---|---|---|---|\n| INVALID_ARGUMENT | 400 | no | Malformed request; fix the parameters. |\n| UNAUTHENTICATED | 401 | no | Missing or revoked API key. |\n| INSUFFICIENT_SCOPE | 403 | no | Key lacks the requested scope. |\n| RATE_LIMITED | 429 | yes | Too many requests; back off and retry. |\n| POOL_QUOTA_EXCEEDED | 429 | yes | Concurrent connection quota exceeded. |\n| INTERNAL | 500 | yes | Gateway-side fault. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "definition"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0"
+    ],
+    "latency_ms": 9.0
+  },
+  "raw_output": "`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.8,
+    "generate": 9.0,
+    "total": 16.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_bce264",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Explain what happens when a webhook signature fails verification.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+        "score": 0.6674,
+        "source_doc": "webhooks.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+        "score": 0.5346,
+        "source_doc": "webhooks.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+        "score": 0.4924,
+        "source_doc": "webhooks.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+        "score": 0.4955,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.3124,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      }
+    ],
+    "latency_ms": 8.0,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0": "## WebhookVerifier.verify()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| payload | bytes | - | yes | Raw request body exactly as received. |\n| signature_header | str | - | yes | Value of the `X-Nimbus-Signature` header. |\n| secret | str | - | yes | The endpoint signing secret (`whsec_...`). |\n| tolerance_seconds | int | 300 | no | Maximum allowed clock skew for signed timestamps. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0": "## Example\n\n```python\nfrom nimbus.webhooks import WebhookVerifier\n\nverifier = WebhookVerifier(secret=\"whsec_...\")\nevent = verifier.verify(payload=request.body,\n                        signature_header=request.headers[\"X-Nimbus-Signature\"])\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0": "## Notes\n\n`verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. The tolerance protects you against replay attacks; it does not need to match any server-side setting.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0": "# Webhooks\n\nNimbus delivers event callbacks to HTTPS endpoints you register in the dashboard. Every delivery is signed with the endpoint's signing secret so your server can verify the payload was produced by Nimbus and was not replayed. Deliveries are retried by the Nimbus delivery worker for up to 24 hours with exponential backoff, independent of anything configured in the SDK.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0"
+    ],
+    "latency_ms": 9.3
+  },
+  "raw_output": "Value of the `X-Nimbus-Signature` header. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0] signature_header=request.headers[\"X-Nimbus-Signature\"]) [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0] `verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0] The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 8.0,
+    "generate": 9.3,
+    "total": 17.3
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_41d305",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Explain how cursor pagination works for list_events(), including has_more.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+        "score": 0.565,
+        "source_doc": "pagination.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 9.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+        "score": 0.633,
+        "source_doc": "pagination.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 9.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+        "score": 0.5352,
+        "source_doc": "pagination.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 9.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+        "score": 0.2336,
+        "source_doc": "pagination.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 9.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.1441,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 9.5
+      }
+    ],
+    "latency_ms": 9.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0": "# Pagination\n\nList endpoints in the Nimbus API are cursor-paginated. Every list response contains `data`, a `next_cursor` for the following page, and has_more. Pass the cursor back via the `cursor` parameter until `has_more` is false. Cursors expire after 24 hours; treat them as opaque strings and never construct them yourself.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0": "## Example\n\n```python\npage = client.list_events(limit=100, cursor=next_cursor)\nfor event in page.data:\n    process(event)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0": "## Parameters (list_events)\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| cursor | str | None | no | Opaque cursor from a previous response. |\n| limit | int | 50 | no | Page size, accepted range 1 to 200. |\n| created_after | str | None | no | ISO-8601 timestamp filter. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0": "## Notes\n\n`limit` accepts any integer from `1` to `200`. Requesting a `limit` above `200` raises a client-side `ValueError` before any request is sent; the server additionally rejects such requests with `400 INVALID_ARGUMENT`. In SDK v2 the maximum allowed `limit` was `100`; the cap was raised to `200` in v3.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "definition"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p22:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p19:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p17:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p34:c0"
+    ],
+    "latency_ms": 11.2
+  },
+  "raw_output": "List endpoints in the Nimbus API are cursor-paginated. Every list response contains `data`, a `next_cursor` for the following page, and has_more. Pass the cursor back via the `cursor` parameter until `has_more` is false. Cursors expire after 24 hours; treat them as opaque strings and never construct them yourself.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 9.5,
+    "generate": 11.2,
+    "total": 20.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_f98655",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Explain what changed in Client.connect()'s defaults between SDK v2 and v3.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.8182,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.4799,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.5658,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.4495,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.3872,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      }
+    ],
+    "latency_ms": 7.0,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "definition"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0"
+    ],
+    "latency_ms": 7.8
+  },
+  "raw_output": "**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.0,
+    "generate": 7.8,
+    "total": 14.8
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_dc1123",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Explain why API keys are scoped in the Nimbus SDK authentication model.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+        "score": 0.7077,
+        "source_doc": "auth.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+        "score": 0.3903,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+        "score": 0.4026,
+        "source_doc": "auth.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.4022,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+        "score": 0.3856,
+        "source_doc": "client_connect.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.2
+      }
+    ],
+    "latency_ms": 8.2,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0": "# Authentication\n\nThe SDK authenticates with API keys. Keys are scoped: a key issued for read-only dashboards cannot publish events. Create and rotate keys in the Nimbus dashboard under Settings, API keys. The SDK never transmits the key to any endpoint other than the gateway of your selected region.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0": "# Webhooks\n\nNimbus delivers event callbacks to HTTPS endpoints you register in the dashboard. Every delivery is signed with the endpoint's signing secret so your server can verify the payload was produced by Nimbus and was not replayed. Deliveries are retried by the Nimbus delivery worker for up to 24 hours with exponential backoff, independent of anything configured in the SDK.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0": "## Example\n\n```python\nfrom nimbus.auth import TokenProvider\n\nprovider = TokenProvider(api_key=\"nk_live_...\")\ntoken = provider.refresh(scope=\"write:events\", ttl_seconds=1800)\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client.connect(\n    api_key=\"nk_live_...\",\n    region=\"us-east\",\n    pool_size=20,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "definition"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0"
+    ],
+    "latency_ms": 9.4
+  },
+  "raw_output": "The SDK authenticates with API keys. Keys are scoped: a key issued for read-only dashboards cannot publish events. Create and rotate keys in the Nimbus dashboard under Settings, API keys. The SDK never transmits the key to any endpoint other than the gateway of your selected region.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 8.2,
+    "generate": 9.4,
+    "total": 17.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_b12516",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the default retry backoff for the Nimbus SDK's Go client?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.5888,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.634,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.6327,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+        "score": 0.5602,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+        "score": 0.5327,
+        "source_doc": "client_send.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.5
+      }
+    ],
+    "latency_ms": 7.5,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0": "# Webhooks\n\nNimbus delivers event callbacks to HTTPS endpoints you register in the dashboard. Every delivery is signed with the endpoint's signing secret so your server can verify the payload was produced by Nimbus and was not replayed. Deliveries are retried by the Nimbus delivery worker for up to 24 hours with exponential backoff, independent of anything configured in the SDK.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\nresponse = client.send(\n    message=\"order.created\",\n    topic=\"orders\",\n    retry_backoff_ms=750,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "go"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0"
+    ],
+    "latency_ms": 8.4
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 7.5,
+    "generate": 8.4,
+    "total": 15.9
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_134263",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "How do I deploy the Nimbus gateway to Kubernetes?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+        "score": 0.5137,
+        "source_doc": "auth.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.4901,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+        "score": 0.4872,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.4621,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.0
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+        "score": 0.519,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.0
+      }
+    ],
+    "latency_ms": 7.0,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0": "# Authentication\n\nThe SDK authenticates with API keys. Keys are scoped: a key issued for read-only dashboards cannot publish events. Create and rotate keys in the Nimbus dashboard under Settings, API keys. The SDK never transmits the key to any endpoint other than the gateway of your selected region.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\n| pool_size | int | 10 | no | Maximum concurrent connections held open to the gateway. |\n| keepalive_ms | int | 60000 | no | Interval between keepalive pings on idle connections. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\n| pool_size | int | 5 | no | Maximum concurrent connections held open to the gateway. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "anchor_absent",
+      "anchor": "Kubernetes"
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0"
+    ],
+    "latency_ms": 8.1
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 7.0,
+    "generate": 8.1,
+    "total": 15.1
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_a2cdc8",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "Who won the 1998 FIFA World Cup final?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0",
+        "score": 0.2366,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 3,
+        "sdk_version": "",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p30:c0",
+        "score": 0.1819,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 30,
+        "sdk_version": "",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p23:c0",
+        "score": 0.1358,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 23,
+        "sdk_version": "",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p4:c0",
+        "score": 0.172,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 4,
+        "sdk_version": "",
+        "trace_time_ms": 8.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0",
+        "score": 0.1105,
+        "source_doc": "Complete_Guide_to_Major_World_Sports.pdf",
+        "page_number": 33,
+        "sdk_version": "",
+        "trace_time_ms": 8.2
+      }
+    ],
+    "latency_ms": 8.2,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0": "2\n1. Football (Soccer)\nThe world's most popular team sport, played in nearly every country.\nPlayers\n11 per side (plus substitutes)\nDuration\n90 minutes (two 45-minute halves) + stoppage time\nEquipment\nFootball (size 5), goals, shin guards\nGoverning Body\nFIFA\nOverview\nFootball is played between two teams of eleven players on a rectangular grass or turf pitch with a goal\nat each end. It is the most widely played and watched sport on Earth, contested at every level from\nstreet games to the FIFA World Cup.\nObjective\nTo score more goals than the opposing team by getting the ball into the opponent's goal, using any part\nof the body except the hands and arms (except for the goalkeeper within their penalty area).\nHow It's Played\n\nTwo teams of 11 (including a goalkeeper) try to move the ball down the field using their feet, chest,\nor head.\n\nPlayers pass, dribble, and shoot the ball, but cannot intentionally touch it with their hands or arms.\n\nOnly the goalkeeper may use their hands, and only within their own penalty area.\n\nThe match is divided into two 45-minute halves with a short half-time break.\n\nIf the score is tied at the end of regulation in knockout competitions, extra time and penalty\nshootouts may follow.\nScoring\n\nA goal is scored when the entire ball crosses the goal line between the posts and under the\ncrossbar.\n\nEach goal counts as one point; the team with more goals at full time wins.\n\nIf scores are level, the match may end in a draw (league play) or go to extra time/penalties\n(knockouts).\nKey Rules\n\nOffside: an attacking player cannot receive the ball if they are nearer the goal line than both the ball\nand the second-last defender when the ball is played to them.",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p30:c0": "29\n18. Handball\nAn indoor team sport combining elements of basketball and football, played with the hands.\nPlayers\n7 per side on court (6 outfield + 1 goalkeeper)\nDuration\n2 halves of 30 minutes\nEquipment\nHandball, goal (2 m x 3 m)\nGoverning Body\nIHF\nOverview\nHandball is played by two teams of seven on an indoor court, with players throwing a ball with their\nhands to score in a goal defended by a goalkeeper. It is especially popular across Europe.\nObjective\nTo score more goals than the opposing team by throwing the ball into the opponent's goal.\nHow It's Played\n\nPlayers move the ball by passing, bouncing (dribbling), or taking up to three steps while holding it.\n\nAttackers try to break through the defense and shoot from within or near a marked 6-metre zone in\nfront of the goal.\n\nOnly the goalkeeper is allowed to defend inside the 6-metre goal area.\n\nThe game is played in two 30-minute halves with a short half-time interval.\nScoring\n\nA goal is scored when the ball fully crosses the goal line into the net; each goal counts as 1 point.\n\nThe team with the most goals at the end of the match wins.\n\nTied knockout matches typically go to a penalty shootout after extra time.\nKey Rules\n\nA player may hold the ball for a maximum of 3 seconds and take a maximum of 3 steps before\npassing, dribbling, or shooting.\n\nOutfield players cannot step inside the goalkeeper's 6-metre area while playing the ball.\n\nPhysical contact such as pushing or holding an opponent's arm is penalized as a foul.\n\nRepeated fouls can lead to a 2-minute suspension, leaving the offending team short-handed.",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p23:c0": "22\n\nAthletes are subject to strict anti-doping testing under World Athletics rules.",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p4:c0": "3\n\nFouls such as tripping, pushing, or handling the ball result in a free kick for the opposing team.\n\nA penalty kick is awarded for a foul committed inside the defender's own penalty area.\n\nYellow cards are cautions; a second yellow or a straight red card sends a player off for the rest of\nthe match.\n\nThrow-ins restart play when the ball crosses the sideline; corner kicks and goal kicks restart play\nwhen it crosses the goal line.",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0": "32\n20. Formula 1 Racing\nThe pinnacle of open-wheel motorsport, contested by elite drivers and constructor teams.\nCompetitors\n20 drivers, 10 teams\nRace Length\n~305 km per Grand Prix\nEquipment\nSingle-seat open-wheel race car\nGoverning Body\nFIA\nOverview\nFormula 1 is a series of Grand Prix races held on closed circuits and street tracks around the world,\nwhere drivers pilot highly engineered single-seat cars for both individual and constructor (team)\nchampionships.\nObjective\nTo complete a set number of laps faster than every other driver, and over a season, accumulate the\nmost championship points for both drivers and constructors.\nHow It's Played\n\nDrivers first compete in qualifying sessions to determine their starting position ('grid') for the race.\n\nRaces are run over a fixed number of laps of a circuit, typically totaling around 305 kilometres.\n\nDrivers must make at least one pit stop during the race to change tyres, which are engineered for\ndifferent track and weather conditions.\n\nStrategy, car performance, and driver skill all combine to determine the finishing order.\nScoring\n\nPoints are awarded to the top 10 finishers in each race, with 25 points for first place, descending to\n1 point for tenth.\n\nAn additional point is available for the fastest lap of the race, if achieved by a top-10 finisher.\n\nPoints accumulate across the season to determine the Drivers' Champion and Constructors'\nChampion.\nKey Rules\n\nCars must conform to strict technical regulations on dimensions, weight, and power unit\nspecifications.\n\nOvertaking rules and track limits are enforced by race stewards, who can issue time or grid\npenalties for infringements."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "low_score",
+      "top_score": 0.2366
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p30:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p23:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p4:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p9:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p24:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p16:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p31:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p21:c0",
+      "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p17:c0"
+    ],
+    "latency_ms": 9.3
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 8.2,
+    "generate": 9.3,
+    "total": 17.5
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_30ca3a",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "What is the maximum webhook payload size accepted by WebhookVerifier?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+        "score": 0.5948,
+        "source_doc": "webhooks.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+        "score": 0.4489,
+        "source_doc": "webhooks.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+        "score": 0.3899,
+        "source_doc": "webhooks.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.3212,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.2854,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 8.0
+      }
+    ],
+    "latency_ms": 8.0,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0": "## WebhookVerifier.verify()\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| payload | bytes | - | yes | Raw request body exactly as received. |\n| signature_header | str | - | yes | Value of the `X-Nimbus-Signature` header. |\n| secret | str | - | yes | The endpoint signing secret (`whsec_...`). |\n| tolerance_seconds | int | 300 | no | Maximum allowed clock skew for signed timestamps. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0": "## Example\n\n```python\nfrom nimbus.webhooks import WebhookVerifier\n\nverifier = WebhookVerifier(secret=\"whsec_...\")\nevent = verifier.verify(payload=request.body,\n                        signature_header=request.headers[\"X-Nimbus-Signature\"])\n```",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0": "# Webhooks\n\nNimbus delivers event callbacks to HTTPS endpoints you register in the dashboard. Every delivery is signed with the endpoint's signing secret so your server can verify the payload was produced by Nimbus and was not replayed. Deliveries are retried by the Nimbus delivery worker for up to 24 hours with exponential backoff, independent of anything configured in the SDK.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0"
+    ],
+    "latency_ms": 9.1
+  },
+  "raw_output": "Page size, accepted range 1 to 200. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 8.0,
+    "generate": 9.1,
+    "total": 17.2
+  }
+}
+{
+  "trace_id": "tr_20260904_073325_1303a5",
+  "ts_utc": "2026-09-04T07:33:25Z",
+  "surface": "eval",
+  "question": "In Nimbus SDK v2, what is the default retry_backoff_ms on Client.send()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.6219,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.9
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.6938,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.9
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+        "score": 0.5318,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 7.9
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+        "score": 0.5976,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.9
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+        "score": 0.6159,
+        "source_doc": "client_send.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 7.9
+      }
+    ],
+    "latency_ms": 7.9,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0": "# Client.send()\n\n`Client.send()` publishes a single event message to the Nimbus gateway and waits for an broker acknowledgement. It is the primary write path of the SDK and is safe to call concurrently from multiple threads on a shared `Client` instance. The call blocks until either the gateway acknowledges the event or the configured timeout elapses, whichever comes first.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\nresponse = client.send(\n    message=\"order.created\",\n    topic=\"orders\",\n    retry_backoff_ms=750,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0"
+    ],
+    "latency_ms": 7.8
+  },
+  "raw_output": "retry_backoff_ms default is 250. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 7.9,
+    "generate": 7.8,
+    "total": 15.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073326_d24c76",
+  "ts_utc": "2026-09-04T07:33:26Z",
+  "surface": "eval",
+  "question": "For SDK v2, what pool_size does Client.connect() use by default?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.7761,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+        "score": 0.5285,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.6232,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.5773,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.7
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.3302,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.7
+      }
+    ],
+    "latency_ms": 6.7,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway; the v2 default is `5`. v2 is in maintenance mode, and v3 doubles the default `pool_size` to `10`. The `keepalive_ms` parameter does not exist in v2; keepalive behavior is fixed at 30 second intervals.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0"
+    ],
+    "latency_ms": 9.5
+  },
+  "raw_output": "pool_size default is 5. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.7,
+    "generate": 9.5,
+    "total": 16.2
+  }
+}
+{
+  "trace_id": "tr_20260904_073326_5ddfd2",
+  "ts_utc": "2026-09-04T07:33:26Z",
+  "surface": "eval",
+  "question": "Is SDK v2 still supported?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.3811,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+        "score": 0.3126,
+        "source_doc": "client_send.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.2983,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+        "score": 0.3815,
+        "source_doc": "pagination.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.3205,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.9
+      }
+    ],
+    "latency_ms": 6.9,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0": "# Client.send()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.send()` publishes a single event message to the Nimbus gateway and blocks until acknowledgement. The v2 signature is compatible with v3 for the `message` and `topic` parameters, but the tuning defaults differ.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0": "## Notes\n\n`limit` accepts any integer from `1` to `200`. Requesting a `limit` above `200` raises a client-side `ValueError` before any request is sent; the server additionally rejects such requests with `400 INVALID_ARGUMENT`. In SDK v2 the maximum allowed `limit` was `100`; the cap was raised to `200` in v3.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0"
+    ],
+    "latency_ms": 6.5
+  },
+  "raw_output": "Yes - **v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. [c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.9,
+    "generate": 6.5,
+    "total": 13.4
+  }
+}
+{
+  "trace_id": "tr_20260904_073326_4a87a4",
+  "ts_utc": "2026-09-04T07:33:26Z",
+  "surface": "eval",
+  "question": "How many retries do I get when I send a message?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.4654,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.4278,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+        "score": 0.4034,
+        "source_doc": "errors.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+        "score": 0.465,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+        "score": 0.2575,
+        "source_doc": "client_send.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      }
+    ],
+    "latency_ms": 6.8,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0": "## Notes\n\nThe `retryable` column is the source of truth for automatic retry logic in the SDK itself; `send()` already retries retryable codes up to `max_retries` times. Application code should still catch `NimbusError` to surface permanent failures.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 250 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 30000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 3 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\nresponse = client.send(\n    message=\"order.created\",\n    topic=\"orders\",\n    retry_backoff_ms=750,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0"
+    ],
+    "latency_ms": 7.9
+  },
+  "raw_output": "max_retries default is 5. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.8,
+    "generate": 7.9,
+    "total": 14.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073326_fa0b86",
+  "ts_utc": "2026-09-04T07:33:26Z",
+  "surface": "eval",
+  "question": "What is the default pool_size for Client.connect()?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+        "score": 0.6516,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+        "score": 0.6615,
+        "source_doc": "client_connect.md",
+        "page_number": 1,
+        "sdk_version": "v2",
+        "trace_time_ms": 6.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.5043,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+        "score": 0.3624,
+        "source_doc": "client_connect.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+        "score": 0.3182,
+        "source_doc": "client_connect.md",
+        "page_number": 3,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.2
+      }
+    ],
+    "latency_ms": 6.2,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": "# Client.connect()\n\n`Client.connect()` establishes the persistent connection pool used by all subsequent calls on the returned `Client`. Calling it is optional: the first `send()` will connect lazily with the same defaults. Explicit connects are recommended for latency-sensitive services so the pool warms up before the first request.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": "# Client.connect()\n\n**v2 is in maintenance mode.** Only security fixes are shipped; new integrations must use SDK v3. `Client.connect()` establishes the connection pool used by subsequent calls. The v2 pool defaults are smaller because the v2 gateway accepted fewer concurrent streams per key.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| api_key | str | - | yes | Nimbus API key, prefixed `nk_live_` or `nk_test_`. |\n| region | str | \"eu-west\" | no | Gateway region to connect against. |\n| pool_size | int | 10 | no | Maximum concurrent connections held open to the gateway. |\n| keepalive_ms | int | 60000 | no | Interval between keepalive pings on idle connections. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0": "## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client.connect(\n    api_key=\"nk_live_...\",\n    region=\"us-east\",\n    pool_size=20,\n)\n```"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "strategy": "focused",
+      "max_sentences": 4
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p1:c0"
+    ],
+    "latency_ms": 7.5
+  },
+  "raw_output": "pool_size default is 10. [c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0]",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 6.2,
+    "generate": 7.5,
+    "total": 13.7
+  }
+}
+{
+  "trace_id": "tr_20260904_073326_c648d8",
+  "ts_utc": "2026-09-04T07:33:26Z",
+  "surface": "eval",
+  "question": "what are the error in the coer data",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 66,
+    "documents_indexed": 9,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+        "score": 0.2274,
+        "source_doc": "errors.md",
+        "page_number": 1,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 2,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+        "score": 0.2353,
+        "source_doc": "client_send.md",
+        "page_number": 2,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 3,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+        "score": 0.2135,
+        "source_doc": "client_send.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 4,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+        "score": 0.2304,
+        "source_doc": "webhooks.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      },
+      {
+        "rank": 5,
+        "chunk_id": "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+        "score": 0.1676,
+        "source_doc": "client_connect.md",
+        "page_number": 4,
+        "sdk_version": "v3",
+        "trace_time_ms": 6.8
+      }
+    ],
+    "latency_ms": 6.8,
+    "retrieved_texts": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0": "# Error handling\n\nAll SDK exceptions derive from `NimbusError`. Network-level failures raise `TransportError`; gateway rejections raise `ApiError` with a machine-readable `code` matching the table below. Retryable errors are safe to retry with backoff; non-retryable ones indicate a problem with the request itself and will fail again unchanged.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0": "## Parameters\n\n| parameter | type | default | required | description |\n|---|---|---|---|---|\n| message | str | - | yes | Event payload; must be valid JSON-serializable data. |\n| topic | str | - | yes | Target topic, e.g. `order.created`. |\n| retry_backoff_ms | int | 500 | no | Base backoff between retries after a failed send. |\n| timeout_ms | int | 15000 | no | Total wall-clock budget for the send including retries. |\n| max_retries | int | 5 | no | Maximum retry attempts before raising `SendError`. |",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0": "## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts. When all retries are exhausted the method raises `SendError` with the last gateway response attached under `e.response`. In SDK v2 the default `timeout_ms` was `30000`; v3 halved it to `15000` to fail fast during incidents.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0": "## Notes\n\n`verify()` raises `SignatureVerificationError` when the signature does not match or when the signed timestamp is older than `tolerance_seconds`. The tolerance protects you against replay attacks; it does not need to match any server-side setting.",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0": "## Notes\n\n`pool_size` sets the maximum number of concurrent TCP connections held open to the gateway. In SDK v2 the default `pool_size` was `5`; v3 doubled it to `10`. Raising `pool_size` above 32 requires a written quota increase from Nimbus support; the gateway rejects handshakes beyond the quota with error code `POOL_QUOTA_EXCEEDED`."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "low_score",
+      "top_score": 0.2353
+    },
+    "context_chunk_ids": [
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0",
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0"
+    ],
+    "latency_ms": 8.3
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 6.8,
+    "generate": 8.3,
+    "total": 15.1
+  }
+}
+{
+  "trace_id": "tr_20260904_074721_ca6678",
+  "ts_utc": "2026-09-04T07:47:21Z",
+  "surface": "api",
+  "question": "hjahsdfasf",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 100,
+    "documents_indexed": 11,
+    "retrieved": [],
+    "latency_ms": 10844.9,
+    "retrieved_texts": {}
+  },
+  "generation": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "params": {
+      "temperature": 0.2,
+      "max_tokens": 1024
+    },
+    "context_chunk_ids": [],
+    "latency_ms": 0.0
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 10844.9,
+    "generate": 0.0,
+    "total": 10844.9
+  }
+}
+{
+  "trace_id": "tr_20260904_074953_be0223",
+  "ts_utc": "2026-09-04T07:49:53Z",
+  "surface": "api",
+  "question": "Show me how to verify a webhook signature in Python.",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 34,
+    "documents_indexed": 2,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "android-development-documentation-d66ddc:p6:c0",
+        "score": 0.1241,
+        "source_doc": "Android_Development_Documentation.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 12.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "android-development-documentation-d66ddc:p13:c0",
+        "score": 0.1161,
+        "source_doc": "Android_Development_Documentation.pdf",
+        "page_number": 13,
+        "sdk_version": "",
+        "trace_time_ms": 12.0
+      }
+    ],
+    "latency_ms": 12.0,
+    "retrieved_texts": {
+      "android-development-documentation-d66ddc:p6:c0": "| `-- mipmap/ // launcher icons\n`-- build.gradle.kts\nThe AndroidManifest.xml\nEvery app has exactly one manifest file, which declares the app's package name, its components (Activities, Services,\nReceivers, Providers), the permissions it needs, the hardware/software features it requires, and its minimum/target API\nlevels. The system reads this file before any of your code runs.\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\">\n<uses-permission android:name=\"android.permission.INTERNET\" />\n<application android:label=\"@string/app_name\" ...>\n<activity android:name=\".MainActivity\" android:exported=\"true\">\n<intent-filter>\n<action android:name=\"android.intent.action.MAIN\" />\n<category android:name=\"android.intent.category.LAUNCHER\" />\n</intent-filter>\n</activity>\n</application>\n</manifest>\nThe Resource System\nAndroid encourages separating content from code through the res/ directory. Strings, colors, dimensions, and layouts are\nreferenced by ID (for example R.string.app_name) rather than hard-coded, which is what makes automatic localization,\ndark-mode theming, and screen-density scaling possible without touching business logic.\n\nvalues/strings.xml — user-visible text, required for localization.\n\nvalues-night/ — alternate resources automatically applied in dark mode.\n\nvalues-hi/, values-fr/ — locale-specific resource sets, chosen automatically at runtime based on device language.\n\ndrawable-xxhdpi/ and similar buckets — density-specific image assets.\nCHAPTER 5\nActivities and the Activity Lifecycle\nAn Activity represents a single, focused screen that a user can interact with — for example, an email app might have one\nActivity to show a list of messages and another to compose a new one. The Android system manages every Activity\nthrough a well-defined lifecycle of callback methods, and understanding this lifecycle is one of the most important skills in\nAndroid development, because getting it wrong causes memory leaks, crashes on rotation, and lost user data.\nThe Lifecycle Callbacks\nclass MainActivity : ComponentActivity() {\noverride fun onCreate(savedInstanceState: Bundle?) {\nsuper.onCreate(savedInstanceState)\n// Inflate UI, one-time initialization\n}\noverride fun onStart() { super.onStart() } // becoming visible\noverride fun onResume() { super.onResume() } // gaining focus\noverride fun onPause() { super.onPause() } // losing focus\noverride fun onStop() { super.onStop() } // no longer visible\noverride fun onDestroy() { super.onDestroy() } // being destroyed\n}\n\nonCreate() — called once when the Activity is first created; set up views and restore any saved state here.\n\nonStart() — the Activity is becoming visible to the user.\n\nonResume() — the Activity is in the foreground and receiving input; this is where you resume animations, camera\npreviews, or sensor listeners.",
+      "android-development-documentation-d66ddc:p13:c0": "Defining the API Interface\ninterface ApiService {\n@GET(\"users/{id}\")\nsuspend fun getUser(@Path(\"id\") id: Int): User\n@POST(\"users\")\nsuspend fun createUser(@Body user: NewUser): User\n}\nBuilding the Retrofit Client\nval okHttpClient = OkHttpClient.Builder()\n.addInterceptor(HttpLoggingInterceptor().apply {\nlevel = HttpLoggingInterceptor.Level.BODY\n})\n.connectTimeout(30, TimeUnit.SECONDS)\n.build()\nval retrofit = Retrofit.Builder()\n.baseUrl(\"https://api.example.com/\")\n.client(okHttpClient)\n.addConverterFactory(GsonConverterFactory.create())\n.build()\nval apiService = retrofit.create(ApiService::class.java)\nCalling It from a Coroutine\nviewModelScope.launch {\ntry {\nval user = apiService.getUser(id = 42)\n_uiState.value = UiState.Success(user)\n} catch (e: IOException) {\n_uiState.value = UiState.Error(\"Network error\")\n} catch (e: HttpException) {\n_uiState.value = UiState.Error(\"Server error ${e.code()}\")\n}\n}\nPractical Concerns\n\nBecause suspend functions integrate directly into Retrofit, no callback boilerplate or manual thread switching is\nrequired.\n\nAlways distinguish between transport failures (IOException — no connectivity) and server-reported failures\n(HttpException — a non-2xx response).\n\nCentralize authentication headers and token refresh logic in an OkHttp Interceptor or Authenticator rather than\nrepeating it per call.\n\nConsider Kotlin Serialization or Moshi as alternatives to Gson for stricter, reflection-free JSON parsing.\nCHAPTER 13\nConcurrency: Coroutines, WorkManager, and Services\nEvery Android app runs its UI on a single main thread. Any work that could take more than a few milliseconds — network\ncalls, disk I/O, heavy computation — must be moved off that thread, or the system will show an Application Not\nResponding (ANR) dialog and the app will appear frozen.\nCoroutines and Structured Concurrency\nA coroutine is a lightweight, suspendable computation. Coroutines are launched inside a CoroutineScope, and Android's\nlifecycle-aware scopes — viewModelScope and lifecycleScope — automatically cancel any running work when their\nowning ViewModel or Activity/Fragment is destroyed, preventing leaked work and crashes from updating a destroyed UI."
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "reason": "low_score",
+      "top_score": 0.1241,
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "android-development-documentation-d66ddc:p6:c0",
+      "android-development-documentation-d66ddc:p13:c0"
+    ],
+    "latency_ms": 353.1
+  },
+  "raw_output": "I could not find the answer in the provided documents.",
+  "refused": true,
+  "latency_ms": {
+    "retrieve": 12.0,
+    "generate": 353.1,
+    "total": 365.1
+  }
+}
