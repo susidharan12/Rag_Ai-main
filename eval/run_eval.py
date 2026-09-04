@@ -109,17 +109,133 @@ def deterministic_assertions(case, answer):
     }
 
 
+RRF_K = 60  # standard Reciprocal Rank Fusion constant
+DIAGNOSTIC_DEPTH = 20  # how deep to search purely for failure diagnosis
+
+
+def _ground_truth_chunk_ids(store, expected_tokens):
+    """Every chunk anywhere in the corpus whose text contains every one of
+    expected_tokens (case-insensitive) - the independent, index-wide
+    definition of "the answer actually exists in the corpus", used to tell
+    a retrieval failure (chunk exists, wasn't retrieved/used) apart from a
+    not-in-corpus question (no chunk has it at all)."""
+    if not expected_tokens:
+        return []
+    store.ensure_loaded()
+    chunks = store._state["chunks"]
+    metadata = store._state["metadata"]
+    hits = []
+    for idx, text in enumerate(chunks):
+        low = text.lower()
+        if all(tok.lower() in low for tok in expected_tokens):
+            hits.append(metadata[idx]["chunk_id"])
+    return hits
+
+
+def _rrf_rank_of(chunk_ids_wanted, candidates):
+    """Re-rank `candidates` (each already carrying the app's blended
+    `score` and `lexical_overlap`) by classic Reciprocal Rank Fusion over
+    those two independent signals, and return the 1-based rank of the
+    first candidate whose chunk_id is in chunk_ids_wanted, or None."""
+    if not candidates:
+        return None
+    by_score = sorted(candidates, key=lambda r: -r["score"])
+    by_lexical = sorted(candidates, key=lambda r: -r["lexical_overlap"])
+    score_rank = {r["chunk_id"]: i + 1 for i, r in enumerate(by_score)}
+    lexical_rank = {r["chunk_id"]: i + 1 for i, r in enumerate(by_lexical)}
+    fused = sorted(
+        candidates,
+        key=lambda r: -(1 / (RRF_K + score_rank[r["chunk_id"]])
+                         + 1 / (RRF_K + lexical_rank[r["chunk_id"]])),
+    )
+    for i, r in enumerate(fused, start=1):
+        if r["chunk_id"] in chunk_ids_wanted:
+            return i
+    return None
+
+
+def retrieval_diagnosis(case, trace, store):
+    """Retrieval diagnostics for an expect="answer" case, computed
+    regardless of pass/fail (needed for MRR, which is a retrieval-quality
+    metric independent of whether the final answer happened to pass):
+
+    - ground_truth_chunk_ids: every chunk anywhere in the index containing
+      every expected token - the answer that says "the fact IS indexed".
+    - retrieved_rank: 1-based rank of the first such chunk under the app's
+      own blended ranking, searched DIAGNOSTIC_DEPTH deep (independent of
+      how many chunks were actually handed to the generator).
+    - rrf_rank: 1-based rank of the first such chunk under a classic
+      Reciprocal Rank Fusion of the app's score-rank and lexical-overlap-
+      rank, instead of the app's own blend - a check on whether a textbook
+      fusion would have done better or worse here.
+    - context_hit: whether a ground-truth chunk was among the chunks
+      actually handed to the generator (trace.generation.context_chunk_ids).
+    """
+    expected_tokens = case.get("expected_tokens", [])
+    ground_truth = _ground_truth_chunk_ids(store, expected_tokens)
+    candidates = store.search(case["question"], top_k=DIAGNOSTIC_DEPTH)
+
+    retrieved_rank = None
+    for i, r in enumerate(candidates, start=1):
+        if r["chunk_id"] in ground_truth:
+            retrieved_rank = i
+            break
+    rrf_rank = _rrf_rank_of(set(ground_truth), candidates)
+
+    context_ids = set(trace["generation"]["context_chunk_ids"])
+    context_hit = bool(context_ids & set(ground_truth))
+
+    return {
+        "ground_truth_chunk_ids": ground_truth,
+        "retrieved_rank": retrieved_rank,
+        "rrf_rank": rrf_rank,
+        "context_hit": context_hit,
+    }
+
+
+def classify_failure(case, payload, diagnosis):
+    """Why a case didn't pass, given its (already-computed) retrieval
+    diagnosis:
+
+    - "over_answering": an unsupported_question expected a refusal but the
+      system answered instead - an answerability-gate miss, not a
+      retrieval problem.
+    - "not_in_corpus": no chunk anywhere in the index contains every
+      expected token - the fact genuinely isn't indexed; no retrieval
+      change could fix this case.
+    - "retrieval_failure": a chunk containing the answer exists in the
+      index, but it never made it into the generator's context - the
+      generator never had a chance to use it.
+    - "generation_failure": a chunk containing the answer WAS in the
+      generator's context, but the final answer still didn't include it -
+      retrieval worked; extraction/generation is what failed. This is the
+      "the answer was in the chunk but the model couldn't get it" case.
+    """
+    if case["expect"] == "refuse":
+        return "over_answering"
+    if not diagnosis["ground_truth_chunk_ids"]:
+        return "not_in_corpus"
+    if not diagnosis["context_hit"]:
+        return "retrieval_failure"
+    return "generation_failure"
+
+
 def run_case(case, store):
-    payload, _trace = ask_sync(case["question"], generator="extractive",
-                                store=store, surface="eval")
+    payload, trace = ask_sync(case["question"], generator="extractive",
+                               store=store, surface="eval")
     answer = payload["answer"]
     refused = payload["refused"]
 
     if case["expect"] == "refuse":
         app_pass = refused
+        diagnosis = {"ground_truth_chunk_ids": [], "retrieved_rank": None,
+                     "rrf_rank": None, "context_hit": None}
     else:
         app_pass = (not refused) and all(
             tok.lower() in answer.lower() for tok in case.get("expected_tokens", []))
+        diagnosis = retrieval_diagnosis(case, trace, store)
+
+    diagnosis["failure_type"] = "pass" if app_pass else classify_failure(case, payload, diagnosis)
 
     return {
         "id": case["id"],
@@ -130,6 +246,7 @@ def run_case(case, store):
         "expect": case["expect"],
         "app_pass": app_pass,
         "assertions": deterministic_assertions(case, answer),
+        "diagnosis": diagnosis,
     }
 
 
@@ -158,6 +275,18 @@ def main():
             "na": len(vals) - len(applicable),
         }
 
+    answerable = [r for r in results if r["expect"] == "answer"]
+    mrr_terms = [1 / r["diagnosis"]["retrieved_rank"]
+                 if r["diagnosis"]["retrieved_rank"] else 0.0 for r in answerable]
+    rrf_terms = [1 / r["diagnosis"]["rrf_rank"]
+                 if r["diagnosis"]["rrf_rank"] else 0.0 for r in answerable]
+    mrr = round(sum(mrr_terms) / len(mrr_terms), 3) if mrr_terms else None
+    rrf_mrr = round(sum(rrf_terms) / len(rrf_terms), 3) if rrf_terms else None
+
+    failure_counts = defaultdict(int)
+    for r in results:
+        failure_counts[r["diagnosis"]["failure_type"]] += 1
+
     out = {
         "cases": len(results),
         "application_pass": total_pass,
@@ -172,6 +301,16 @@ def main():
         },
         "deterministic_assertions": assertion_summary,
         "judged_criteria": 1,
+        "retrieval_metrics": {
+            "mrr": mrr,
+            "rrf_mrr": rrf_mrr,
+            "answerable_cases": len(answerable),
+            "note": "MRR/RRF are computed only over expect=answer cases, "
+                    "searched DIAGNOSTIC_DEPTH=%d deep against the whole "
+                    "index, independent of what the generator actually saw."
+                    % DIAGNOSTIC_DEPTH,
+        },
+        "failure_breakdown": dict(sorted(failure_counts.items())),
         "results": results,
     }
     with open(RESULTS_PATH, "w", encoding="utf-8") as f:
@@ -180,6 +319,7 @@ def main():
     print("Track E - one-command eval")
     print(f"cases: {out['cases']} | application pass: {total_pass}/{len(results)} "
           f"= {out['application_pass_rate']}%")
+    print(f"MRR: {mrr} | RRF-MRR: {rrf_mrr} (over {len(answerable)} answerable cases)")
     print()
     print("mode\tpass\ttotal\trate")
     for mode, m in out["by_mode"].items():
@@ -188,6 +328,10 @@ def main():
     print("deterministic assertions (applicable / passed / failed / n_a)")
     for name, s in assertion_summary.items():
         print(f"{name}\t{s['applicable']}\t{s['passed']}\t{s['failed']}\t{s['na']}")
+    print()
+    print("failure breakdown")
+    for ftype, count in out["failure_breakdown"].items():
+        print(f"{ftype}\t{count}")
     print()
     print(f"Wrote {RESULTS_PATH}")
 

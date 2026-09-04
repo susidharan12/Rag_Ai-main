@@ -99,6 +99,49 @@ class ResultsArtifactTests(unittest.TestCase):
             self.assertEqual(s["applicable"] + s["na"], 28, name)
             self.assertEqual(s["passed"] + s["failed"], s["applicable"], name)
 
+    def test_retrieval_metrics_present_and_in_range(self):
+        rm = self.results["retrieval_metrics"]
+        self.assertIsNotNone(rm["mrr"])
+        self.assertIsNotNone(rm["rrf_mrr"])
+        self.assertGreaterEqual(rm["mrr"], 0.0)
+        self.assertLessEqual(rm["mrr"], 1.0)
+        self.assertGreaterEqual(rm["rrf_mrr"], 0.0)
+        self.assertLessEqual(rm["rrf_mrr"], 1.0)
+        self.assertGreater(rm["answerable_cases"], 0)
+
+    def test_every_result_has_a_valid_diagnosis(self):
+        valid_types = {"pass", "not_in_corpus", "retrieval_failure",
+                        "generation_failure", "over_answering"}
+        for r in self.results["results"]:
+            diag = r["diagnosis"]
+            self.assertIn(diag["failure_type"], valid_types, r["id"])
+            self.assertEqual(diag["failure_type"] == "pass", r["app_pass"], r["id"])
+
+    def test_generation_failure_means_answer_was_in_context(self):
+        """The specific claim this panel exists to make: a
+        generation_failure case must have had a ground-truth chunk in the
+        generator's actual context - otherwise it would be a retrieval
+        failure, not a generation one."""
+        for r in self.results["results"]:
+            if r["diagnosis"]["failure_type"] == "generation_failure":
+                self.assertTrue(r["diagnosis"]["context_hit"], r["id"])
+                self.assertGreater(len(r["diagnosis"]["ground_truth_chunk_ids"]), 0, r["id"])
+
+    def test_retrieval_failure_means_answer_was_not_in_context(self):
+        for r in self.results["results"]:
+            if r["diagnosis"]["failure_type"] == "retrieval_failure":
+                self.assertFalse(r["diagnosis"]["context_hit"], r["id"])
+                self.assertGreater(len(r["diagnosis"]["ground_truth_chunk_ids"]), 0, r["id"])
+
+    def test_not_in_corpus_means_no_ground_truth_chunk_exists(self):
+        for r in self.results["results"]:
+            if r["diagnosis"]["failure_type"] == "not_in_corpus":
+                self.assertEqual(r["diagnosis"]["ground_truth_chunk_ids"], [], r["id"])
+
+    def test_failure_breakdown_sums_to_case_count(self):
+        self.assertEqual(sum(self.results["failure_breakdown"].values()),
+                          self.results["cases"])
+
 
 class LabelsTests(unittest.TestCase):
     def setUp(self):

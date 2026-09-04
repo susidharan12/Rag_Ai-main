@@ -56,6 +56,17 @@
     }
   },
   "judged_criteria": 1,
+  "retrieval_metrics": {
+    "mrr": 0.808,
+    "rrf_mrr": 0.758,
+    "answerable_cases": 23,
+    "note": "MRR/RRF are computed only over expect=answer cases, searched DIAGNOSTIC_DEPTH=20 deep against the whole index, independent of what the generator actually saw."
+  },
+  "failure_breakdown": {
+    "generation_failure": 2,
+    "over_answering": 1,
+    "pass": 25
+  },
   "results": [
     {
       "id": "eval_001",
@@ -70,6 +81,18 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -85,6 +108,17 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -100,6 +134,42 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p5:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p7:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p9:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p11:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p13:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p14:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p16:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p18:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p19:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p24:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p25:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p26:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p27:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -115,6 +185,25 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p7:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p11:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p18:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p27:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0"
+        ],
+        "retrieved_rank": 3,
+        "rrf_rank": 4,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -130,6 +219,15 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0"
+        ],
+        "retrieved_rank": 2,
+        "rrf_rank": 2,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -145,6 +243,18 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p2:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -160,6 +270,16 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 2,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -175,6 +295,23 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p5:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p24:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -190,6 +327,16 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -205,6 +352,18 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -220,6 +379,18 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p1:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -235,6 +406,16 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -250,6 +431,15 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -265,6 +455,18 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "generation_failure"
       }
     },
     {
@@ -280,6 +482,15 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-webhooks-977787:p4:c0"
+        ],
+        "retrieved_rank": 3,
+        "rrf_rank": 3,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -295,6 +506,17 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p1:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -310,6 +532,20 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0"
+        ],
+        "retrieved_rank": 4,
+        "rrf_rank": 8,
+        "context_hit": true,
+        "failure_type": "generation_failure"
       }
     },
     {
@@ -325,6 +561,19 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p1:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-auth-c0e1f4:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -340,6 +589,13 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [],
+        "retrieved_rank": null,
+        "rrf_rank": null,
+        "context_hit": null,
+        "failure_type": "pass"
       }
     },
     {
@@ -355,6 +611,13 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [],
+        "retrieved_rank": null,
+        "rrf_rank": null,
+        "context_hit": null,
+        "failure_type": "pass"
       }
     },
     {
@@ -370,6 +633,13 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [],
+        "retrieved_rank": null,
+        "rrf_rank": null,
+        "context_hit": null,
+        "failure_type": "pass"
       }
     },
     {
@@ -385,6 +655,13 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [],
+        "retrieved_rank": null,
+        "rrf_rank": null,
+        "context_hit": null,
+        "failure_type": "over_answering"
       }
     },
     {
@@ -400,6 +677,16 @@
         "endpoint_exists": null,
         "api_version_stated": true,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0"
+        ],
+        "retrieved_rank": 3,
+        "rrf_rank": 7,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -415,6 +702,42 @@
         "endpoint_exists": null,
         "api_version_stated": true,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p5:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p7:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p9:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p11:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p13:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p14:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p16:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p18:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p19:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p24:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p25:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p26:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p27:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0"
+        ],
+        "retrieved_rank": 2,
+        "rrf_rank": 3,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -430,6 +753,17 @@
         "endpoint_exists": null,
         "api_version_stated": true,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p1:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -445,6 +779,42 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-send-591e0e:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-send-ce9fc2:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-errors-84ccda:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p3:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p5:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p6:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p7:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p9:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p11:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p13:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p14:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p16:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p18:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p19:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p24:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p25:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p26:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p27:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0"
+        ],
+        "retrieved_rank": 1,
+        "rrf_rank": 1,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -460,6 +830,25 @@
         "endpoint_exists": null,
         "api_version_stated": true,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p2:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p4:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p3:c0",
+          "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-pagination-80b3ca:p4:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p2:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p7:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p11:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p18:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p27:c0",
+          "c-users-akash-t-rag-ai-main-complete-guide-to-major-world-sports-3f6df1:p33:c0"
+        ],
+        "retrieved_rank": 3,
+        "rrf_rank": 4,
+        "context_hit": true,
+        "failure_type": "pass"
       }
     },
     {
@@ -475,6 +864,13 @@
         "endpoint_exists": null,
         "api_version_stated": null,
         "deprecated_symbol_migration": null
+      },
+      "diagnosis": {
+        "ground_truth_chunk_ids": [],
+        "retrieved_rank": null,
+        "rrf_rank": null,
+        "context_hit": null,
+        "failure_type": "pass"
       }
     }
   ]

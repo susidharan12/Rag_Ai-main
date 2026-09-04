@@ -998,6 +998,36 @@ body {
   .judge-panel-badges { align-items: flex-start; }
 }
 
+/* ---------------- retrieval vs generation diagnosis (Track E) ---------------- */
+
+.diagnosis-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; position: relative; }
+.tile-sub { font-size: 10.5px; color: var(--text-3); margin-top: 3px; }
+
+.failure-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--border); }
+.failure-bar-seg { height: 100%; }
+.failure-bar-seg.good { background: linear-gradient(90deg, #10b981, #34d399); }
+.failure-bar-seg.bad { background: linear-gradient(90deg, #ef4444, #f87171); }
+.failure-bar-seg.warn { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.failure-bar-seg.neutral { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+
+.failure-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.failure-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-2); text-transform: capitalize; }
+.failure-legend-item i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.failure-legend-item.good i { background: var(--good); }
+.failure-legend-item.bad i { background: var(--bad); }
+.failure-legend-item.warn i { background: var(--warn); }
+.failure-legend-item.neutral i { background: #94a3b8; }
+
+.diagnosis-card { }
+.diagnosis-explain { margin-top: 7px; font-size: 12px; color: var(--text-1); line-height: 1.5; padding: 8px 10px; border-radius: 8px; background: var(--accent-soft); }
+.diagnosis-meta { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 8px; font-size: 10.5px; color: var(--text-3); }
+
+.diagnosis-unavailable { border-radius: 16px; padding: 16px; }
+
+@media (max-width: 760px) {
+  .diagnosis-tiles { grid-template-columns: 1fr 1fr; }
+}
+
 /* ---------------- toast ---------------- */
 
 .toast-zone { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50; }

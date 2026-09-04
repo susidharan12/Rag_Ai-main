@@ -5,7 +5,7 @@ import ChatPanel from './components/ChatPanel.jsx'
 import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
 import BenchmarkView from './components/BenchmarkView.jsx'
-import { fetchDocuments, fetchBenchmark, fetchJudgeEval } from './api.js'
+import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
@@ -16,6 +16,7 @@ export default function App() {
   const [messages, setMessages] = useState([])
   const [benchmark, setBenchmark] = useState(null)
   const [judgeEval, setJudgeEval] = useState(null)
+  const [trackEEval, setTrackEEval] = useState(null)
 
   const refresh = useCallback(async () => {
     try {
@@ -45,6 +46,15 @@ export default function App() {
     }
   }, [])
 
+  const refreshTrackEEval = useCallback(async () => {
+    try {
+      const data = await fetchTrackEEval()
+      setTrackEEval(data)
+    } catch (e) {
+      showToast(`Track E eval unavailable: ${e.message}`)
+    }
+  }, [])
+
   const showToast = (msg) => {
     setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
@@ -54,7 +64,8 @@ export default function App() {
     refresh()
     refreshBenchmark()
     refreshJudgeEval()
-  }, [refresh, refreshBenchmark, refreshJudgeEval])
+    refreshTrackEEval()
+  }, [refresh, refreshBenchmark, refreshJudgeEval, refreshTrackEEval])
 
   const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
 
@@ -83,7 +94,7 @@ export default function App() {
             ) : activeView === 'benchmark' ? (
               <BenchmarkView key="benchmark" benchmark={benchmark} turns={turns} />
             ) : (
-              <AnalyticsView key="analytics" stats={stats} turns={turns} judgeEval={judgeEval} />
+              <AnalyticsView key="analytics" stats={stats} turns={turns} judgeEval={judgeEval} trackEEval={trackEEval} />
             )}
           </AnimatePresence>
         </motion.div>

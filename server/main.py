@@ -389,6 +389,73 @@ def judge_eval():
     return _judge_eval_payload()
 
 
+_FAILURE_EXPLANATIONS = {
+    "not_in_corpus": (
+        "Not a retrieval bug: no chunk anywhere in the indexed corpus "
+        "contains the requested fact, so no ranking change could fix this."
+    ),
+    "retrieval_failure": (
+        "Retrieval failure: a chunk containing the answer exists in the "
+        "index, but it never reached the generator's context window."
+    ),
+    "generation_failure": (
+        "Not a retrieval failure: the correct chunk was retrieved and was "
+        "in the generator's context - the answer was right there, but the "
+        "generator didn't extract or state it."
+    ),
+    "over_answering": (
+        "Answerability-gate miss: this question should have been refused "
+        "(undocumented/out-of-corpus), but the system answered anyway."
+    ),
+}
+
+
+def _track_e_payload():
+    path = os.path.join(settings.BASE_DIR, "eval", "results.json")
+    if not os.path.exists(path):
+        return {"available": False,
+                "reason": "eval/results.json not found - run "
+                          "'python eval/run_eval.py' to generate it."}
+
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    failures = []
+    for r in data.get("results", []):
+        diag = r.get("diagnosis", {})
+        ftype = diag.get("failure_type", "pass")
+        if ftype == "pass":
+            continue
+        failures.append({
+            "id": r["id"],
+            "mode": r["mode"],
+            "question": r["question"],
+            "answer": r["answer"],
+            "failure_type": ftype,
+            "explanation": _FAILURE_EXPLANATIONS.get(ftype, ftype),
+            "retrieved_rank": diag.get("retrieved_rank"),
+            "rrf_rank": diag.get("rrf_rank"),
+            "context_hit": diag.get("context_hit"),
+            "ground_truth_chunk_count": len(diag.get("ground_truth_chunk_ids", [])),
+        })
+
+    return {
+        "available": True,
+        "cases": data.get("cases"),
+        "application_pass": data.get("application_pass"),
+        "application_pass_rate": data.get("application_pass_rate"),
+        "by_mode": data.get("by_mode", {}),
+        "retrieval_metrics": data.get("retrieval_metrics", {}),
+        "failure_breakdown": data.get("failure_breakdown", {}),
+        "failures": failures,
+    }
+
+
+@app.get("/api/track_e_eval")
+def track_e_eval():
+    return _track_e_payload()
+
+
 # ---------------------------------------------------------------- static ----
 
 _DIST = os.path.join(settings.BASE_DIR, "frontend", "dist")

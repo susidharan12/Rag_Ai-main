@@ -60,3 +60,7 @@ export async function fetchBenchmark() {
 export async function fetchJudgeEval() {
   return json(await fetch(`${BASE}/api/judge_eval`))
 }
+
+export async function fetchTrackEEval() {
+  return json(await fetch(`${BASE}/api/track_e_eval`))
+}
