@@ -788,6 +788,216 @@ body {
 .corpus-cell span { display: block; font-size: 11px; color: var(--text-2); }
 .corpus-cell b { font-family: var(--display); font-size: 20px; font-weight: 600; }
 
+/* ---------------- judge validation panel (Week 6 Task E) ---------------- */
+
+.judge-panel {
+  position: relative;
+  border-radius: 22px;
+  padding: 24px 26px 22px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfaf8 100%);
+}
+
+.judge-panel-glow {
+  position: absolute;
+  inset: -60% -20% auto auto;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(closest-side, rgba(79, 70, 229, 0.14), transparent 72%);
+  pointer-events: none;
+}
+
+.judge-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.judge-panel-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.judge-panel-title {
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 6px;
+}
+
+.judge-panel-sub {
+  font-size: 12.5px;
+  color: var(--text-2);
+  margin-top: 5px;
+  max-width: 480px;
+  line-height: 1.55;
+}
+
+.judge-panel-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+
+.judge-stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.judge-stat-chip.accent { color: var(--accent); background: var(--accent-soft); border-color: rgba(79, 70, 229, 0.18); }
+.judge-stat-chip svg { flex-shrink: 0; }
+
+.judge-agreement-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin: 24px 0 26px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.agreement-ring { position: relative; width: 88px; height: 88px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.agreement-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 19px; font-weight: 700;
+}
+.agreement-ring-caption {
+  position: absolute;
+  bottom: -20px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.judge-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.judge-arrow span { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.judge-arrow span.good { color: var(--good); }
+.judge-arrow span.bad { color: var(--bad); }
+
+.judge-agreement-copy { flex: 1; min-width: 220px; }
+.judge-agreement-copy-title { font-size: 12.5px; font-weight: 700; color: var(--text-1); }
+.judge-agreement-copy-detail { font-size: 12px; color: var(--text-2); line-height: 1.55; margin-top: 4px; }
+.judge-agreement-copy-prediction {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--accent);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-strong);
+  line-height: 1.5;
+}
+.judge-agreement-copy-prediction svg { margin-top: 2px; flex-shrink: 0; }
+
+.judge-mode-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+  position: relative;
+}
+
+.judge-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+.judge-section-label svg { color: var(--accent); }
+
+.mode-row { margin-bottom: 12px; }
+.mode-row:last-child { margin-bottom: 0; }
+.mode-row-label { display: flex; align-items: baseline; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+.mode-row-label > span { text-transform: capitalize; color: var(--text-1); font-weight: 500; }
+.mode-row-rate { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+.mode-row-rate.good { color: var(--good); }
+.mode-row-rate.warn { color: var(--warn); }
+.mode-row-rate.bad { color: var(--bad); }
+
+.mode-bar { height: 7px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.mode-bar i { display: block; height: 100%; border-radius: 999px; }
+.mode-bar i.good { background: linear-gradient(90deg, #10b981, #34d399); }
+.mode-bar i.warn { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.mode-bar i.bad { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+.judge-side { display: flex; flex-direction: column; }
+
+.disagreement-list { display: flex; flex-direction: column; gap: 10px; }
+
+.disagreement-card {
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.disagreement-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.disagreement-id { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--accent); }
+.disagreement-verdicts { display: flex; gap: 6px; }
+.disagreement-verdicts .table-badge { padding: 2px 7px; font-size: 9px; }
+
+.disagreement-q { font-size: 12.5px; font-weight: 600; color: var(--text-1); line-height: 1.45; }
+.disagreement-a {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.disagreement-source { margin-top: 6px; font-size: 10px; }
+
+.regression-note {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border);
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .judge-mode-grid { grid-template-columns: 1fr; }
+  .judge-panel-badges { align-items: flex-start; }
+}
+
 /* ---------------- toast ---------------- */
 
 .toast-zone { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50; }

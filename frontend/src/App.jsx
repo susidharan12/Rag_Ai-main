@@ -5,7 +5,7 @@ import ChatPanel from './components/ChatPanel.jsx'
 import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
 import BenchmarkView from './components/BenchmarkView.jsx'
-import { fetchDocuments, fetchBenchmark } from './api.js'
+import { fetchDocuments, fetchBenchmark, fetchJudgeEval } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
@@ -15,6 +15,7 @@ export default function App() {
   const [turns, setTurns] = useState([])
   const [messages, setMessages] = useState([])
   const [benchmark, setBenchmark] = useState(null)
+  const [judgeEval, setJudgeEval] = useState(null)
 
   const refresh = useCallback(async () => {
     try {
@@ -35,6 +36,15 @@ export default function App() {
     }
   }, [])
 
+  const refreshJudgeEval = useCallback(async () => {
+    try {
+      const data = await fetchJudgeEval()
+      setJudgeEval(data)
+    } catch (e) {
+      showToast(`Judge eval unavailable: ${e.message}`)
+    }
+  }, [])
+
   const showToast = (msg) => {
     setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
@@ -43,7 +53,8 @@ export default function App() {
   useEffect(() => {
     refresh()
     refreshBenchmark()
-  }, [refresh, refreshBenchmark])
+    refreshJudgeEval()
+  }, [refresh, refreshBenchmark, refreshJudgeEval])
 
   const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
 
@@ -72,7 +83,7 @@ export default function App() {
             ) : activeView === 'benchmark' ? (
               <BenchmarkView key="benchmark" benchmark={benchmark} turns={turns} />
             ) : (
-              <AnalyticsView key="analytics" stats={stats} turns={turns} />
+              <AnalyticsView key="analytics" stats={stats} turns={turns} judgeEval={judgeEval} />
             )}
           </AnimatePresence>
         </motion.div>

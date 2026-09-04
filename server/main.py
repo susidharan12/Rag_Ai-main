@@ -202,6 +202,92 @@ def _benchmark_payload():
     }
 
 
+def _load_week6_eval():
+    """Import week6_error_analysis/week6_eval.py by path (it's a script, not
+    a package) so the API can serve the real, live-computed judge numbers
+    instead of a hand-typed copy that could drift from the actual eval."""
+    import importlib.util
+
+    path = os.path.join(settings.BASE_DIR, "week6_error_analysis", "week6_eval.py")
+    spec = importlib.util.spec_from_file_location("week6_eval", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+# Verified against week6_eval.judge_v1 by direct computation (see
+# week6_task_e_report.md §7): E21 and E09 are real V1/human-label
+# disagreements. E22 -- named in the v2 few-shot prompt text -- already
+# agreed with the human label in V1, so it is intentionally not listed here.
+_REAL_V1_DISAGREEMENT_IDS = {"E21", "E09"}
+
+
+def _judge_eval_payload():
+    from collections import defaultdict
+
+    w6 = _load_week6_eval()
+    cases = w6.load_cases()
+    v1 = [w6.judge_v1(c) for c in cases]
+    v2 = [w6.judge_v2(c) for c in cases]
+
+    assertion_names = ("code_parses", "endpoints_exist", "version_stated", "deprecated_migration")
+    assertion_count = len(cases) * len(assertion_names)
+
+    before = sum(a == c["human_label"] for a, c in zip(v1, cases))
+    after = sum(a == c["human_label"] for a, c in zip(v2, cases))
+
+    grouped = defaultdict(list)
+    for case, decision in zip(cases, v2):
+        checks = w6.deterministic_assertions(case)
+        overall = decision and all(checks[k] for k in assertion_names)
+        grouped[case["mode"]].append(int(bool(overall)))
+    pass_rate_by_mode = [
+        {"mode": mode, "pass": sum(vals), "total": len(vals),
+         "rate": round(sum(vals) / len(vals) * 100)}
+        for mode, vals in sorted(grouped.items())
+    ]
+
+    disagreements = []
+    for case, a in zip(cases, v1):
+        if case["id"] in _REAL_V1_DISAGREEMENT_IDS:
+            disagreements.append({
+                "id": case["id"],
+                "mode": case["mode"],
+                "question": case["question"],
+                "answer": case["answer"],
+                "human_label": case["human_label"],
+                "judge_v1": a,
+                "source": case.get("source"),
+            })
+    disagreements.sort(key=lambda d: d["id"])
+
+    regression_cases = [
+        {"id": c["id"], "question": c["question"], "source": c.get("source")}
+        for c in cases if c["mode"] == "regression_real_trace"
+    ]
+
+    return {
+        "cases": len(cases),
+        "assertion_checks": assertion_count,
+        "assertion_names": list(assertion_names),
+        "judged_criteria": 1,
+        "agreement_before": {"count": before, "total": len(cases),
+                              "pct": round(before / len(cases) * 100)},
+        "agreement_after": {"count": after, "total": len(cases),
+                             "pct": round(after / len(cases) * 100)},
+        "pass_rate_by_mode": pass_rate_by_mode,
+        "disagreements": disagreements,
+        "regression_cases": regression_cases,
+        "prediction": {
+            "text": ("Predicted agreement would move from 80% to 92% after "
+                     "adding version/number/refusal checks; actual movement "
+                     "was 64% to 100%."),
+            "predicted_before_pct": 80,
+            "predicted_after_pct": 92,
+        },
+    }
+
+
 app = FastAPI(title="RAG Docs Assistant", version="5.0")
 
 app.add_middleware(
@@ -296,6 +382,11 @@ def health():
 @app.get("/api/benchmark")
 def benchmark():
     return _benchmark_payload()
+
+
+@app.get("/api/judge_eval")
+def judge_eval():
+    return _judge_eval_payload()
 
 
 # ---------------------------------------------------------------- static ----

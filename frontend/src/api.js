@@ -56,3 +56,7 @@ export async function fetchHealth() {
 export async function fetchBenchmark() {
   return json(await fetch(`${BASE}/api/benchmark`))
 }
+
+export async function fetchJudgeEval() {
+  return json(await fetch(`${BASE}/api/judge_eval`))
+}
