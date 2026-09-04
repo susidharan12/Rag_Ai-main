@@ -62,6 +62,51 @@ def _dominant_source_doc(results, min_fraction=0.6):
     return doc if count / len(results) >= min_fraction else None
 
 
+_LABEL_LINE_RE = re.compile(
+    # [ \t]*, not \s*, around the colon: \s also matches newlines, which
+    # would silently swallow the description's own first line into this
+    # match before the capture group even starts.
+    r"(?im)^[^A-Za-z0-9\n]*(?:project name|title|company|position|role|name)[ \t]*:[ \t]*(.+)$"
+)
+_SECTION_HEADING_RE = re.compile(
+    r"(?im)^[^A-Za-z0-9\n]*(?:description|summary|overview)[ \t]*:[ \t]*(.*)$"
+)
+_BARE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z /]{1,30}:?$")
+
+
+def _chunk_label(text):
+    """A short heading for one chunk, e.g. the value of a 'Project Name:'
+    line, used both to describe what the chunk is about and to dedupe
+    chunks that belong to the same section (a resume's project often
+    spans 2+ chunks - description in one, responsibilities in the next)."""
+    m = _LABEL_LINE_RE.search(text)
+    return m.group(1).strip(" \t.-") if m else None
+
+
+def _chunk_gist(text, max_chars=220):
+    """A short, representative narrative snippet from one chunk.
+
+    PDF-extracted text (resumes especially) line-wraps mid-sentence and
+    interleaves 'Label: value' metadata lines with real prose, so naively
+    grabbing the first few _sentences() results (which splits on every
+    newline) mostly returns metadata fragments like 'Project Name: X'
+    and 'Team Size: 12' instead of ever reaching the actual description.
+    Prefer the text after a Description/Summary/Overview label (the real
+    prose) when present; either way, collapse single newlines (usually
+    just PDF line-wraps, not paragraph breaks) into spaces before
+    sentence-splitting, and skip bare 'Label:' fragments.
+    """
+    m = _SECTION_HEADING_RE.search(text)
+    body = text[m.end():] if m else text
+    collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", body).strip()
+    collapsed = re.sub(r"\s{2,}", " ", collapsed)
+    for s in _sentences(collapsed):
+        s = re.sub(r"^[^A-Za-z0-9]+", "", s).strip()
+        if len(s) > 20 and not _BARE_LABEL_RE.match(s):
+            return s if len(s) <= max_chars else s[:max_chars].rsplit(" ", 1)[0] + "…"
+    return ""
+
+
 def _broad_overview_answer(question, results):
     """A generic 'tell me about X' / 'summarize this' question shares almost
     no literal vocabulary with detailed source text (a resume never
@@ -74,21 +119,43 @@ def _broad_overview_answer(question, results):
     Instead of trusting the near-zero overlap score here, use a different
     signal: if most of the retrieved chunks come from the SAME document
     (and there's at least a little real semantic signal, not pure noise),
-    that document is almost certainly what's being asked about, so answer
-    with a short overview from its top chunk instead of refusing.
+    that document is almost certainly what's being asked about. Synthesize
+    across every distinct section of that document present in the
+    retrieved chunks (deduped by _chunk_label, since one section/project
+    commonly spans multiple chunks) rather than just the single top chunk,
+    so a resume with several projects gets an overview spanning all of
+    them instead of one fragment of the first.
     """
     if not _BROAD_INTENT_RE.search(question.lower()):
         return None
     dominant_doc = _dominant_source_doc(results)
     if not dominant_doc:
         return None
-    top = next((r for r in results if r["source_doc"] == dominant_doc), None)
-    if not top or top["score"] < 0.12:
+    doc_chunks = sorted(
+        (r for r in results if r["source_doc"] == dominant_doc),
+        key=lambda r: r["rank"],
+    )
+    if not doc_chunks or doc_chunks[0]["score"] < 0.12:
         return None
-    overview = " ".join(_sentences(top["text"])[:3]).strip()
-    if not overview:
+
+    parts, used, seen = [], [], set()
+    for r in doc_chunks:
+        label = _chunk_label(r["text"])
+        dedupe_key = (label or r["text"][:30]).strip().lower()
+        if dedupe_key in seen:
+            continue
+        gist = _chunk_gist(r["text"])
+        if not gist:
+            continue
+        seen.add(dedupe_key)
+        parts.append(f"{label}: {gist}" if label else gist)
+        used.append(r)
+        if len(parts) >= 4:
+            break
+
+    if not parts:
         return None
-    return overview, top
+    return " ".join(parts), used
 
 
 def _candidates(text):
@@ -241,11 +308,13 @@ def generate_extractive(question, results):
     if max_overlap < 0.05 and max_heading < 0.05:
         broad = _broad_overview_answer(question, results)
         if broad:
-            ans, r = broad
-            return {"answer": f"{ans} [{r['chunk_id']}]",
+            ans, chunks_used = broad
+            cites = "".join(f" [{c['chunk_id']}]" for c in chunks_used)
+            return {"answer": f"{ans}{cites}",
                     "model": "extractive-v2",
                     "prompt_version": settings.PROMPT_VERSION,
-                    "params": {"strategy": "broad_overview"},
+                    "params": {"strategy": "broad_overview",
+                               "sections": len(chunks_used)},
                     "refused": False}
         return {"answer": _REFUSAL, "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
