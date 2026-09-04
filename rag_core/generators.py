@@ -42,6 +42,55 @@ def _sentences(text):
     return [s.strip() for s in parts if s.strip()]
 
 
+_BROAD_INTENT_RE = re.compile(
+    r"\b(tell me about|summarize|summary of|overview of|give (?:me )?(?:an|a) overview|"
+    r"describe (?:the|this)|what(?:'s| is) this (?:document|resume|cv|file|page|pdf) about|"
+    r"who is (?:the|this)|about (?:the|this) (?:candidate|document|resume|cv|person))\b",
+    re.IGNORECASE,
+)
+
+
+def _dominant_source_doc(results, min_fraction=0.6):
+    """If most of the retrieved chunks come from a single source document,
+    return that document's name; otherwise None."""
+    if not results:
+        return None
+    counts = {}
+    for r in results:
+        counts[r["source_doc"]] = counts.get(r["source_doc"], 0) + 1
+    doc, count = max(counts.items(), key=lambda kv: kv[1])
+    return doc if count / len(results) >= min_fraction else None
+
+
+def _broad_overview_answer(question, results):
+    """A generic 'tell me about X' / 'summarize this' question shares almost
+    no literal vocabulary with detailed source text (a resume never
+    literally says "this is about the candidate") even when the retrieval
+    is genuinely on-topic - so the lexical-overlap gate that protects
+    against real out-of-corpus questions (M3) would otherwise refuse a
+    perfectly answerable broad question. Not domain-specific: this fires
+    for any uploaded document, not just the SDK/sports corpora.
+
+    Instead of trusting the near-zero overlap score here, use a different
+    signal: if most of the retrieved chunks come from the SAME document
+    (and there's at least a little real semantic signal, not pure noise),
+    that document is almost certainly what's being asked about, so answer
+    with a short overview from its top chunk instead of refusing.
+    """
+    if not _BROAD_INTENT_RE.search(question.lower()):
+        return None
+    dominant_doc = _dominant_source_doc(results)
+    if not dominant_doc:
+        return None
+    top = next((r for r in results if r["source_doc"] == dominant_doc), None)
+    if not top or top["score"] < 0.12:
+        return None
+    overview = " ".join(_sentences(top["text"])[:3]).strip()
+    if not overview:
+        return None
+    return overview, top
+
+
 def _candidates(text):
     """Yield answer candidates as (sentence, single_table_row).
 
@@ -63,17 +112,18 @@ def _candidates(text):
 
 # ----------------------------------------------------------------- groq ----
 
-PROMPT_TEMPLATE = """You are a knowledgeable and helpful documentation assistant. Your job is to provide clear, accurate, and comprehensive answers based on the documentation provided below.
+PROMPT_TEMPLATE = """You are a knowledgeable and helpful assistant that answers questions about the user's uploaded documents. The documents could be anything - technical documentation, resumes/CVs, reference material, reports - so ground your tone in whatever the context actually is, not in an assumed domain.
 
 Instructions:
 1. Answer the user's question using the context chunks below as your source of truth.
 2. Synthesize information from multiple chunks when needed to give a complete answer.
 3. Provide clear, well-structured explanations — use bullet points, numbered lists, or paragraphs as appropriate.
 4. If the context contains relevant information, use it to give a thorough answer. Do NOT refuse unless the context is completely unrelated to the question.
-5. Only say "I could not find the answer in the provided documents" if the context has absolutely no relevant information.
-6. Do not fabricate parameter names, default values, or code examples — only use what is explicitly stated in the context.
-7. Use a natural, conversational tone. Be helpful and informative like a senior developer explaining documentation.
-8. If the answer requires multiple facts from different chunks, combine them into a cohesive response.
+5. Broad or exploratory questions ("tell me about X", "summarize this", "give me an overview", "who is this about") are answerable as long as the context is topically relevant, even when the context never uses those exact words — synthesize a helpful overview from what's there instead of requiring literal phrase matches.
+6. Only say "I could not find the answer in the provided documents" if the context has absolutely no relevant information for the question.
+7. Do not fabricate facts, names, parameter values, or details — only use what is explicitly stated in the context.
+8. Use a natural, conversational tone appropriate to the material — informative and precise for technical content, clear and professional for something like a resume.
+9. If the answer requires multiple facts from different chunks, combine them into a cohesive response.
 
 Context chunks:
 {context}
@@ -116,7 +166,7 @@ def generate_groq(question, results):
             json={
                 "model": settings.GROQ_MODEL,
                 "messages": [
-                    {"role": "system", "content": "You are a helpful, accurate, and thorough documentation assistant. Always provide complete answers based on the provided context."},
+                    {"role": "system", "content": "You are a helpful, accurate, and thorough assistant for the user's uploaded documents, whatever their domain. Always provide complete answers based on the provided context, including for broad or exploratory questions like 'tell me about X' or 'summarize this'."},
                     {"role": "user", "content": prompt},
                 ],
                 "temperature": 0.2,
@@ -189,6 +239,14 @@ def generate_extractive(question, results):
     max_heading = max((r.get("heading_overlap", 0.0) for r in results), default=0.0)
 
     if max_overlap < 0.05 and max_heading < 0.05:
+        broad = _broad_overview_answer(question, results)
+        if broad:
+            ans, r = broad
+            return {"answer": f"{ans} [{r['chunk_id']}]",
+                    "model": "extractive-v2",
+                    "prompt_version": settings.PROMPT_VERSION,
+                    "params": {"strategy": "broad_overview"},
+                    "refused": False}
         return {"answer": _REFUSAL, "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"reason": "no_question_overlap",
