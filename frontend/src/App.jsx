@@ -6,7 +6,7 @@ import ChatPanel from './components/ChatPanel.jsx'
 import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
 import BenchmarkView from './components/BenchmarkView.jsx'
-import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval } from './api.js'
+import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval, fetchBonusRagas } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
@@ -18,6 +18,7 @@ export default function App() {
   const [benchmark, setBenchmark] = useState(null)
   const [judgeEval, setJudgeEval] = useState(null)
   const [trackEEval, setTrackEEval] = useState(null)
+  const [bonusRagas, setBonusRagas] = useState(null)
   const [docsOpen, setDocsOpen] = useState(false)
 
   const refresh = useCallback(async () => {
@@ -57,6 +58,15 @@ export default function App() {
     }
   }, [])
 
+  const refreshBonusRagas = useCallback(async () => {
+    try {
+      const data = await fetchBonusRagas()
+      setBonusRagas(data)
+    } catch (e) {
+      showToast(`Bonus RAGAS eval unavailable: ${e.message}`)
+    }
+  }, [])
+
   const showToast = (msg) => {
     setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
@@ -67,7 +77,8 @@ export default function App() {
     refreshBenchmark()
     refreshJudgeEval()
     refreshTrackEEval()
-  }, [refresh, refreshBenchmark, refreshJudgeEval, refreshTrackEEval])
+    refreshBonusRagas()
+  }, [refresh, refreshBenchmark, refreshJudgeEval, refreshTrackEEval, refreshBonusRagas])
 
   const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
 
@@ -87,29 +98,50 @@ export default function App() {
         />
 
         <div className="app-body">
-          <motion.div
-            className="main-col"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-          >
+          <div className="main-col">
             <AnimatePresence mode="wait">
               {activeView === 'chat' ? (
-                <ChatPanel
+                <motion.div
                   key="chat"
-                  hasDocs={docs.length > 0}
-                  primaryDocName={primaryDocName}
-                  onTurn={recordTurn}
-                  messages={messages}
-                  setMessages={setMessages}
-                />
+                  className="view-transition"
+                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
+                  <ChatPanel
+                    hasDocs={docs.length > 0}
+                    primaryDocName={primaryDocName}
+                    onTurn={recordTurn}
+                    messages={messages}
+                    setMessages={setMessages}
+                  />
+                </motion.div>
               ) : activeView === 'benchmark' ? (
-                <BenchmarkView key="benchmark" benchmark={benchmark} turns={turns} />
+                <motion.div
+                  key="benchmark"
+                  className="view-transition"
+                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
+                  <BenchmarkView benchmark={benchmark} turns={turns} />
+                </motion.div>
               ) : (
-                <AnalyticsView key="analytics" stats={stats} turns={turns} judgeEval={judgeEval} trackEEval={trackEEval} />
+                <motion.div
+                  key="analytics"
+                  className="view-transition"
+                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
+                  <AnalyticsView stats={stats} turns={turns} judgeEval={judgeEval} trackEEval={trackEEval} bonusRagas={bonusRagas} />
+                </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
 
         <div className="brand-avatar" title="Nimbus">N</div>

@@ -5,20 +5,25 @@ import {
   CheckCircle2,
   ChevronDown,
   FileSearch,
+  Gauge,
   Layers,
   ListChecks,
+  ShieldCheck,
+  Sparkles,
+  Target,
   TriangleAlert,
   XCircle,
 } from 'lucide-react'
 import JudgeValidationPanel from './JudgeValidationPanel.jsx'
 import RetrievalDiagnosisPanel from './RetrievalDiagnosisPanel.jsx'
+import BonusRagasPanel from './BonusRagasPanel.jsx'
 
 function pct(n) {
   if (!n) return '0%'
   return `${Math.round(n)}%`
 }
 
-export default function AnalyticsView({ stats, turns, judgeEval, trackEEval }) {
+export default function AnalyticsView({ stats, turns, judgeEval, trackEEval, bonusRagas }) {
   const [expanded, setExpanded] = useState(null)
 
   const total = turns.length
@@ -41,25 +46,71 @@ export default function AnalyticsView({ stats, turns, judgeEval, trackEEval }) {
 
   const toggle = (i) => setExpanded(expanded === i ? null : i)
 
+  const kpis = [
+    {
+      label: 'Application pass rate', tone: 0, Icon: Target,
+      value: trackEEval?.available ? `${trackEEval.application_pass_rate}%` : '–',
+      sub: trackEEval?.available ? `${trackEEval.application_pass}/${trackEEval.cases} cases` : 'run eval/run_eval.py',
+    },
+    {
+      label: 'Judge agreement', tone: 1, Icon: ShieldCheck,
+      value: judgeEval ? `${judgeEval.agreement_after?.pct}%` : '–',
+      sub: judgeEval ? `${judgeEval.agreement_before?.pct}% → ${judgeEval.agreement_after?.pct}%` : 'no judge data',
+    },
+    {
+      label: 'Retrieval MRR', tone: 2, Icon: Gauge,
+      value: trackEEval?.retrieval_metrics?.mrr ?? '–',
+      sub: trackEEval?.retrieval_metrics ? `${trackEEval.retrieval_metrics.answerable_cases} answerable cases` : '',
+    },
+    {
+      label: 'Avg faithfulness', tone: 3, Icon: Sparkles,
+      value: bonusRagas?.average_faithfulness ?? '–',
+      sub: bonusRagas?.available ? 'RAGAS-style proxy' : 'bonus not run',
+    },
+  ]
+
   return (
     <div className="analytics">
       <header className="chat-header analytics-header">
         <div className="chat-header-left">
-          <div className="chat-header-title">Analytics</div>
-          <div className="chat-header-sub">Hit rates · traces · failures</div>
+          <div className="chat-header-icon tone-3"><Activity size={18} /></div>
+          <div>
+            <div className="chat-header-title">Analytics</div>
+            <div className="chat-header-sub">Hit rates · traces · failures</div>
+          </div>
         </div>
         <div className="chat-header-right">
-          <span className="pill"><span className="pill-dot" /> live session</span>
+          <span className="pill pill-good"><span className="pill-dot" /> live session</span>
         </div>
       </header>
 
       <div className="analytics-body">
-        <RetrievalDiagnosisPanel data={trackEEval} />
-        <JudgeValidationPanel data={judgeEval} />
+        <div className="kpi-grid">
+          {kpis.map(({ label, value, sub, Icon, tone }, i) => (
+            <motion.div
+              key={label}
+              className={`kpi-card tone-${tone}`}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.35 }}
+            >
+              <div className="kpi-card-icon"><Icon size={17} /></div>
+              <div className="kpi-card-value">{value}</div>
+              <div className="kpi-card-label">{label}</div>
+              <div className="kpi-card-sub">{sub}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="insight-list">
+          <RetrievalDiagnosisPanel data={trackEEval} />
+          <JudgeValidationPanel data={judgeEval} />
+          <BonusRagasPanel data={bonusRagas} />
+        </div>
 
         {!total ? (
           <div className="hero-empty">
-            <div className="hero-orb"><Activity size={24} /></div>
+            <div className="hero-orb"><Activity size={28} /></div>
             <h2>No session data yet</h2>
             <p>Ask a question in the chat and this panel will live-track hit rate, traces and any failures.</p>
           </div>

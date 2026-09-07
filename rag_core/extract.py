@@ -5,6 +5,19 @@ import os
 import re
 
 
+def _clean_pdf_text(text):
+    """Undo common PDF text-extraction spacing artifacts - many PDF fonts/
+    encodings make the extractor emit a stray space before a hyphen or a
+    comma (e.g. "AI -powered", "third -party", "PostgreSQL ,"), which reads
+    as visibly broken once it lands in an answer. Line-wrap hyphenation
+    ("cross-\\nfunctional") is untouched since it has no such leading space.
+    """
+    text = re.sub(r"(?<=\w) -(?=\w)", "-", text)
+    text = re.sub(r"[ \t]+([,.;:])", r"\1", text)
+    text = re.sub(r"[ \t]{2,}", " ", text)
+    return text
+
+
 def _pdf_pages_from_bytes(data):
     try:
         import pypdf as _pypdf_reader_lib
@@ -19,7 +32,7 @@ def _pdf_pages_from_bytes(data):
         text = page.extract_text() or ""
         if text.strip() and len(text.strip()) < 20:
             text = _ocr_fallback(data, i, text)
-        pages.append({"text": text, "page_number": i + 1})
+        pages.append({"text": _clean_pdf_text(text), "page_number": i + 1})
     return pages
 
 

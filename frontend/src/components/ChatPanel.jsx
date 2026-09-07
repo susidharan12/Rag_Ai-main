@@ -7,6 +7,7 @@ import {
   GitCompare,
   Layers,
   ListChecks,
+  MessageSquareText,
   Mic,
   Paperclip,
   SendHorizontal,
@@ -97,7 +98,7 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
           {LEFT_SUGGESTIONS.map(({ label, query, Icon }, i) => (
             <motion.button
               key={label}
-              className="hero-suggestion"
+              className={`hero-suggestion tone-${i}`}
               onClick={() => send(query)}
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
@@ -115,6 +116,7 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
             <div className="hero-blob-glow" />
             <HeroOrb className="hero-orb-canvas" />
             <div className="hero-blob-copy">
+              <span className="hero-blob-badge"><Sparkles size={11} /> AI Docs Assistant</span>
               <div className="hero-blob-title">NIMBUS</div>
               <div className="hero-blob-sub">Ask your documents anything</div>
             </div>
@@ -154,7 +156,7 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
           {RIGHT_SUGGESTIONS.map(({ label, query, Icon }, i) => (
             <motion.button
               key={label}
-              className="hero-suggestion"
+              className={`hero-suggestion tone-${i + 4}`}
               onClick={() => send(query)}
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
@@ -174,9 +176,12 @@ export default function ChatPanel({ hasDocs, primaryDocName, onTurn, messages, s
     <>
       <header className="chat-header">
         <div className="chat-header-left">
-          <div className="chat-header-title">{primaryDocName || 'Ask your documents'}</div>
-          <div className="chat-header-sub">
-            {messages.length} {messages.length === 1 ? 'message' : 'messages'} · RAG Assistant
+          <div className="chat-header-icon"><MessageSquareText size={18} /></div>
+          <div>
+            <div className="chat-header-title">{primaryDocName || 'Ask your documents'}</div>
+            <div className="chat-header-sub">
+              {messages.length} {messages.length === 1 ? 'message' : 'messages'} · RAG Assistant
+            </div>
           </div>
         </div>
         <div className="chat-header-right">

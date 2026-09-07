@@ -38,7 +38,14 @@ def _terms(text):
 
 
 def _sentences(text):
-    parts = re.split(r"(?<=[.!?])\s+|\n+", text)
+    # PDF extraction hard-wraps every visual line with "\n", even mid-sentence
+    # ("...now the recommended\nstarting point..."). Splitting on bare "\n"
+    # (as this used to) chops such wraps into truncated fragments that read as
+    # broken answers ("...now the recommended [citation]" with no
+    # continuation). Collapse every newline into a space first so only real
+    # sentence-ending punctuation ends a sentence.
+    collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", text)
+    parts = re.split(r"(?<=[.!?])\s+", collapsed)
     return [s.strip() for s in parts if s.strip()]
 
 
@@ -83,7 +90,7 @@ def _chunk_label(text):
     return m.group(1).strip(" \t.-") if m else None
 
 
-def _chunk_gist(text, max_chars=220):
+def _chunk_gist(text, max_chars=220, max_sentences=1):
     """A short, representative narrative snippet from one chunk.
 
     PDF-extracted text (resumes especially) line-wraps mid-sentence and
@@ -95,16 +102,38 @@ def _chunk_gist(text, max_chars=220):
     prose) when present; either way, collapse single newlines (usually
     just PDF line-wraps, not paragraph breaks) into spaces before
     sentence-splitting, and skip bare 'Label:' fragments.
+
+    max_sentences > 1 returns a fuller multi-sentence blurb (used for a
+    document's own summary/identity section) instead of the single
+    representative line used for a project/table-row entry.
     """
     m = _SECTION_HEADING_RE.search(text)
     body = text[m.end():] if m else text
     collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", body).strip()
     collapsed = re.sub(r"\s{2,}", " ", collapsed)
+    picked = []
     for s in _sentences(collapsed):
         s = re.sub(r"^[^A-Za-z0-9]+", "", s).strip()
         if len(s) > 20 and not _BARE_LABEL_RE.match(s):
-            return s if len(s) <= max_chars else s[:max_chars].rsplit(" ", 1)[0] + "…"
-    return ""
+            picked.append(s)
+            if len(picked) >= max_sentences:
+                break
+    if not picked:
+        return ""
+    gist = " ".join(picked)
+    return gist if len(gist) <= max_chars else gist[:max_chars].rsplit(" ", 1)[0] + "…"
+
+
+_TECH_LINE_RE = re.compile(r"(?im)^[ \t]*technologies[ \t]*:[ \t]*(.+)$")
+
+
+def _chunk_tech(text):
+    """The value of a 'Technologies:' line in one chunk, if present -
+    turns a project entry into a richer table row instead of just a
+    name+description pair. Returns None (not a table column) for
+    documents that don't carry this field."""
+    m = _TECH_LINE_RE.search(text)
+    return m.group(1).strip(" \t.,-") if m else None
 
 
 _NAME_LINE_RE = re.compile(r"^[A-Z][a-zA-Z.'-]+(?:\s+[A-Z][a-zA-Z.'-]*){0,3}$")
@@ -166,6 +195,21 @@ def _guess_name(text):
     return None
 
 
+def _guess_title(text):
+    """A short professional-title line near the top of a document's
+    opening chunk (e.g. a resume's running "Senior CMS Developer"
+    header) - the counterpart line _guess_name() deliberately skips."""
+    for line in text.splitlines():
+        line = line.strip(" \t|")
+        if not line or ":" in line or any(ch.isdigit() for ch in line) or "@" in line:
+            continue
+        if not (2 <= len(line) <= 40 and _NAME_LINE_RE.match(line)):
+            continue
+        if any(w in _TITLE_WORDS for w in line.lower().split()):
+            return line
+    return None
+
+
 def _broad_overview_answer(question, results, store=None):
     """A generic 'tell me about X' / 'summarize this' question shares almost
     no literal vocabulary with detailed source text (a resume never
@@ -207,37 +251,74 @@ def _broad_overview_answer(question, results, store=None):
     opening_ids = {o["chunk_id"] for o in opening}
     ordered = opening + [r for r in doc_chunks if r["chunk_id"] not in opening_ids]
 
-    name, name_chunk_id = None, None
+    name, title, name_chunk_id = None, None, None
     for o in opening:
         name = _guess_name(o["text"])
         if name:
+            title = _guess_title(o["text"])
             name_chunk_id = o["chunk_id"]
             break
 
-    parts, used, seen = [], [], set()
+    used = []
     if name:
-        parts.append(f"Name: {name}.")
         used.append(next(o for o in opening if o["chunk_id"] == name_chunk_id))
 
+    # Every distinct labeled section (a resume's projects, a report's named
+    # subsystems, ...) becomes one table/bullet entry; unlabeled prose (a
+    # summary/overview paragraph) becomes part of the lead-in instead, so the
+    # answer reads as "who/what this is" followed by a scannable breakdown -
+    # not one long run-on sentence mixing both.
+    intro_sentences, entries, seen = [], [], set()
     for r in ordered:
         if r["chunk_id"] == name_chunk_id:
-            continue  # already represented by the Name: line above
+            continue
         label = _chunk_label(r["text"])
         dedupe_key = (label or r["text"][:30]).strip().lower()
         if dedupe_key in seen:
             continue
-        gist = _chunk_gist(r["text"])
-        if not gist:
-            continue
-        seen.add(dedupe_key)
-        parts.append(f"{label}: {gist}" if label else gist)
-        used.append(r)
-        if len(parts) >= 5:
+        if label:
+            gist = _chunk_gist(r["text"])
+            if not gist:
+                continue
+            seen.add(dedupe_key)
+            entries.append({"label": label, "tech": _chunk_tech(r["text"]),
+                             "gist": gist, "is_project": bool(
+                                 re.search(r"(?i)project\s*name\s*:", r["text"]))})
+            used.append(r)
+        elif not intro_sentences:
+            gist = _chunk_gist(r["text"], max_chars=500, max_sentences=3)
+            if not gist:
+                continue
+            seen.add(dedupe_key)
+            intro_sentences.append(gist)
+            used.append(r)
+        if len(entries) >= 8:
             break
 
-    if not parts or (name and len(parts) < 2):
+    if not intro_sentences and not entries:
         return None
-    return " ".join(parts), used
+
+    def cell(s):
+        return (s or "-").replace("|", "/")
+
+    md = []
+    if name:
+        md.append(f"**{name}**" + (f" — {title}" if title else ""))
+    if intro_sentences:
+        md.append(intro_sentences[0])
+    if entries:
+        header = "Projects" if sum(e["is_project"] for e in entries) >= \
+            max(1, len(entries) // 2) else "Details"
+        md.append(f"**{header}:**")
+        if any(e["tech"] for e in entries):
+            rows = ["| Name | Technologies | Description |", "|---|---|---|"]
+            for e in entries:
+                rows.append(f"| {cell(e['label'])} | {cell(e['tech'])} | {cell(e['gist'])} |")
+            md.append("\n".join(rows))
+        else:
+            md.append("\n".join(f"- **{e['label']}:** {e['gist']}" for e in entries))
+
+    return "\n\n".join(md), used
 
 
 def _candidates(text):
@@ -391,12 +472,12 @@ def generate_extractive(question, results, store=None):
         broad = _broad_overview_answer(question, results, store)
         if broad:
             ans, chunks_used = broad
-            cites = "".join(f" [{c['chunk_id']}]" for c in chunks_used)
-            return {"answer": f"{ans}{cites}",
+            return {"answer": ans,
                     "model": "extractive-v2",
                     "prompt_version": settings.PROMPT_VERSION,
                     "params": {"strategy": "broad_overview",
-                               "sections": len(chunks_used)},
+                               "sections": len(chunks_used),
+                               "cited_chunks": [c["chunk_id"] for c in chunks_used]},
                     "refused": False}
         return {"answer": _REFUSAL, "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
@@ -426,11 +507,12 @@ def generate_extractive(question, results, store=None):
     focused = _focused_answer(question, results)
     if focused:
         ans, r = focused
-        return {"answer": f"{ans} [{r['chunk_id']}]",
+        return {"answer": ans,
                 "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"strategy": "focused",
-                           "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
+                           "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES,
+                           "cited_chunk": r["chunk_id"]},
                 "refused": False}
 
     definition = _definition_answer(question, results)
@@ -509,13 +591,14 @@ def generate_extractive(question, results, store=None):
 
     parts, cited = [], []
     for cand, r in final:
-        parts.append(f"{cand} [{r['chunk_id']}]")
+        parts.append(cand)
         if r["chunk_id"] not in cited:
             cited.append(r["chunk_id"])
 
     return {"answer": " ".join(parts), "model": "extractive-v2",
             "prompt_version": settings.PROMPT_VERSION,
-            "params": {"max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
+            "params": {"max_sentences": settings.EXTRACTIVE_MAX_SENTENCES,
+                       "cited_chunks": cited},
             "refused": False}
 
 
@@ -628,19 +711,25 @@ def _find_parameter(question, results):
         ptype, default, desc = rows[param]
         if default in ("", "-", "None") and not desc:
             continue
+        # State the resolved SDK version explicitly (Week 5 M1/M2, Week 6
+        # Task E's api_version_stated check): a version-specific default is
+        # meaningless - even actively misleading - without saying which
+        # version it's from, and nothing else in this answer names it.
+        version = r.get("sdk_version", "")
+        prefix = f"In SDK {version}, " if version else ""
         if re.search(r"maximum allowed value|max allowed|max value|how big", low):
             # Maximum-value questions want the upper bound, not the default
             # (e.g. limit max is 200, but its default is 50).
             nums = [int(n) for n in re.findall(r"\d+", desc + " " + default)]
             upper = max(nums) if nums else None
             if upper is not None:
-                return f"{param} maximum allowed value is {upper}.", r
+                return f"{prefix}{param} maximum allowed value is {upper}.", r
             val = desc.strip(" ,.;:") if default in ("", "-") else default
-            return f"{param} max value: {val}.", r
+            return f"{prefix}{param} max value: {val}.", r
         if default == "None":
             val = "None (optional, default no filter)" if "filter" in desc else "None"
-            return f"{param} default is {val}.", r
-        return f"{param} default is {default}.", r
+            return f"{prefix}{param} default is {val}.", r
+        return f"{prefix}{param} default is {default}.", r
     return None
 
 
@@ -796,26 +885,33 @@ def _candidate_rank(question, cand, result):
 
 
 def _definition_answer(question, results):
-    """Handle 'what is X' / 'what are X' definitions from matching section text."""
+    """Handle 'what is X' / 'what are X' definitions from matching section text.
+
+    Matches on complete sentences (via _sentences(), which already collapses
+    PDF line-wraps), not raw text lines - a chunk's PDF line breaks land
+    wherever the page happens to wrap, so joining the "next few raw lines"
+    after a match reliably cut answers off mid-word/mid-thought and could
+    start them mid-sentence too, dragging in unrelated trailing prose.
+    """
     low = question.lower()
     if not re.search(r"\b(?:what is|what are|define|explain|tell me about)\b", low):
         return None
 
     q_norm = re.sub(r"[^a-z0-9]+", " ", low).strip()
+    phrase = q_norm
+    for prefix in ("what is ", "what are ", "define ", "explain "):
+        phrase = phrase.replace(prefix, "")
+    phrase = phrase.strip()
+    if not phrase:
+        return None
+
     for r in results:
         text = r.get("text") or ""
-        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
-        for i, line in enumerate(lines):
-            norm = re.sub(r"[^a-z0-9]+", " ", line.lower()).strip()
-            if not norm:
-                continue
-            if norm == q_norm:
-                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
-                if answer:
-                    return (answer.strip(), r)
-            phrase = q_norm.replace("what is ", "").replace("what are ", "").replace("define ", "").replace("explain ", "").strip()
-            if phrase and (phrase in norm or norm in phrase):
-                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
+        sentences = _sentences(text)
+        for i, sent in enumerate(sentences):
+            norm = re.sub(r"[^a-z0-9]+", " ", sent.lower()).strip()
+            if phrase in norm:
+                answer = " ".join(sentences[i: min(len(sentences), i + 2)])
                 if answer:
                     return (answer.strip(), r)
     return None

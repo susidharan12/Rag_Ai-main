@@ -189,12 +189,15 @@ class BroadOverviewAnswerTests(unittest.TestCase):
         result = _broad_overview_answer("tell me about the candidate", results)
         self.assertIsNotNone(result)
         overview, chunks_used = result
-        self.assertIn("Socrat.AI:", overview)
-        self.assertIn("Thinkarguments:", overview)
+        self.assertIn("Socrat.AI", overview)
+        self.assertIn("Thinkarguments", overview)
         self.assertIn("Socrat.ai is an AI", overview)
         self.assertIn("ThinkArguments is a web", overview)
         self.assertEqual(len(chunks_used), 2)
         self.assertTrue(all(c["source_doc"] == "resume.pdf" for c in chunks_used))
+        # no raw "[chunk_id]" citation tags in the rendered answer text -
+        # attribution is shown separately via the sources panel.
+        self.assertNotIn("[resume.pdf", overview)
 
     def test_dedupes_a_project_that_spans_multiple_chunks(self):
         """The same project (Thinkarguments) split across two chunks -
@@ -206,7 +209,7 @@ class BroadOverviewAnswerTests(unittest.TestCase):
             _chunk("resume.pdf", SOCRAT_TEXT, rank=3, chunk_id="resume.pdf:p4:c0"),
         ]
         overview, chunks_used = _broad_overview_answer("tell me about the candidate", results)
-        self.assertEqual(overview.count("Thinkarguments:"), 1)
+        self.assertEqual(overview.count("Thinkarguments"), 1)
         self.assertEqual(len(chunks_used), 2)  # Thinkarguments (once) + Socrat.AI
 
     def test_caps_the_number_of_parts(self):
@@ -214,10 +217,10 @@ class BroadOverviewAnswerTests(unittest.TestCase):
             _chunk("resume.pdf", f"Project Name: Project{i}  \nDescription:  \n Project {i} is a "
                                   f"real substantive description sentence about the work done.",
                    rank=i, chunk_id=f"resume.pdf:c{i}")
-            for i in range(8)
+            for i in range(12)
         ]
         overview, chunks_used = _broad_overview_answer("tell me about the candidate", results)
-        self.assertLessEqual(len(chunks_used), 5)
+        self.assertLessEqual(len(chunks_used), 8)
 
     def test_matches_several_broad_intent_phrasings(self):
         results = [_chunk("resume.pdf", SOCRAT_TEXT, chunk_id=f"resume.pdf:c{i}") for i in range(5)]
@@ -299,10 +302,10 @@ class BroadOverviewAnswerWithStoreTests(unittest.TestCase):
         overview, chunks_used = _broad_overview_answer(
             "tell me about the candidate", results, store=_resume_store())
 
-        self.assertTrue(overview.startswith("Name: Susidharan A."))
+        self.assertTrue(overview.startswith("**Susidharan A**"))
         self.assertIn("extensive experience in Content Management System", overview)
-        self.assertIn("Thinkarguments:", overview)
-        self.assertIn("Socrat.AI:", overview)
+        self.assertIn("Thinkarguments", overview)
+        self.assertIn("Socrat.AI", overview)
         cited_ids = {c["chunk_id"] for c in chunks_used}
         self.assertIn("resume.pdf:p1:c0", cited_ids)  # the name line's chunk
         self.assertIn("resume.pdf:p1:c1", cited_ids)  # the summary chunk
@@ -331,9 +334,11 @@ class GenerateExtractiveBroadQuestionTests(unittest.TestCase):
         self.assertIn("ThinkArguments is a web", out["answer"])
         self.assertEqual(out["params"].get("strategy"), "broad_overview")
         self.assertEqual(out["params"].get("sections"), 2)
-        # both distinct sections must be cited
-        self.assertIn("resume.pdf:p4:c0", out["answer"])
-        self.assertIn("resume.pdf:p3:c0", out["answer"])
+        # both distinct sections must be cited via params, not inline brackets
+        # in the answer text (attribution is shown separately in the UI)
+        self.assertIn("resume.pdf:p4:c0", out["params"].get("cited_chunks", []))
+        self.assertIn("resume.pdf:p3:c0", out["params"].get("cited_chunks", []))
+        self.assertNotIn("[resume.pdf", out["answer"])
 
     def test_genuinely_out_of_corpus_broad_question_still_refuses(self):
         """Scattered, low-relevance results (the realistic shape of an

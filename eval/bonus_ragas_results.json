@@ -1,0 +1,140 @@
+{
+  "corpus_wide_faithfulness": [
+    {
+      "id": "eval_001",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_002",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_003",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_004",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_005",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_006",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_007",
+      "mode": "factual_lookup",
+      "faithfulness": 0.833
+    },
+    {
+      "id": "eval_008",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_009",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_010",
+      "mode": "factual_lookup",
+      "faithfulness": 0.714
+    },
+    {
+      "id": "eval_011",
+      "mode": "factual_lookup",
+      "faithfulness": 0.714
+    },
+    {
+      "id": "eval_012",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_013",
+      "mode": "factual_lookup",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_014",
+      "mode": "conceptual_explanation",
+      "faithfulness": 0.757
+    },
+    {
+      "id": "eval_015",
+      "mode": "conceptual_explanation",
+      "faithfulness": 0.805
+    },
+    {
+      "id": "eval_016",
+      "mode": "conceptual_explanation",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_017",
+      "mode": "conceptual_explanation",
+      "faithfulness": 0.778
+    },
+    {
+      "id": "eval_018",
+      "mode": "conceptual_explanation",
+      "faithfulness": 0.429
+    },
+    {
+      "id": "eval_023",
+      "mode": "version_specific",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_024",
+      "mode": "version_specific",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_025",
+      "mode": "version_specific",
+      "faithfulness": 0.933
+    },
+    {
+      "id": "eval_026",
+      "mode": "ambiguous_question",
+      "faithfulness": 1.0
+    },
+    {
+      "id": "eval_027",
+      "mode": "ambiguous_question",
+      "faithfulness": 1.0
+    }
+  ],
+  "average_faithfulness": 0.911,
+  "confidently_wrong_demo": {
+    "question": "What is the default pool_size for Client.connect()?",
+    "question_resolves_to": "v3",
+    "raw_cosine_similarity_v2_vs_v3_intro_chunks": {
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v3-client-connect-27c00a:p1:c0": 0.6516,
+      "c-users-akash-t-rag-ai-main-nimbus-sdk-v2-client-connect-2c9eb3:p1:c0": 0.6615
+    },
+    "v2_param_table_chunk_live_retrieval_rank": 10,
+    "source_chunk_states_a_version_itself": false,
+    "answer": "In SDK v2, pool_size default is 5.",
+    "faithfulness_proxy": 0.75,
+    "version_stated_in_answer": "v2",
+    "context_version_precision": 0,
+    "pre_fix_reconstruction": {
+      "note": "_find_parameter() before this session's version-prefix fix (rag_core/generators.py) returned exactly this, with no version prefix:",
+      "answer": "pool_size default is 5.",
+      "faithfulness_proxy": 1.0,
+      "context_version_precision": 0
+    }
+  }
+}

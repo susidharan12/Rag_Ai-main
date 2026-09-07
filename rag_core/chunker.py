@@ -19,10 +19,50 @@ def _paragraphs(text):
     return cleaned
 
 
+def _split_long_paragraph(para, chunk_size, chunk_overlap):
+    """Word-align a paragraph too long to fit in one chunk into ~chunk_size
+    windows, carrying chunk_overlap worth of trailing words into the next
+    window - the same word-window strategy used for normal chunk packing.
+
+    Needed because PDF text extraction often drops blank lines entirely, so a
+    whole page can come back as a single "paragraph". Without this, that
+    paragraph used to be kept as one oversized chunk mixing every section on
+    the page (a "Styles and Themes" tail bleeding into a "Jetpack Compose"
+    chunk, for example) instead of being split like any other long content.
+    """
+    words = para.split(" ")
+    pieces = []
+    start = 0
+    while start < len(words):
+        end = start
+        length = 0
+        while end < len(words) and (length + len(words[end]) + 1) <= chunk_size:
+            length += len(words[end]) + 1
+            end += 1
+        if end == start:
+            end = start + 1  # a single word longer than chunk_size - take it anyway
+        pieces.append(" ".join(words[start:end]))
+        if end >= len(words):
+            break
+        back, back_len = end, 0
+        while back > start and back_len < chunk_overlap:
+            back -= 1
+            back_len += len(words[back]) + 1
+        start = max(back, start + 1)
+    return pieces
+
+
 def chunk_page_text(text, chunk_size, chunk_overlap):
-    paragraphs = _paragraphs(text)
-    if not paragraphs:
+    raw_paragraphs = _paragraphs(text)
+    if not raw_paragraphs:
         return []
+
+    paragraphs = []
+    for para in raw_paragraphs:
+        if len(para) > chunk_size:
+            paragraphs.extend(_split_long_paragraph(para, chunk_size, chunk_overlap))
+        else:
+            paragraphs.append(para)
 
     chunks = []
     current = []
@@ -51,15 +91,9 @@ def chunk_page_text(text, chunk_size, chunk_overlap):
             if overlap_len >= chunk_overlap:
                 break
 
-        if para_len > chunk_size:
-            # keep a very long paragraph as a single chunk candidate to avoid
-            # splitting a full code block or heading paragraph in half.
-            current = [para]
-            current_len = para_len
-        else:
-            # Carry the overlap forward into the next chunk
-            current = overlap_parts + [para]
-            current_len = overlap_len + 1 + para_len
+        # Carry the overlap forward into the next chunk
+        current = overlap_parts + [para]
+        current_len = overlap_len + 1 + para_len
 
     if current:
         chunks.append("\n\n".join(current))

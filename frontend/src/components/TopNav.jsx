@@ -60,9 +60,15 @@ export default function TopNav({
       />
 
       <div className="top-nav-left">
-        <div className="brand-mark"><Sparkles size={16} strokeWidth={2} /></div>
+        <motion.div
+          className="brand-mark"
+          animate={{ boxShadow: ['0 2px 16px rgba(79,70,229,0.24)', '0 4px 26px rgba(124,58,237,0.42)', '0 2px 16px rgba(79,70,229,0.24)'] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <Sparkles size={16} strokeWidth={2} />
+        </motion.div>
         <div className="brand-copy">
-          <div className="brand-name">Nimbus</div>
+          <div className="brand-name gradient-text">Nimbus</div>
           <div className="brand-sub">Docs Assistant</div>
         </div>
       </div>
@@ -74,8 +80,17 @@ export default function TopNav({
             className={`top-nav-tab ${activeView === id ? 'active' : ''}`}
             onClick={() => onView(id)}
           >
-            <Icon size={14} strokeWidth={2} />
-            {label}
+            {activeView === id && (
+              <motion.span
+                layoutId="top-nav-tab-pill"
+                className="top-nav-tab-pill"
+                transition={{ type: 'spring', stiffness: 480, damping: 38 }}
+              />
+            )}
+            <span className="top-nav-tab-content">
+              <Icon size={14} strokeWidth={2} />
+              {label}
+            </span>
           </button>
         ))}
       </nav>

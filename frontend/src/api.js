@@ -64,3 +64,7 @@ export async function fetchJudgeEval() {
 export async function fetchTrackEEval() {
   return json(await fetch(`${BASE}/api/track_e_eval`))
 }
+
+export async function fetchBonusRagas() {
+  return json(await fetch(`${BASE}/api/bonus_ragas`))
+}

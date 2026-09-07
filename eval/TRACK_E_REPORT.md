@@ -3,9 +3,12 @@
 **Domain:** Nimbus SDK v2/v3 developer docs + sports-rules PDF (same corpus as `week5_error_analysis`/`week6_error_analysis`)
 **One command (application eval):** `python eval/run_eval.py`
 **One command (judge validation):** `python eval/judge.py`
+**Bonus (RAGAS-style, optional):** `python eval/bonus_ragas.py`
 **Tests:** `python -m unittest eval.test_track_e -v`
 
 Every number below was produced by actually running the commands above against this repository. Nothing was copied from an external report — an earlier draft of this report was pasted into this session referencing commit hashes (`87f9e3e5...`, `708860f4...`) that do not exist anywhere in this repo's git history, and a ChatGPT share link whose page title didn't even match the pasted content. That draft was not used as a source of truth for anything below; it was discarded and this eval was built and run for real instead.
+
+> **2026-09-05 update:** `eval/run_eval.py` calls the live `generate_extractive()` generator (`rag_core/generators.py`), so its numbers move whenever that generator's code changes — unlike the judge validation in §4–§9, which scores a **frozen** snapshot of pre-recorded answers in `eval/labels_25.json` and is unaffected by any later code change. Between this report's original run and today, an unrelated bug-fix session (i) fixed `_sentences()` splitting mid-sentence on every raw PDF line-wrap and (ii) added an explicit SDK-version prefix to `_find_parameter()`'s answers (previously it stated a value with **no** version qualifier at all — a real gap this session's own bonus RAGAS check, §12, used to reconstruct a confidently-wrong-version answer). Both fixes **improved** the application pass rate. Section 2 below reflects a fresh run after those fixes; nothing in §4–§9 (labels, judge v1/v2, agreement, disagreement analysis, prediction) changed, since that pipeline never re-runs the generator.
 
 ---
 
@@ -37,23 +40,25 @@ python eval/run_eval.py
 
 Self-contained: ingests the SDK+sports corpus into an isolated, gitignored `eval/.eval_index/` so it doesn't depend on, or disturb, the live app's `data/index/`.
 
-**28-case application pass rate: 25/28 = 89.3%**
+**28-case application pass rate (current run, 2026-09-05): 26/28 = 92.9%**
+(original run: 25/28 = 89.3% — see the update note above)
 
 | Mode | Passed / Total | Rate |
 |---|---|---:|
 | factual_lookup | 13/13 | 100.0% |
-| conceptual_explanation | 3/5 | 60.0% |
+| conceptual_explanation | 4/5 | 80.0% |
 | unsupported_question | 3/4 | 75.0% |
 | ambiguous_question | 3/3 | 100.0% |
 | version_specific | 3/3 | 100.0% |
-| **TOTAL** | **25/28** | **89.3%** |
+| **TOTAL** | **26/28** | **92.9%** |
 
-The 3 application-layer failures are real, inspectable limitations, not test-authoring bugs:
-- `eval_014` — "Explain how Client.send() handles a RATE_LIMITED response" is answered with the method's general description; `retry_backoff_ms`/`max_retries` are never mentioned.
-- `eval_017` — "Explain what changed in Client.connect()'s defaults between v2 and v3" says the v2 defaults "are smaller" without ever stating the actual numbers (5 → 10).
+The 2 remaining application-layer failures are real, inspectable limitations, not test-authoring bugs:
+- `eval_018` — "Explain why API keys are scoped in the Nimbus SDK authentication model" is answered with the auth/pagination/error-handling section headers and a one-line key-format fact, but never actually explains *why* keys are scoped.
 - `eval_022` — "What is the maximum webhook payload size accepted by WebhookVerifier?" is answered with an unrelated pagination limit instead of refusing (a previously-documented limitation in `week6_report_fixes.md`, reproduced here independently).
 
-**This is the application pass rate — not judge agreement.** Judge agreement (72.0% → 84.0%) is a separate measurement, reported in Sections 5–9.
+`eval_014` and `eval_017` (previously failing — see the original numbers above) are now fixed as a side effect of the `_sentences()` line-wrap fix noted above: both now retrieve complete sentences instead of a fragment that stopped short of the `retry_backoff_ms`/`max_retries` detail (`eval_014`) or the actual 5→10 `pool_size` numbers (`eval_017`).
+
+**This is the application pass rate — not judge agreement.** Judge agreement (72.0% → 84.0%) is a separate measurement, reported in Sections 5–9, and is unaffected by this update (frozen snapshot — see above).
 
 ---
 
@@ -76,6 +81,8 @@ Applicable counts (`eval/results.json`, 28 cases):
 | deprecated_symbol_migration | 0 | 0 | 0 | 28 |
 
 `code_sample_parses` and `endpoint_exists` are genuinely 0/28-applicable here: the deterministic extractive generator answers with extracted sentences, not literal code fences or HTTP paths, for any of these 28 questions. `deprecated_symbol_migration` is genuinely 0/28 because nothing in `corpus/nimbus_sdk/` is described as a deprecated *symbol* with a named migration target (v2 is "in maintenance mode," which isn't the same claim) — the map in `eval/judge.py`/`run_eval.py` stays honestly empty rather than inventing one. `api_version_stated` is applicable on the 3 `version_specific` cases plus `eval_027` (which needed to confirm the versionless question resolves to v3) — 4/4 passed.
+
+> This assertion is a genuine catch, not a vanity check: rerunning it after this session's citation-format cleanup (removing `[chunk_id]` tags from every extractive answer) initially **broke** it to 1/4 — the previous 4/4 turned out to be passing only because a retrieved chunk's *id* happened to contain the literal substring `v2`/`v3` (e.g. `...nimbus-sdk-v2-client-connect...`), not because the answer text itself ever stated the version. `_find_parameter()` (`rag_core/generators.py`) now explicitly prefixes a version-specific default with `"In SDK vX, "` so the check passes for the right reason. See §12 (bonus) for a reconstruction of exactly the silently-wrong answer this gap allowed.
 
 **LLM-judged criteria: 1** — a single binary criterion: *does the answer directly and correctly answer the question?* Both `judge_v1.txt` and `judge_v2.txt` state explicitly that the four deterministic criteria are excluded and handled only by `run_eval.py`.
 
@@ -172,12 +179,28 @@ Read bottom-to-top, this is the required order: labels committed → Judge V1 ru
 
 ## 11. Final Verdict
 
-28 real cases across 5 taxonomy modes, a self-contained one-command application runner (25/28 = 89.3%, with all three failures independently inspectable), an explicit deterministic (4) vs LLM-judged (1) boundary, 25 binary blind human labels committed before any judge code existed, a real Judge V1 at 72.0% agreement with 7 disagreements all correctly resolved in the human's favor, a pre-registered prediction that held exactly, and a Judge V2 iterated from two of its own real disagreements that raised agreement to 84.0% (+12.0 points), leaving four honestly-unresolved disagreements whose root causes (a missing-citation heuristic gap and a token-matching bug) are documented above rather than papered over.
+28 real cases across 5 taxonomy modes, a self-contained one-command application runner (92.9% at time of writing — see the update note in §1/§2 for why this number moved from the original 89.3%, and why that doesn't touch anything below), an explicit deterministic (4) vs LLM-judged (1) boundary, 25 binary blind human labels committed before any judge code existed, a real Judge V1 at 72.0% agreement with 7 disagreements all correctly resolved in the human's favor, a pre-registered prediction that held exactly, and a Judge V2 iterated from two of its own real disagreements that raised agreement to 84.0% (+12.0 points), leaving four honestly-unresolved disagreements whose root causes (a missing-citation heuristic gap and a token-matching bug) are documented above rather than papered over.
+
+---
+
+## 12. Bonus: RAGAS-style faithfulness + context precision
+
+`python eval/bonus_ragas.py` — a **deterministic proxy** for two RAGAS ideas (faithfulness, context precision), not the `ragas` package itself: this environment has no `GROQ_API_KEY` configured, and RAGAS's real faithfulness metric needs a working LLM judge to decompose an answer into claims and verify each one. The proxy definitions are in the script's own docstring.
+
+- **Corpus-wide faithfulness** over the 23 non-refused, docs-backed cases: **average 0.911** (range 0.429–1.0). Because the extractive-v2 generator only ever quotes/extracts retrieved text, faithfulness is high almost everywhere by construction — which is exactly the finding below.
+- **The bonus's specific ask** — an answer ≥0.9 faithful yet grounded in the wrong SDK version for the question: reconstructed from a real corpus chunk and the real (pre-fix) `_find_parameter()` code. For the versionless question *"What is the default pool_size for Client.connect()?"* (resolves to v3), feeding the generator **only** the v2 parameter-table chunk (a bare `pool_size | int | 5 | ...` row with no "v2"/"v3" text anywhere in it) reconstructs the exact pre-fix answer: `"pool_size default is 5."`
+  - **faithfulness_proxy: 1.0** — every word in the answer is in the retrieved chunk.
+  - **context_version_precision: 0** — this is the v2 value; the question resolves to v3 (correct value: 10).
+  - Grounded, not hypothetical: on raw embedding similarity alone (no version-preference or lexical boost — the two things that make the live app choose correctly), the v2 and v3 "intro" chunks for this exact question are a real near-tie (v2 0.6615 vs v3 0.6516) — the same shape as the historical bug documented as failure case F1 in `server/main.py`'s benchmark payload.
+- **Why the average hides it:** 0.911 (corpus-wide) vs. 1.0 (this case) — faithfulness alone cannot distinguish a correct v3 answer from a wrong v2 one; only `context_version_precision`, or the `api_version_stated` deterministic assertion in §3, catches it. `_find_parameter()` was fixed during this same session specifically because this exercise surfaced the gap (see the §3 callout above) — the **current** app now answers `"In SDK v2, pool_size default is 5."` for this same counterfactual input, which is truthful about its own grounding even though it would still need a real v3 chunk in context to answer the original question correctly.
+
+Full output: `python eval/bonus_ragas.py` (writes `eval/bonus_ragas_results.json`).
 
 ## Reproduce
 
 ```bash
 python eval/run_eval.py    # application eval -> eval/results.json
 python eval/judge.py       # judge v1 + v2 -> eval/judge_v1.txt, eval/judge_v2.txt
+python eval/bonus_ragas.py # bonus: faithfulness + context precision (optional)
 python -m unittest eval.test_track_e -v
 ```

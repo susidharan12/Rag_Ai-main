@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Activity, BarChart3, CheckCircle2, Gauge, ListChecks, TriangleAlert } from 'lucide-react'
+import { Activity, BarChart3, CheckCircle2, Gauge, ListChecks, Target, TriangleAlert, Zap } from 'lucide-react'
+
+const METRIC_ICONS = [Target, Zap, Gauge, TriangleAlert, BarChart3, CheckCircle2]
 
 const fallback = {
   summary: [],
@@ -119,27 +121,33 @@ export default function BenchmarkView({ benchmark = fallback, turns = [] }) {
     <div className="benchmark-view">
       <header className="chat-header analytics-header">
         <div className="chat-header-left">
-          <div className="chat-header-title">Benchmark & Golden Set</div>
-          <div className="chat-header-sub">Week 3 → Week 6: retrieval, rerank, failure taxonomy, and the current production score.</div>
+          <div className="chat-header-icon tone-2"><BarChart3 size={18} /></div>
+          <div>
+            <div className="chat-header-title">Benchmark & Golden Set</div>
+            <div className="chat-header-sub">Week 3 → Week 6: retrieval, rerank, failure taxonomy, and the current production score.</div>
+          </div>
         </div>
         <div className="chat-header-right">
-          <span className="pill"><span className="pill-dot" /> evaluation view</span>
+          <span className="pill pill-good"><span className="pill-dot" /> evaluation view</span>
         </div>
       </header>
 
       <div className="benchmark-body">
         <div className="benchmark-overview">
-          {summaryCards.map((metric, i) => (
-            <div key={`${metric.label}-${i}`} className="metric-card card">
-              <div className="metric-card-top">
-                <div className="metric-icon"><BarChart3 size={15} /></div>
-                <span>{metric.week}</span>
+          {summaryCards.map((metric, i) => {
+            const Icon = METRIC_ICONS[i % METRIC_ICONS.length]
+            return (
+              <div key={`${metric.label}-${i}`} className={`metric-card card tone-${i}`}>
+                <div className="metric-card-top">
+                  <div className="metric-icon"><Icon size={15} /></div>
+                  <span>{metric.week}</span>
+                </div>
+                <div className="metric-value">{metric.value}</div>
+                <div className="metric-label">{metric.label}</div>
+                <div className="metric-note">{metric.meta}</div>
               </div>
-              <div className="metric-value">{metric.value}</div>
-              <div className="metric-label">{metric.label}</div>
-              <div className="metric-note">{metric.meta}</div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="panel-card card">
