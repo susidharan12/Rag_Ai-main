@@ -29,3 +29,6 @@ data/index/registry.json
 
 # Track E eval - isolated, rebuildable index (see eval/run_eval.py)
 eval/.eval_index/
+
+# Week 7 agent race - isolated, rebuildable SDK index (see week7_agent/race.py)
+week7_agent/.race_index/

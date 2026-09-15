@@ -52,6 +52,12 @@ GROQ_TIMEOUT = int(os.environ.get("GROQ_TIMEOUT", "60"))
 DEFAULT_GENERATOR = os.environ.get("RAG_GENERATOR", "groq")
 PROMPT_VERSION = os.environ.get("PROMPT_VERSION", "v1")
 
+# Week 7 · cost telemetry — placeholder rates ($ per 1K tokens). Point these
+# at your actual provider/model pricing; they only affect the *estimated*
+# cost reported by the race harness, not any real billing.
+PRICE_PER_1K_INPUT = float(os.environ.get("RAG_PRICE_PER_1K_INPUT", "0.00015"))
+PRICE_PER_1K_OUTPUT = float(os.environ.get("RAG_PRICE_PER_1K_OUTPUT", "0.00075"))
+
 # Relevance gate for the deterministic extractor (Week 5 M3): the best
 # retrieval score must clear the embedding noise floor before we answer.
 MIN_ANSWER_SCORE = float(os.environ.get("RAG_MIN_ANSWER_SCORE", "0.30"))

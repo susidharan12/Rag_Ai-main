@@ -11,15 +11,17 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from rag_core import settings
+from rag_core.agent import run_agent
 from rag_core.pipeline import ask_sync, get_store
 from rag_core.store import DocStore
+from rag_core.workflow import run_workflow
 
 
 def _load_golden_set_cases():
@@ -362,6 +364,12 @@ class AskRequest(BaseModel):
     top_k: int | None = None
 
 
+class AgentRequest(BaseModel):
+    question: str
+    max_steps: int | None = None
+    time_budget: int | None = None
+
+
 @app.post("/api/ask")
 def ask(req: AskRequest):
     question = (req.question or "").strip()
@@ -376,6 +384,62 @@ def ask(req: AskRequest):
     )
     payload["trace"] = trace
     return payload
+
+
+# --------------------------------------------------------------- agent ----
+
+
+@app.post("/api/agent")
+def agent(req: AgentRequest):
+    question = (req.question or "").strip()
+    if not question:
+        raise HTTPException(400, "Empty question")
+    result = run_agent(
+        question,
+        _store,
+        max_steps=req.max_steps or 5,
+        time_budget=req.time_budget or 30,
+    )
+    result["question"] = question
+    return result
+
+
+@app.get("/api/agent/race")
+def agent_race(force: bool = Query(False, description="Bypass the 1-hour cache and re-run the race now")):
+    import subprocess
+    import time
+
+    results_path = os.path.join(settings.BASE_DIR, "week7_agent", "race_results.json")
+    fresh = False
+    if os.path.exists(results_path):
+        st = os.stat(results_path)
+        fresh = (time.time() - st.st_mtime) < 1 * 60 * 60  # < 1 hour old
+
+    if force or not fresh:
+        try:
+            # Run in a subprocess so the isolated SDK index is used regardless
+            # of the server's already-frozen settings module. A real LLM
+            # (Groq) plus its own free-tier rate-limit backoffs can push a
+            # full 10-question race past 3 minutes — 180s was silently
+            # killing the run and returning stale (or no) data.
+            subprocess.run(
+                [sys.executable, "-m", "week7_agent.race"],
+                cwd=settings.BASE_DIR,
+                capture_output=True,
+                timeout=480,
+            )
+        except subprocess.TimeoutExpired:
+            # Fall through and serve whatever race_results.json currently
+            # holds (a prior run's file, or partially unchanged) rather than
+            # a hard 500 — only actually fail if there's nothing to serve.
+            if not os.path.exists(results_path):
+                raise HTTPException(504, "Race run timed out and no prior results exist")
+
+    try:
+        with open(results_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(500, f"Agent race failed: {e}")
 
 
 @app.get("/api/health")

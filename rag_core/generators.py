@@ -15,10 +15,58 @@ Both return {"answer": str, "model": str, "prompt_version": str,
 """
 
 import re
+import time
 
 import requests
 
 from rag_core import settings
+
+_GROQ_MAX_RETRIES = 2
+
+
+def _post_groq_with_retry(payload):
+    """POST one chat completion to Groq, retrying on HTTP 429 (rate limit).
+
+    Groq's free tier caps tokens-per-minute quite low (observed: 8000 TPM,
+    shared across every model on the key, not per-model) — several LLM
+    calls in quick succession (the agent's per-step calls, or a full
+    10-question race) can burn through that budget mid-run. Without a
+    retry, a 429 silently degraded a call to the deterministic extractive
+    fallback (observed directly: a full 10-question race where every
+    workflow answer quietly fell back to "extractive-v2 (fallback)" with
+    real Groq calls confirmed working when tested standalone) — invisible
+    in the UI as anything other than a misleadingly low "quality" number.
+    Backoffs are kept short (3s/8s) rather than long: this is called from
+    the interactive Agent Playground, where a rare rate-limit hit should
+    degrade to the extractive fallback in a few seconds, not hang for a
+    minute — the token-per-minute window observed resetting in well under
+    60s in practice anyway. Respects Retry-After when the server sends one,
+    capped at 15s.
+    """
+    backoffs = [3, 8]
+    last_exc = None
+    for attempt in range(_GROQ_MAX_RETRIES + 1):
+        try:
+            response = requests.post(
+                settings.GROQ_URL,
+                headers={"Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                         "Content-Type": "application/json"},
+                json=payload,
+                timeout=settings.GROQ_TIMEOUT,
+            )
+            if response.status_code == 429 and attempt < _GROQ_MAX_RETRIES:
+                wait_s = float(response.headers.get("retry-after", backoffs[attempt]))
+                time.sleep(min(wait_s, 15))
+                continue
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]
+        except requests.exceptions.RequestException as e:
+            last_exc = e
+            if attempt < _GROQ_MAX_RETRIES and getattr(e.response, "status_code", None) == 429:
+                time.sleep(backoffs[attempt])
+                continue
+            raise
+    raise last_exc
 
 _STOPWORDS = {
     "the", "a", "an", "is", "are", "was", "were", "of", "in", "on", "for",
@@ -45,7 +93,12 @@ def _sentences(text):
     # continuation). Collapse every newline into a space first so only real
     # sentence-ending punctuation ends a sentence.
     collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", text)
-    parts = re.split(r"(?<=[.!?])\s+", collapsed)
+    # "e.g." / "i.e." / "etc." read as a sentence end to the naive
+    # punctuation split below, truncating answers mid-parenthetical (e.g.
+    # "...a plain string (e.g." with the actual example silently dropped) -
+    # exclude those specific abbreviations from counting as a boundary.
+    parts = re.split(
+        r"(?<!\be\.g)(?<!\bi\.e)(?<!\betc)(?<=[.!?])\s+", collapsed)
     return [s.strip() for s in parts if s.strip()]
 
 
@@ -321,6 +374,33 @@ def _broad_overview_answer(question, results, store=None):
     return "\n\n".join(md), used
 
 
+_TERMINAL_PUNCT_RE = re.compile(r"[.!?][\"'”’)]*$")
+
+
+def _is_unterminated(cand):
+    """True when a candidate doesn't end in sentence-ending punctuation -
+    i.e. it isn't a real complete sentence, just wherever a chunk boundary
+    happened to land."""
+    return not _TERMINAL_PUNCT_RE.search(cand.strip())
+
+
+_CURL_RE = re.compile(r"\bcurl\b", re.IGNORECASE)
+_CURL_FLAG_RE = re.compile(r"(?:^|\s)-{1,2}[A-Za-z](?:\s|$)")
+
+
+def _looks_like_code(cand):
+    """True for a curl/HTTP-request example block masquerading as a
+    "sentence". A multi-line curl invocation (flags, headers, a JSON body)
+    has no sentence-ending punctuation until its very last line, so
+    _sentences() hands it back as one giant candidate - and because it
+    literally repeats the parameter/endpoint name from the question, it can
+    out-score the actual prose explanation sitting right next to it. An
+    example command block should never itself be "the answer"."""
+    if not _CURL_RE.search(cand):
+        return False
+    return len(_CURL_FLAG_RE.findall(cand)) >= 2
+
+
 def _candidates(text):
     """Yield answer candidates as (sentence, single_table_row).
 
@@ -330,6 +410,8 @@ def _candidates(text):
     """
     cands = []
     for sent in _sentences(text):
+        if _looks_like_code(sent):
+            continue
         if "|" in sent:
             for cell in sent.split("|"):
                 cell = cell.strip()
@@ -388,25 +470,19 @@ def generate_groq(question, results, store=None):  # noqa: ARG001 - store unused
     prompt = PROMPT_TEMPLATE.format(
         refusal=_REFUSAL, context=build_context(results), question=question
     )
+    payload = {
+        "model": settings.GROQ_MODEL,
+        "messages": [
+            {"role": "system", "content": "You are a helpful, accurate, and thorough assistant for the user's uploaded documents, whatever their domain. Always provide complete answers based on the provided context, including for broad or exploratory questions like 'tell me about X' or 'summarize this'."},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.2,
+        "max_tokens": 1024,
+        "top_p": 0.9,
+    }
     try:
-        response = requests.post(
-            settings.GROQ_URL,
-            headers={"Authorization": f"Bearer {settings.GROQ_API_KEY}",
-                     "Content-Type": "application/json"},
-            json={
-                "model": settings.GROQ_MODEL,
-                "messages": [
-                    {"role": "system", "content": "You are a helpful, accurate, and thorough assistant for the user's uploaded documents, whatever their domain. Always provide complete answers based on the provided context, including for broad or exploratory questions like 'tell me about X' or 'summarize this'."},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.2,
-                "max_tokens": 1024,
-                "top_p": 0.9,
-            },
-            timeout=settings.GROQ_TIMEOUT,
-        )
-        response.raise_for_status()
-        answer = response.json()["choices"][0]["message"]["content"].strip()
+        message = _post_groq_with_retry(payload)
+        answer = (message.get("content") or "").strip() or (message.get("reasoning") or "").strip()
     except requests.exceptions.RequestException as e:
         return {"answer": f"Generator error: {e}", "model": settings.GROQ_MODEL,
                 "prompt_version": settings.PROMPT_VERSION,
@@ -547,6 +623,17 @@ def generate_extractive(question, results, store=None):
                   + (2.0 if has_number and asks_number else 0.0)
                   - 0.01 * len(cand)
                   + _candidate_rank(question, cand, r) * 4.0)
+            if _is_unterminated(cand):
+                # A candidate with no closing '.', '!' or '?' almost always
+                # means _sentences() ran off the end of the chunk mid-
+                # sentence (a word-window chunk boundary landed there, not
+                # a real sentence break) - not a genuine complete thought.
+                # A neighboring/overlapping chunk usually carries the same
+                # passage in full; heavily penalize the fragment so it only
+                # wins when literally nothing complete is on-topic, instead
+                # of winning on term-overlap while reading as a sentence cut
+                # off mid-word.
+                qi -= 3.0
             candidates.append((qi, shared, cand, r))
 
     # Relevance gate 2: nothing on-topic in the retrieved context -> refuse (M3).
@@ -595,7 +682,12 @@ def generate_extractive(question, results, store=None):
         if r["chunk_id"] not in cited:
             cited.append(r["chunk_id"])
 
-    return {"answer": " ".join(parts), "model": "extractive-v2",
+    # Multiple distinct facts read as a scannable list, not one run-on
+    # paragraph stitching unrelated chunks together; a single fact stays a
+    # plain sentence.
+    answer_text = "\n".join(f"- {p}" for p in parts) if len(parts) > 1 else parts[0]
+
+    return {"answer": answer_text, "model": "extractive-v2",
             "prompt_version": settings.PROMPT_VERSION,
             "params": {"max_sentences": settings.EXTRACTIVE_MAX_SENTENCES,
                        "cited_chunks": cited},
@@ -874,11 +966,30 @@ def _heading_match_bonus(question, text):
     return matches / max(len(q_tokens), 1)
 
 
+_COMPARISON_INTENT_RE = re.compile(
+    r"\b(compare|comparison|difference|differ|changed|change|migrate|"
+    r"migration|versus|vs\.?|between)\b", re.IGNORECASE,
+)
+_COMPARISON_CUE_RE = re.compile(
+    r"\b(prior|previous|earlier|before|instead of|compared to|no longer|"
+    r"used to|whereas|rather than|in version|two changes|new(?:ly)?)\b",
+    re.IGNORECASE,
+)
+
+
 def _candidate_rank(question, cand, result):
     base = 0.0
     base += _heading_match_bonus(question, result["text"])
     if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", result["text"].lower()):
         base += 0.25
+    # A "compare/changed between X and Y" question is best answered by the
+    # single sentence that actually names the before/after contrast - which
+    # is usually the longest, most information-dense candidate and would
+    # otherwise lose to short generic fragments under the per-char length
+    # penalty below. Reward it explicitly instead of shortening the penalty
+    # globally (which would regress the M6 "fact buried in table dump" fix).
+    if _COMPARISON_INTENT_RE.search(question) and _COMPARISON_CUE_RE.search(cand):
+        base += 0.6
     if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", (result.get("source_doc") or "").lower()):
         base += 0.1
     return base

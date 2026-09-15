@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   BarChart3,
+  Bot,
   Database,
   MessageSquareText,
   Plus,
@@ -13,6 +14,7 @@ import { uploadFiles } from '../api.js'
 
 const TABS = [
   { id: 'chat', label: 'Chat', Icon: MessageSquareText },
+  { id: 'agent', label: 'Agent', Icon: Bot },
   { id: 'analytics', label: 'Analytics', Icon: Database },
   { id: 'benchmark', label: 'Benchmark', Icon: BarChart3 },
 ]
@@ -96,7 +98,7 @@ export default function TopNav({
       </nav>
 
       <div className="top-nav-right">
-        <span className="pill week-pill">Week 6</span>
+        <span className="pill week-pill">Week 7</span>
 
         <button
           className="top-nav-btn"

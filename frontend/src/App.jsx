@@ -6,6 +6,7 @@ import ChatPanel from './components/ChatPanel.jsx'
 import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
 import BenchmarkView from './components/BenchmarkView.jsx'
+import AgentView from './components/AgentView.jsx'
 import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval, fetchBonusRagas } from './api.js'
 
 export default function App() {
@@ -116,6 +117,17 @@ export default function App() {
                     messages={messages}
                     setMessages={setMessages}
                   />
+                </motion.div>
+              ) : activeView === 'agent' ? (
+                <motion.div
+                  key="agent"
+                  className="view-transition"
+                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
+                  <AgentView />
                 </motion.div>
               ) : activeView === 'benchmark' ? (
                 <motion.div

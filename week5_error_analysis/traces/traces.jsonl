@@ -28770,3 +28770,771 @@
     "total": 365.6
   }
 }
+{
+  "trace_id": "tr_20260908_112453_f7e6f3",
+  "ts_utc": "2026-09-08T11:24:53Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "github-combined-reference-fb9572:p7:c1",
+        "score": 0.6656,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 22.5
+      },
+      {
+        "rank": 2,
+        "chunk_id": "github-combined-reference-fb9572:p7:c0",
+        "score": 0.6656,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 22.5
+      },
+      {
+        "rank": 3,
+        "chunk_id": "github-combined-reference-fb9572:p5:c1",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 22.5
+      },
+      {
+        "rank": 4,
+        "chunk_id": "github-combined-reference-fb9572:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 22.5
+      },
+      {
+        "rank": 5,
+        "chunk_id": "github-combined-reference-fb9572:p6:c0",
+        "score": 0.6047,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 22.5
+      }
+    ],
+    "latency_ms": 22.5,
+    "retrieved_texts": {
+      "github-combined-reference-fb9572:p7:c1": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports speci-\nfying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the\n\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "github-combined-reference-fb9572:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports speci-\nfying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "github-combined-reference-fb9572:p5:c1": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl-L-X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees\n\nPOST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees array, so an issue could only be assigned to one user at creation time — assigning\nmultiple users required a separate follow-up call. There was also no type field; setting an issue\ntype required a second request after creation.\n5",
+      "github-combined-reference-fb9572:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl-L-X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "github-combined-reference-fb9572:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are imple-\nmented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl-X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "github-combined-reference-fb9572:p7:c1",
+        "github-combined-reference-fb9572:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "github-combined-reference-fb9572:p7:c1",
+      "github-combined-reference-fb9572:p7:c0",
+      "github-combined-reference-fb9572:p5:c1",
+      "github-combined-reference-fb9572:p5:c0",
+      "github-combined-reference-fb9572:p6:c0"
+    ],
+    "latency_ms": 356.0
+  },
+  "raw_output": "- Example curl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/pulls \\ -d '{\"title\":\"Amazing feature\", \"head\":\"octocat:new-feature\", \"base\":\"master\", \"maintainer_can_modify\":false}' Returns 201 Created with the pull request object.\n- curl-L-X POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 22.5,
+    "generate": 356.0,
+    "total": 378.5
+  }
+}
+{
+  "trace_id": "tr_20260908_112802_8b5807",
+  "ts_utc": "2026-09-08T11:28:02Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "github-combined-reference-fb9572:p7:c1",
+        "score": 0.6656,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10198.6
+      },
+      {
+        "rank": 2,
+        "chunk_id": "github-combined-reference-fb9572:p7:c0",
+        "score": 0.6656,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10198.6
+      },
+      {
+        "rank": 3,
+        "chunk_id": "github-combined-reference-fb9572:p5:c1",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 10198.6
+      },
+      {
+        "rank": 4,
+        "chunk_id": "github-combined-reference-fb9572:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 10198.6
+      },
+      {
+        "rank": 5,
+        "chunk_id": "github-combined-reference-fb9572:p6:c0",
+        "score": 0.6047,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 10198.6
+      }
+    ],
+    "latency_ms": 10198.6,
+    "retrieved_texts": {
+      "github-combined-reference-fb9572:p7:c1": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports speci-\nfying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the\n\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "github-combined-reference-fb9572:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports speci-\nfying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "github-combined-reference-fb9572:p5:c1": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl-L-X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees\n\nPOST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees array, so an issue could only be assigned to one user at creation time — assigning\nmultiple users required a separate follow-up call. There was also no type field; setting an issue\ntype required a second request after creation.\n5",
+      "github-combined-reference-fb9572:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl-L-X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "github-combined-reference-fb9572:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are imple-\nmented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl-X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "github-combined-reference-fb9572:p7:c1",
+        "github-combined-reference-fb9572:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "github-combined-reference-fb9572:p7:c1",
+      "github-combined-reference-fb9572:p7:c0",
+      "github-combined-reference-fb9572:p5:c1",
+      "github-combined-reference-fb9572:p5:c0",
+      "github-combined-reference-fb9572:p6:c0"
+    ],
+    "latency_ms": 250.1
+  },
+  "raw_output": "- Example curl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/pulls \\ -d '{\"title\":\"Amazing feature\", \"head\":\"octocat:new-feature\", \"base\":\"master\", \"maintainer_can_modify\":false}' Returns 201 Created with the pull request object.\n- curl-L-X POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 10198.6,
+    "generate": 250.1,
+    "total": 10448.7
+  }
+}
+{
+  "trace_id": "tr_20260908_113202_39a850",
+  "ts_utc": "2026-09-08T11:32:02Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-684bf2:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10056.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-684bf2:p7:c1",
+        "score": 0.6777,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10056.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-684bf2:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 10056.4
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-684bf2:p9:c1",
+        "score": 0.6401,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 10056.4
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-684bf2:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 10056.4
+      }
+    ],
+    "latency_ms": 10056.4,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-684bf2:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-684bf2:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the\n\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-684bf2:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl-L-X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-684bf2:p9:c1": "commit with an empty\nREADME when true.\nRequest\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior\n\ncommit with an empty\nREADME when true.\nRequest\ncurl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9",
+      "dev-docs-github-combined-reference-684bf2:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl-X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-684bf2:p7:c0",
+        "dev-docs-github-combined-reference-684bf2:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-684bf2:p7:c0",
+      "dev-docs-github-combined-reference-684bf2:p7:c1",
+      "dev-docs-github-combined-reference-684bf2:p5:c0",
+      "dev-docs-github-combined-reference-684bf2:p9:c1",
+      "dev-docs-github-combined-reference-684bf2:p6:c0"
+    ],
+    "latency_ms": 307.7
+  },
+  "raw_output": "- Example curl-X POST-H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/pulls \\ -d '{\"title\":\"Amazing feature\", \"head\":\"octocat:new-feature\", \"base\":\"master\", \"maintainer_can_modify\":false}' Returns 201 Created with the pull request object.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 10056.4,
+    "generate": 307.7,
+    "total": 10364.1
+  }
+}
+{
+  "trace_id": "tr_20260908_113316_51eef9",
+  "ts_utc": "2026-09-08T11:33:16Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-fe061b:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10331.4
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-fe061b:p7:c1",
+        "score": 0.6777,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10331.4
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-fe061b:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 10331.4
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-fe061b:p9:c1",
+        "score": 0.6083,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 10331.4
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-fe061b:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 10331.4
+      }
+    ],
+    "latency_ms": 10331.4,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-fe061b:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-fe061b:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the\n\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-fe061b:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl -L -X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-fe061b:p9:c1": "with an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior\n\nwith an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9",
+      "dev-docs-github-combined-reference-fe061b:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl -X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-fe061b:p7:c1",
+        "dev-docs-github-combined-reference-fe061b:p9:c1",
+        "dev-docs-github-combined-reference-fe061b:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-fe061b:p7:c0",
+      "dev-docs-github-combined-reference-fe061b:p7:c1",
+      "dev-docs-github-combined-reference-fe061b:p5:c0",
+      "dev-docs-github-combined-reference-fe061b:p9:c1",
+      "dev-docs-github-combined-reference-fe061b:p6:c0"
+    ],
+    "latency_ms": 1239.5
+  },
+  "raw_output": "- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the  \\ https://api.github.com/repos/octocat/Hello-World/pulls \\ -d '{\"title\":\"Amazing feature\", \"head\":\"octocat:new-feature\", \"base\":\"master\", \"maintainer_can_modify\":false}' Returns 201 Created with the pull request object.\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 10331.4,
+    "generate": 1239.5,
+    "total": 11570.9
+  }
+}
+{
+  "trace_id": "tr_20260908_113500_0303f6",
+  "ts_utc": "2026-09-08T11:35:00Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10339.0
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "score": 0.5323,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 10339.0
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 10339.0
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 10339.0
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "score": 0.5653,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 10339.0
+      }
+    ],
+    "latency_ms": 10339.0,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-52ec00:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-52ec00:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-52ec00:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl -L -X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-52ec00:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl -X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6",
+      "dev-docs-github-combined-reference-52ec00:p9:c1": "with an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "dev-docs-github-combined-reference-52ec00:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-52ec00:p7:c0",
+      "dev-docs-github-combined-reference-52ec00:p7:c1",
+      "dev-docs-github-combined-reference-52ec00:p5:c0",
+      "dev-docs-github-combined-reference-52ec00:p6:c0",
+      "dev-docs-github-combined-reference-52ec00:p9:c1"
+    ],
+    "latency_ms": 476.3
+  },
+  "raw_output": "- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 10339.0,
+    "generate": 476.3,
+    "total": 10815.3
+  }
+}
+{
+  "trace_id": "tr_20260908_113614_1e459e",
+  "ts_utc": "2026-09-08T11:36:14Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11882.3
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "score": 0.5323,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11882.3
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 11882.3
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 11882.3
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "score": 0.5653,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 11882.3
+      }
+    ],
+    "latency_ms": 11882.3,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-52ec00:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-52ec00:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-52ec00:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl -L -X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-52ec00:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl -X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6",
+      "dev-docs-github-combined-reference-52ec00:p9:c1": "with an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "dev-docs-github-combined-reference-52ec00:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-52ec00:p7:c0",
+      "dev-docs-github-combined-reference-52ec00:p7:c1",
+      "dev-docs-github-combined-reference-52ec00:p5:c0",
+      "dev-docs-github-combined-reference-52ec00:p6:c0",
+      "dev-docs-github-combined-reference-52ec00:p9:c1"
+    ],
+    "latency_ms": 314.9
+  },
+  "raw_output": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the prior version — it was true by default with no way to override it until a follow-up PATCH request.\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 11882.3,
+    "generate": 314.9,
+    "total": 12197.2
+  }
+}
+{
+  "trace_id": "tr_20260908_113850_b1e2b6",
+  "ts_utc": "2026-09-08T11:38:50Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11585.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "score": 0.5323,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11585.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 11585.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 11585.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "score": 0.5653,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 11585.2
+      }
+    ],
+    "latency_ms": 11585.2,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-52ec00:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-52ec00:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-52ec00:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl -L -X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-52ec00:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl -X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6",
+      "dev-docs-github-combined-reference-52ec00:p9:c1": "with an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "dev-docs-github-combined-reference-52ec00:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-52ec00:p7:c0",
+      "dev-docs-github-combined-reference-52ec00:p7:c1",
+      "dev-docs-github-combined-reference-52ec00:p5:c0",
+      "dev-docs-github-combined-reference-52ec00:p6:c0",
+      "dev-docs-github-combined-reference-52ec00:p9:c1"
+    ],
+    "latency_ms": 287.4
+  },
+  "raw_output": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the prior version — it was true by default with no way to override it until a follow-up PATCH request.\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 11585.2,
+    "generate": 287.4,
+    "total": 11872.7
+  }
+}
+{
+  "trace_id": "tr_20260908_113954_ae1e97",
+  "ts_utc": "2026-09-08T11:39:54Z",
+  "surface": "api",
+  "question": "How did setting maintainer_can_modify during pull request creation change between GitHub API 2022-11-28 and 2025-06-01?",
+  "retrieval": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "min_score": 0.08,
+    "index_chunk_count": 31,
+    "documents_indexed": 3,
+    "retrieved": [
+      {
+        "rank": 1,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "score": 0.6851,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11779.2
+      },
+      {
+        "rank": 2,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "score": 0.5323,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 7,
+        "sdk_version": "",
+        "trace_time_ms": 11779.2
+      },
+      {
+        "rank": 3,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p5:c0",
+        "score": 0.5336,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 5,
+        "sdk_version": "",
+        "trace_time_ms": 11779.2
+      },
+      {
+        "rank": 4,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p6:c0",
+        "score": 0.6068,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 6,
+        "sdk_version": "",
+        "trace_time_ms": 11779.2
+      },
+      {
+        "rank": 5,
+        "chunk_id": "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "score": 0.5653,
+        "source_doc": "github_combined_reference.pdf",
+        "page_number": 9,
+        "sdk_version": "",
+        "trace_time_ms": 11779.2
+      }
+    ],
+    "latency_ms": 11779.2,
+    "retrieved_texts": {
+      "dev-docs-github-combined-reference-52ec00:p7:c0": "Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or user:branc\nh for cross-repo.\nbase\nstring\nYes\nThe branch you want\nchanges merged\ninto.\nbody\nstring\nNo\nPR description.\ndraft\nboolean\nNo\nDefault false.\nmaintainer_can_modi\nfy\nboolean\nNo\nDefault true. Now\nsettable at creation\ntime.\nExample\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the",
+      "dev-docs-github-combined-reference-52ec00:p7:c1": "\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version allows auto-merge to be\npre-armed on a draft.\n7",
+      "dev-docs-github-combined-reference-52ec00:p5:c0": "Create an issue\nPOST /repos/{owner}/{repo}/issues\nAPI version 2025-06-01\nCreates an issue on the specified repository. Any user with pull access can create one.\nStarting in this version, assignee is deprecated in favor of assignees (array), and a new optional\ntype field lets you set the issue type at creation time instead of via a separate call.\nPath parameters\nName\nType\nDescription\nowner\nstring\nThe account owner of the repository.\nrepo\nstring\nThe name of the repository.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntitle\nstring or integer\nYes\n—\nThe title of the\nissue.\nbody\nstring\nNo\nnull\nThe contents of\nthe issue.\nassignees\narray of strings\nNo\n[]\nLogins for the\nusers assigned\nto this issue.\nReplaces the\ndeprecated assi\ngnee field.\nlabels\narray of strings\nNo\n[]\nLabels to\nassociate with\nthis issue.\ntype\nstring\nNo\nnull\nThe name of the\nissue type to set\non creation.\ncurl -L -X POST \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/issues \\\n-d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}'\nPrevious version (2022-11-28)\nThe prior version of this endpoint only accepted a single assignee (string) rather than an as\nsignees",
+      "dev-docs-github-combined-reference-52ec00:p6:c0": "Create a pull request\nDraft pull requests are available in public repositories with GitHub Free and GitHub Free for\norganizations, and in public and private repositories with GitHub Pro, GitHub Team and GitHub\nEnterprise Cloud. For more information, see the GitHub products page.\nTo create a pull request you provide a title, base and head branches, and optionally a body\ndescribing the change.\nEndpoint: POST /repos/{owner}/{repo}/pulls\nParameters:\n• title — string — required — The title of the new pull request.\n• head — string — required — The name of the branch where your changes are implemented.\n• base — string — required — The name of the branch you want the changes pulled into.\n• body — string — optional — The contents of the pull request.\n• draft — boolean — optional, default false — Indicates whether the pull request is a draft.\ncurl -X POST https://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\"head\":\"octocat:new-feature\",\"base\":\"master\"}'\nReturns a pull request object on success (status 201).\n6",
+      "dev-docs-github-combined-reference-52ec00:p9:c1": "with an empty\nREADME when true.\nRequest\ncurl -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/user/repos \\\n-d '{\"name\":\"Hello-World\",\"visibility\":\"internal\",\"auto_init\":true}'\nResponse\nReturns 201 Created with the full repository object.\nPrevious version (2022-11-28)\nThe prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint. has_iss\nues also defaulted to true unconditionally, regardless of whether the repository was public or\nprivate.\n9"
+    }
+  },
+  "generation": {
+    "model": "extractive-v2 (fallback)",
+    "prompt_version": "v1",
+    "params": {
+      "max_sentences": 4,
+      "cited_chunks": [
+        "dev-docs-github-combined-reference-52ec00:p7:c0",
+        "dev-docs-github-combined-reference-52ec00:p7:c1",
+        "dev-docs-github-combined-reference-52ec00:p9:c1",
+        "dev-docs-github-combined-reference-52ec00:p5:c0"
+      ],
+      "fallback": "openai/gpt-oss-120b unavailable (HTTPError)"
+    },
+    "context_chunk_ids": [
+      "dev-docs-github-combined-reference-52ec00:p7:c0",
+      "dev-docs-github-combined-reference-52ec00:p7:c1",
+      "dev-docs-github-combined-reference-52ec00:p5:c0",
+      "dev-docs-github-combined-reference-52ec00:p6:c0",
+      "dev-docs-github-combined-reference-52ec00:p9:c1"
+    ],
+    "latency_ms": 333.1
+  },
+  "raw_output": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the prior version — it was true by default with no way to override it until a follow-up PATCH request.\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+  "refused": false,
+  "latency_ms": {
+    "retrieve": 11779.2,
+    "generate": 333.1,
+    "total": 12112.2
+  }
+}

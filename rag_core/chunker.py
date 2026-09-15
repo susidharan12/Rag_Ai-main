@@ -57,18 +57,28 @@ def chunk_page_text(text, chunk_size, chunk_overlap):
     if not raw_paragraphs:
         return []
 
-    paragraphs = []
-    for para in raw_paragraphs:
-        if len(para) > chunk_size:
-            paragraphs.extend(_split_long_paragraph(para, chunk_size, chunk_overlap))
-        else:
-            paragraphs.append(para)
-
     chunks = []
     current = []
     current_len = 0
 
-    for para in paragraphs:
+    for para in raw_paragraphs:
+        if len(para) > chunk_size:
+            # _split_long_paragraph() already produces chunk_size-bounded
+            # pieces with chunk_overlap of shared text built in between
+            # consecutive pieces. Feeding those pieces back into the
+            # ordinary pack-multiple-paragraphs-per-chunk loop below would
+            # add a *second*, independent layer of overlap on top of that
+            # one - which, whenever a piece ends up alone in `current` and
+            # gets flushed, duplicates almost the entire piece into the next
+            # chunk (the carried "overlap" and the next piece's own built-in
+            # overlap are nearly identical text, back to back). Emit them
+            # directly as standalone chunks instead.
+            if current:
+                chunks.append("\n\n".join(current))
+                current, current_len = [], 0
+            chunks.extend(_split_long_paragraph(para, chunk_size, chunk_overlap))
+            continue
+
         para_len = len(para)
         if not current:
             current = [para]
@@ -85,9 +95,27 @@ def chunk_page_text(text, chunk_size, chunk_overlap):
         overlap_parts = []
         overlap_len = 0
         for p in reversed(current):
-            p_len = len(p)
+            remaining = chunk_overlap - overlap_len
+            if remaining <= 0:
+                break
+            if len(p) > remaining:
+                # p is itself a whole (possibly chunk_size-long) paragraph -
+                # e.g. one piece from _split_long_paragraph(). Carrying it
+                # forward whole would duplicate almost all of it into the
+                # next chunk (this used to produce chunks noticeably larger
+                # than chunk_size with the same passage repeated twice
+                # verbatim); only its trailing ~remaining chars are needed
+                # for continuity, so trim to that, word-aligned.
+                words = p.split(" ")
+                tail_words, tail_len = [], 0
+                for w in reversed(words):
+                    tail_words.insert(0, w)
+                    tail_len += len(w) + 1
+                    if tail_len >= remaining:
+                        break
+                p = " ".join(tail_words)
             overlap_parts.insert(0, p)
-            overlap_len += p_len + 1
+            overlap_len += len(p) + 1
             if overlap_len >= chunk_overlap:
                 break
 
