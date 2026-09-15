@@ -52,3 +52,36 @@ export async function askQuestion(question) {
 export async function fetchHealth() {
   return json(await fetch(`${BASE}/api/health`))
 }
+
+export async function fetchBenchmark() {
+  return json(await fetch(`${BASE}/api/benchmark`))
+}
+
+export async function fetchJudgeEval() {
+  return json(await fetch(`${BASE}/api/judge_eval`))
+}
+
+export async function fetchTrackEEval() {
+  return json(await fetch(`${BASE}/api/track_e_eval`))
+}
+
+export async function fetchBonusRagas() {
+  return json(await fetch(`${BASE}/api/bonus_ragas`))
+}
+
+export async function runAgent(question, maxSteps, timeBudget) {
+  const params = { question }
+  if (maxSteps) params.max_steps = maxSteps
+  if (timeBudget) params.time_budget = timeBudget
+  const res = await fetch(`${BASE}/api/agent`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  })
+  return json(res)
+}
+
+export async function fetchRaceResults(force = false) {
+  const qs = force ? '?force=true' : ''
+  return json(await fetch(`${BASE}/api/agent/race${qs}`))
+}

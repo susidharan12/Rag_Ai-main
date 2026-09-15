@@ -146,7 +146,14 @@ def chunk_page_text(text, chunk_size, chunk_overlap):
     return chunks
 
 
-def pdf_to_vectors(pdf_path):
+def _read_one_pdf(pdf_path, ocr_cache, max_pages=None):
+    """Extract page texts for a single PDF, tagged with its source filename.
+
+    max_pages caps how many pages are read from the start of the file. Some
+    exported PDFs (e.g. a "screen" copy followed by a "print" copy with page
+    footers) duplicate their entire content a second time; passing the true
+    page count avoids indexing that duplicate half twice.
+    """
 
     print(f"\nReading PDF: {pdf_path}")
 
@@ -158,9 +165,9 @@ def pdf_to_vectors(pdf_path):
 
         print(f"Total pages: {total_pages}")
 
-    ocr_cache = load_ocr_cache()
-
-    print(f"Loaded OCR cache: {len(ocr_cache)} pages")
+    if max_pages:
+        total_pages = min(total_pages, max_pages)
+        print(f"Capped at {total_pages} pages")
 
     pdf_doc = pymupdf.open(pdf_path)
 
@@ -177,10 +184,38 @@ def pdf_to_vectors(pdf_path):
 
         page_texts.append({
             "text": page_text,
-            "page_number": page_num + 1
+            "page_number": page_num + 1,
+            "source_file": os.path.basename(pdf_path),
         })
 
     pdf_doc.close()
+
+    return page_texts
+
+
+def pdf_to_vectors(pdf_paths, max_pages_per_pdf=None):
+    """Ingest one PDF (str) or multiple PDFs (list of str) into a single
+    combined vectors.index/chunks.pkl. Each chunk's metadata carries
+    'source_file' so a combined index can still be traced back to the PDF
+    it came from; 'page_number' stays local to that source PDF.
+
+    max_pages_per_pdf: optional int, or a dict of {basename: page_count},
+    to cap how many pages are read from each file (see _read_one_pdf)."""
+
+    if isinstance(pdf_paths, str):
+        pdf_paths = [pdf_paths]
+
+    ocr_cache = load_ocr_cache()
+
+    print(f"Loaded OCR cache: {len(ocr_cache)} pages")
+
+    page_texts = []
+    for pdf_path in pdf_paths:
+        if isinstance(max_pages_per_pdf, dict):
+            cap = max_pages_per_pdf.get(os.path.basename(pdf_path))
+        else:
+            cap = max_pages_per_pdf
+        page_texts.extend(_read_one_pdf(pdf_path, ocr_cache, max_pages=cap))
 
     chunks = []
     chunk_metadata = []
@@ -189,6 +224,7 @@ def pdf_to_vectors(pdf_path):
 
         page_text = page["text"]
         page_number = page["page_number"]
+        source_file = page["source_file"]
 
         if not page_text.strip():
             continue
@@ -205,14 +241,15 @@ def pdf_to_vectors(pdf_path):
 
             chunk_metadata.append({
                 "page_number": page_number,
-                "chunk_index": chunk_index
+                "chunk_index": chunk_index,
+                "source_file": source_file,
             })
 
-    print(f"Created {len(chunks)} chunks")
+    print(f"Created {len(chunks)} chunks from {len(pdf_paths)} PDF(s)")
 
     if not chunks:
 
-        print("No text found in PDF.")
+        print("No text found in PDF(s).")
 
         return None, [], []
 
@@ -260,7 +297,8 @@ def pdf_to_vectors(pdf_path):
             {
                 "chunks": chunks,
                 "metadata": chunk_metadata,
-                "total_pages": total_pages
+                "total_pages": len(page_texts),
+                "source_files": [os.path.basename(p) for p in pdf_paths],
             },
             f
         )
@@ -307,22 +345,23 @@ def find_latest_pdf():
 
 def main():
 
-    pdf_file = (
-        sys.argv[1]
+    pdf_files = (
+        sys.argv[1:]
         if len(sys.argv) > 1
-        else find_latest_pdf()
+        else [find_latest_pdf()]
     )
+    pdf_files = [p for p in pdf_files if p]
 
-    if not pdf_file:
+    if not pdf_files:
 
         print(
-            f"No PDF found. Run with a path or add a PDF to "
+            f"No PDF found. Run with one or more paths or add a PDF to "
             f"{config.DOCUMENTS_DIR}/."
         )
 
         sys.exit(1)
 
-    pdf_to_vectors(pdf_file)
+    pdf_to_vectors(pdf_files)
 
     print("\nSetup completed!")
 

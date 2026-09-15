@@ -91,12 +91,12 @@ export default function StatsPanel({ docs, stats, onChanged, onError }) {
           </div>
         </div>
         <div className="stat-grid-2">
-          <div className="stat-tile card">
+          <div className="stat-tile card tone-0">
             <div className="stat-tile-label">Documents</div>
             <div className="stat-tile-value">{docsCount}</div>
             <div className="stat-tile-delta good">indexed</div>
           </div>
-          <div className="stat-tile card">
+          <div className="stat-tile card tone-1">
             <div className="stat-tile-label">Chunks</div>
             <div className="stat-tile-value">{chunksCount}</div>
             <div className="stat-tile-delta good">embedded</div>
