@@ -475,6 +475,30 @@ def _extract_subject(question):
     return m.group(1) if m and m.re is _NAMED_FIELD_RE else (m.group() if m else None)
 
 
+def _needs_deprecation_check(question, context_results, tools_used):
+    """True when the retrieved context already shows a change/replacement
+    for a subject+version this question names, but check_deprecation
+    hasn't been called yet this run.
+
+    This is the exact same signal _fallback_plan's step==2 branch already
+    uses (same _CHANGE_MARKERS/_extract_versions/_extract_subject) - reused
+    here as a GATE on the `finish` tool, checked at whatever step the agent
+    reaches for finish, rather than only at one hard-coded step index. That
+    distinction matters: a real LLM's finish step doesn't land at a fixed
+    index (see week8_trajectory_eval/REPORT.md for the measured case),
+    so a check tied to "step == 2" only protects the deterministic
+    fallback plan, never a real model's own decision to stop.
+    """
+    if "check_deprecation" in tools_used:
+        return False
+    versions = _extract_versions(question)
+    subject = _extract_subject(question)
+    if not (versions and subject):
+        return False
+    combined_text = " ".join(r.get("text", "") for r in context_results).lower()
+    return any(marker in combined_text for marker in _CHANGE_MARKERS)
+
+
 def _fallback_plan(question, step, context_results):
     """Deterministic fallback when no LLM is available.
 
@@ -624,8 +648,37 @@ def _synthesize_answer(question, context_results):
 # ---------------------------------------------------------------------------
 
 def run_agent(question, store, max_steps=5, time_budget=30,
-              max_tokens=6000, max_cost_usd=0.01):
+              max_tokens=6000, max_cost_usd=0.01, enforce_deprecation_check=False,
+              skip_redundant_synthesis=False):
     """Run the ReAct agent loop.
+
+    Args:
+        enforce_deprecation_check: Week 8 mitigation (default OFF, so
+            existing callers/behavior are unchanged). When True, a `finish`
+            call is held back once if the context already contains
+            change/replacement language for a subject+version this
+            question names but check_deprecation was never called (see
+            _needs_deprecation_check) - the agent gets one more
+            observation telling it to call check_deprecation before
+            finishing, instead of being allowed to answer from a partial
+            reading of what changed. Bounded to fire at most once per run
+            (deprecation_holds < 1), so this cannot turn into a new
+            infinite loop - it is still subject to every other existing
+            circuit breaker (max_steps/time/token/cost) exactly as before.
+        skip_redundant_synthesis: default OFF, so week7_agent/race.py and
+            week8_trajectory_eval's documented behavior (always route the
+            final answer through the same generator the fixed workflow
+            uses, per _synthesize_answer's docstring) is unchanged for
+            those callers. When True, a `finish` call whose own "answer"
+            argument already looks like a real, complete answer (RULES #8
+            explicitly asks the model to write one there) is used
+            directly instead of unconditionally making a SECOND full LLM
+            completion call to re-synthesize it - the interactive
+            /api/agent endpoint turns this on because that second call
+            was doubling every real request's latency for no visible
+            quality gain when the model already wrote a substantive
+            answer. Still falls back to _synthesize_answer whenever the
+            inline answer is missing or too short to trust.
 
     Returns:
         {
@@ -642,6 +695,9 @@ def run_agent(question, store, max_steps=5, time_budget=30,
                                      # | "schema_error" | "parse_error"
                 "est_tokens": int,
                 "est_cost_usd": float,
+                "deprecation_holds": int,  # times a premature `finish` was
+                                            # held back for a missing
+                                            # check_deprecation follow-up
             }
         }
     """
@@ -655,6 +711,7 @@ def run_agent(question, store, max_steps=5, time_budget=30,
     stopped_by = "finished"
     est_tokens_used = estimate_tokens(system_prompt)
     consecutive_schema_failures = 0
+    deprecation_holds = 0
     answer = None
 
     for step_num in range(max_steps):
@@ -728,6 +785,36 @@ def run_agent(question, store, max_steps=5, time_budget=30,
         consecutive_schema_failures = 0
         args = cleaned_or_error
 
+        # --- Week 8 mitigation: hold back a premature `finish` once when
+        # the question clearly needs a check_deprecation follow-up the
+        # agent hasn't made yet (see _needs_deprecation_check). Checked
+        # BEFORE execution so a held finish never counts as a real tool
+        # call or gets added to tools_used. ---
+        if (tool == "finish" and enforce_deprecation_check
+                and deprecation_holds < 1
+                and _needs_deprecation_check(question, context_results, tools_used)):
+            deprecation_holds += 1
+            observation = (
+                "finish rejected: the retrieved context indicates this "
+                "subject changed for the target api_version, but "
+                "check_deprecation has not been called yet. Call "
+                "check_deprecation before finishing."
+            )
+            steps.append({
+                "step": step_num + 1,
+                "thought": thought,
+                "tool": tool,
+                "args": args,
+                "observation": observation,
+            })
+            if llm_available:
+                conversation.append({"role": "assistant", "content": raw})
+                conversation.append({
+                    "role": "user",
+                    "content": f"Observation:\n{observation}\n\nNow decide the next step.",
+                })
+            continue
+
         # --- EXECUTE the tool ---
         observation, raw_results = _execute_tool(tool, args, store)
         est_tokens_used += estimate_tokens(observation)
@@ -750,13 +837,21 @@ def run_agent(question, store, max_steps=5, time_budget=30,
         # --- Check if agent decided to finish ---
         if tool == "finish":
             stopped_by = "finished"
-            # Prefer the shared synthesis path (same generator the workflow
-            # uses) over the loop-model's own inline "answer" text whenever
-            # real tool context was actually gathered — see
-            # _synthesize_answer's docstring for why. Fall back to the
-            # model's own answer only when nothing was ever retrieved.
-            answer = (_synthesize_answer(question, context_results)
-                      if context_results else args.get("answer", observation))
+            inline_answer = (args.get("answer") or "").strip()
+            if skip_redundant_synthesis and len(inline_answer) >= 40:
+                # The model already wrote a real answer in this same call
+                # (RULES #8) - use it directly rather than spending a
+                # second full LLM completion re-deriving the same thing.
+                answer = inline_answer
+            else:
+                # Prefer the shared synthesis path (same generator the
+                # workflow uses) over the loop-model's own inline "answer"
+                # text whenever real tool context was actually gathered —
+                # see _synthesize_answer's docstring for why. Fall back to
+                # the model's own answer only when nothing was ever
+                # retrieved.
+                answer = (_synthesize_answer(question, context_results)
+                          if context_results else args.get("answer", observation))
             break
 
         # --- Update conversation for next LLM call ---
@@ -801,5 +896,6 @@ def run_agent(question, store, max_steps=5, time_budget=30,
             "stopped_by": stopped_by,
             "est_tokens": est_tokens_used,
             "est_cost_usd": est_cost_usd,
+            "deprecation_holds": deprecation_holds,
         },
     }

@@ -4,6 +4,7 @@ import {
   BarChart3,
   Bot,
   Database,
+  GitBranch,
   MessageSquareText,
   Plus,
   Settings,
@@ -17,6 +18,7 @@ const TABS = [
   { id: 'agent', label: 'Agent', Icon: Bot },
   { id: 'analytics', label: 'Analytics', Icon: Database },
   { id: 'benchmark', label: 'Benchmark', Icon: BarChart3 },
+  { id: 'trajectory', label: 'Trajectory', Icon: GitBranch },
 ]
 
 export default function TopNav({

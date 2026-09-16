@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from rag_core import settings
 from rag_core.agent import run_agent
 from rag_core.pipeline import ask_sync, get_store
-from rag_core.store import DocStore
+from rag_core.store import DocStore, get_embedding_model
 from rag_core.workflow import run_workflow
 
 
@@ -311,6 +311,15 @@ _store = DocStore()
 def _startup():
     settings.ensure_dirs()
     _store.ensure_loaded()
+    # Load the embedding model now, at process startup, instead of letting
+    # the first real search request eat the one-time model-load cost (this
+    # is the same warm-up week7_agent/race.py already does for its own
+    # harness - without it, the very first question after a server
+    # (re)start pays this cost mid-request, which is exactly what showed up
+    # as the Agent Playground's "Agent is starting..." staying up for tens
+    # of seconds on that first question).
+    get_embedding_model()
+    _store.search("warmup", top_k=1)
 
 
 # ------------------------------------------------------------------ docs ----
@@ -397,8 +406,19 @@ def agent(req: AgentRequest):
     result = run_agent(
         question,
         _store,
-        max_steps=req.max_steps or 5,
-        time_budget=req.time_budget or 30,
+        # Tighter than the general-purpose default (5/30s): this is the
+        # interactive Playground, where every extra step is another real
+        # network round-trip to Groq a person is sitting and waiting on -
+        # 3 steps covers the common search -> follow-up -> finish chain.
+        max_steps=req.max_steps or 3,
+        time_budget=req.time_budget or 15,
+        # See run_agent's docstring: skips the second, redundant full LLM
+        # completion call that used to always follow a real `finish` -
+        # this alone roughly halves the Groq round-trips a live question
+        # pays for. Not used by week7_agent/race.py or
+        # week8_trajectory_eval, so their already-documented numbers and
+        # behavior are unaffected.
+        skip_redundant_synthesis=True,
     )
     result["question"] = question
     return result
@@ -539,6 +559,69 @@ def _bonus_ragas_payload():
 @app.get("/api/bonus_ragas")
 def bonus_ragas():
     return _bonus_ragas_payload()
+
+
+def _trajectory_eval_payload():
+    base = os.path.join(settings.BASE_DIR, "week8_trajectory_eval")
+    report_path = os.path.join(base, "report.json")
+    if not os.path.exists(report_path):
+        return {"available": False,
+                "reason": "week8_trajectory_eval/report.json not found - run "
+                          "'python -m week8_trajectory_eval.trajectory_eval' "
+                          "to generate it."}
+
+    def _load(name):
+        path = os.path.join(base, name)
+        if not os.path.exists(path):
+            return None
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    report = _load("report.json")
+    before = _load("traces_before.json") or []
+    after = _load("traces_after.json") or []
+    bonus = _load("bonus_report.json")
+
+    after_by_id = {r["id"]: r for r in after}
+    per_query = []
+    for r in before:
+        a = after_by_id.get(r["id"], {})
+        a_metrics = a.get("metrics", {})
+        per_query.append({
+            "id": r["id"],
+            "question": r["question"],
+            "category": r["category"],
+            "before": {
+                "outcome_pass": r["outcome_pass"],
+                "trajectory_pass": r["trajectory_pass"],
+                "outcome_score": r["outcome_score"],
+                "failure_tags": r["failure_tags"],
+                "tool_path": r["tool_path"],
+                "stopped_by": r["metrics"]["stopped_by"],
+                "latency_ms": r["metrics"]["latency_ms"],
+                "est_tokens": r["metrics"]["est_tokens"],
+                "est_cost_usd": r["metrics"]["est_cost_usd"],
+            },
+            "after": {
+                "outcome_pass": a.get("outcome_pass"),
+                "trajectory_pass": a.get("trajectory_pass"),
+                "outcome_score": a.get("outcome_score"),
+                "failure_tags": a.get("failure_tags"),
+                "tool_path": a.get("tool_path"),
+                "stopped_by": a_metrics.get("stopped_by"),
+                "latency_ms": a_metrics.get("latency_ms"),
+                "est_tokens": a_metrics.get("est_tokens"),
+                "est_cost_usd": a_metrics.get("est_cost_usd"),
+                "deprecation_holds": a_metrics.get("deprecation_holds"),
+            },
+        })
+
+    return {"available": True, "report": report, "per_query": per_query, "bonus": bonus}
+
+
+@app.get("/api/trajectory_eval")
+def trajectory_eval():
+    return _trajectory_eval_payload()
 
 
 # ---------------------------------------------------------------- static ----

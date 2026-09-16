@@ -24,6 +24,9 @@ from rag_core import settings
 _GROQ_MAX_RETRIES = 2
 
 
+_MAX_WORTHWHILE_RETRY_WAIT_S = 15
+
+
 def _post_groq_with_retry(payload):
     """POST one chat completion to Groq, retrying on HTTP 429 (rate limit).
 
@@ -40,8 +43,21 @@ def _post_groq_with_retry(payload):
     the interactive Agent Playground, where a rare rate-limit hit should
     degrade to the extractive fallback in a few seconds, not hang for a
     minute — the token-per-minute window observed resetting in well under
-    60s in practice anyway. Respects Retry-After when the server sends one,
-    capped at 15s.
+    60s in practice anyway.
+
+    A 429 can also mean a much longer-lived cap than the per-minute one —
+    Groq's tokens-PER-DAY limit (undocumented in this project until hit
+    directly: `{"code":"rate_limit_exceeded", ...on tokens per day (TPD)...
+    "Please try again in 1m50s"}`), which a short retry window cannot ever
+    close. Retrying anyway wastes real wall-clock time on attempts that are
+    guaranteed to 429 again — measured directly: 2 blind retries at the old
+    15s-capped backoff added ~30s to a single call before finally falling
+    back to the deterministic planner, which was available immediately.
+    So: only retry when the server's own reported wait (Retry-After, or our
+    short default backoff when it sends none) is itself short enough to be
+    worth closing here; otherwise fail fast on the first 429 and let the
+    caller's fallback path (deterministic planner / extractive generator)
+    run right away instead of sitting through a wait it can't shorten.
     """
     backoffs = [3, 8]
     last_exc = None
@@ -54,15 +70,25 @@ def _post_groq_with_retry(payload):
                 json=payload,
                 timeout=settings.GROQ_TIMEOUT,
             )
-            if response.status_code == 429 and attempt < _GROQ_MAX_RETRIES:
-                wait_s = float(response.headers.get("retry-after", backoffs[attempt]))
-                time.sleep(min(wait_s, 15))
-                continue
+            if response.status_code == 429:
+                wait_s = float(response.headers.get(
+                    "retry-after", backoffs[min(attempt, len(backoffs) - 1)]))
+                worth_retrying = (
+                    attempt < _GROQ_MAX_RETRIES
+                    and wait_s <= _MAX_WORTHWHILE_RETRY_WAIT_S
+                )
+                if worth_retrying:
+                    time.sleep(wait_s)
+                    continue
+                # Not worth retrying (or out of retries) - fall through to
+                # raise_for_status() below, which raises for this 429.
             response.raise_for_status()
             return response.json()["choices"][0]["message"]
         except requests.exceptions.RequestException as e:
             last_exc = e
-            if attempt < _GROQ_MAX_RETRIES and getattr(e.response, "status_code", None) == 429:
+            if getattr(e.response, "status_code", None) == 429:
+                raise  # already decided above whether this 429 was worth retrying
+            if attempt < _GROQ_MAX_RETRIES:
                 time.sleep(backoffs[attempt])
                 continue
             raise

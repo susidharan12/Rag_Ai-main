@@ -85,3 +85,7 @@ export async function fetchRaceResults(force = false) {
   const qs = force ? '?force=true' : ''
   return json(await fetch(`${BASE}/api/agent/race${qs}`))
 }
+
+export async function fetchTrajectoryEval() {
+  return json(await fetch(`${BASE}/api/trajectory_eval`))
+}

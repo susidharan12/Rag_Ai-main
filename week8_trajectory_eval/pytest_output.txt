@@ -1,0 +1,282 @@
+============================= test session starts =============================
+collecting ... collected 40 items
+
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H01] FAILED [  2%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H02] PASSED [  5%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H03] PASSED [  7%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H04] FAILED [ 10%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H05] PASSED [ 12%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H06] FAILED [ 15%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H07] FAILED [ 17%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H08] FAILED [ 20%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H09] PASSED [ 22%]
+week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H10] PASSED [ 25%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H01] FAILED [ 27%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H02] PASSED [ 30%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H03] PASSED [ 32%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H04] FAILED [ 35%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H05] PASSED [ 37%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H06] FAILED [ 40%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H07] PASSED [ 42%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H08] FAILED [ 45%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H09] PASSED [ 47%]
+week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H10] PASSED [ 50%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H01] PASSED [ 52%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H02] PASSED [ 55%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H03] PASSED [ 57%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H04] PASSED [ 60%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H05] PASSED [ 62%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H06] PASSED [ 65%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H07] PASSED [ 67%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H08] PASSED [ 70%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H09] PASSED [ 72%]
+week8_trajectory_eval/test_trajectory_eval.py::test_no_tool_bypass[H10] PASSED [ 75%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H01] PASSED [ 77%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H02] PASSED [ 80%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H03] PASSED [ 82%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H04] PASSED [ 85%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H05] PASSED [ 87%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H06] PASSED [ 90%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H07] PASSED [ 92%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H08] PASSED [ 95%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H09] PASSED [ 97%]
+week8_trajectory_eval/test_trajectory_eval.py::test_trajectory_pass_matches_taxonomy[H10] PASSED [100%]
+
+================================== FAILURES ===================================
+_____________________ test_tool_path_in_expected_set[H01] _____________________
+
+query_id = 'H01'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_tool_path_in_expected_set(query_id):
+        """The actual (deduped, ordered) non-finish tool sequence must be one
+        of this query's pre-registered legitimate paths - a flexible SET
+        membership check, not an exact single-sequence match."""
+        traces = _traces()
+        assert query_id in traces, f"no cached trace for {query_id}"
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_path = tuple(record["tool_path"])
+        expected_paths = spec["expected_tool_paths"]
+    
+>       assert actual_path in expected_paths, (
+            f"{query_id}: tool path {actual_path} is not one of the "
+            f"{len(expected_paths)} accepted paths for this query: "
+            f"{sorted(expected_paths)}"
+        )
+E       AssertionError: H01: tool path ('compare_versions', 'get_version_info', 'search_docs') is not one of the 7 accepted paths for this query: [('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ('search_docs', 'get_version_info', 'check_deprecation')]
+E       assert ('compare_versions', 'get_version_info', 'search_docs') in {('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ...}
+
+week8_trajectory_eval\test_trajectory_eval.py:67: AssertionError
+_____________________ test_tool_path_in_expected_set[H04] _____________________
+
+query_id = 'H04'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_tool_path_in_expected_set(query_id):
+        """The actual (deduped, ordered) non-finish tool sequence must be one
+        of this query's pre-registered legitimate paths - a flexible SET
+        membership check, not an exact single-sequence match."""
+        traces = _traces()
+        assert query_id in traces, f"no cached trace for {query_id}"
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_path = tuple(record["tool_path"])
+        expected_paths = spec["expected_tool_paths"]
+    
+>       assert actual_path in expected_paths, (
+            f"{query_id}: tool path {actual_path} is not one of the "
+            f"{len(expected_paths)} accepted paths for this query: "
+            f"{sorted(expected_paths)}"
+        )
+E       AssertionError: H04: tool path ('compare_versions',) is not one of the 7 accepted paths for this query: [('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ('search_docs', 'get_version_info', 'check_deprecation')]
+E       assert ('compare_versions',) in {('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ...}
+
+week8_trajectory_eval\test_trajectory_eval.py:67: AssertionError
+_____________________ test_tool_path_in_expected_set[H06] _____________________
+
+query_id = 'H06'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_tool_path_in_expected_set(query_id):
+        """The actual (deduped, ordered) non-finish tool sequence must be one
+        of this query's pre-registered legitimate paths - a flexible SET
+        membership check, not an exact single-sequence match."""
+        traces = _traces()
+        assert query_id in traces, f"no cached trace for {query_id}"
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_path = tuple(record["tool_path"])
+        expected_paths = spec["expected_tool_paths"]
+    
+>       assert actual_path in expected_paths, (
+            f"{query_id}: tool path {actual_path} is not one of the "
+            f"{len(expected_paths)} accepted paths for this query: "
+            f"{sorted(expected_paths)}"
+        )
+E       AssertionError: H06: tool path ('compare_versions', 'get_parameter_default', 'search_docs') is not one of the 7 accepted paths for this query: [('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ('search_docs', 'get_version_info', 'check_deprecation')]
+E       assert ('compare_versions', 'get_parameter_default', 'search_docs') in {('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ...}
+
+week8_trajectory_eval\test_trajectory_eval.py:67: AssertionError
+_____________________ test_tool_path_in_expected_set[H07] _____________________
+
+query_id = 'H07'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_tool_path_in_expected_set(query_id):
+        """The actual (deduped, ordered) non-finish tool sequence must be one
+        of this query's pre-registered legitimate paths - a flexible SET
+        membership check, not an exact single-sequence match."""
+        traces = _traces()
+        assert query_id in traces, f"no cached trace for {query_id}"
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_path = tuple(record["tool_path"])
+        expected_paths = spec["expected_tool_paths"]
+    
+>       assert actual_path in expected_paths, (
+            f"{query_id}: tool path {actual_path} is not one of the "
+            f"{len(expected_paths)} accepted paths for this query: "
+            f"{sorted(expected_paths)}"
+        )
+E       AssertionError: H07: tool path ('compare_versions', 'search_docs', 'get_version_info') is not one of the 6 accepted paths for this query: [('compare_versions',), ('compare_versions', 'search_docs'), ('get_version_info', 'get_version_info'), ('search_docs',), ('search_docs', 'compare_versions'), ('search_docs', 'get_version_info')]
+E       assert ('compare_versions', 'search_docs', 'get_version_info') in {('compare_versions',), ('compare_versions', 'search_docs'), ('get_version_info', 'get_version_info'), ('search_docs',), ('search_docs', 'compare_versions'), ('search_docs', 'get_version_info')}
+
+week8_trajectory_eval\test_trajectory_eval.py:67: AssertionError
+_____________________ test_tool_path_in_expected_set[H08] _____________________
+
+query_id = 'H08'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_tool_path_in_expected_set(query_id):
+        """The actual (deduped, ordered) non-finish tool sequence must be one
+        of this query's pre-registered legitimate paths - a flexible SET
+        membership check, not an exact single-sequence match."""
+        traces = _traces()
+        assert query_id in traces, f"no cached trace for {query_id}"
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_path = tuple(record["tool_path"])
+        expected_paths = spec["expected_tool_paths"]
+    
+>       assert actual_path in expected_paths, (
+            f"{query_id}: tool path {actual_path} is not one of the "
+            f"{len(expected_paths)} accepted paths for this query: "
+            f"{sorted(expected_paths)}"
+        )
+E       AssertionError: H08: tool path ('compare_versions', 'search_docs') is not one of the 7 accepted paths for this query: [('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ('search_docs', 'get_version_info', 'check_deprecation')]
+E       assert ('compare_versions', 'search_docs') in {('compare_versions', 'check_deprecation'), ('compare_versions', 'get_version_info', 'check_deprecation'), ('get_version_info', 'check_deprecation'), ('get_version_info', 'compare_versions', 'check_deprecation'), ('search_docs', 'check_deprecation'), ('search_docs', 'compare_versions', 'check_deprecation'), ...}
+
+week8_trajectory_eval\test_trajectory_eval.py:67: AssertionError
+______________________ test_required_tools_present[H01] _______________________
+
+query_id = 'H01'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_required_tools_present(query_id):
+        """Every tool this query REQUIRES (e.g. check_deprecation on the 4
+        dependency questions) must actually appear in the trajectory - this is
+        the assertion the false-positive trace in REPORT.md fails."""
+        traces = _traces()
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_tools = set(record["tool_path"])
+        missing = spec["required_tools"] - actual_tools
+>       assert not missing, (
+            f"{query_id}: required tool(s) {sorted(missing)} never called "
+            f"(actual path: {record['tool_path']}, failure_tags: "
+            f"{record['failure_tags']})"
+        )
+E       AssertionError: H01: required tool(s) ['check_deprecation'] never called (actual path: ['compare_versions', 'get_version_info', 'search_docs'], failure_tags: ['missing_required_tool'])
+E       assert not frozenset({'check_deprecation'})
+
+week8_trajectory_eval\test_trajectory_eval.py:85: AssertionError
+______________________ test_required_tools_present[H04] _______________________
+
+query_id = 'H04'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_required_tools_present(query_id):
+        """Every tool this query REQUIRES (e.g. check_deprecation on the 4
+        dependency questions) must actually appear in the trajectory - this is
+        the assertion the false-positive trace in REPORT.md fails."""
+        traces = _traces()
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_tools = set(record["tool_path"])
+        missing = spec["required_tools"] - actual_tools
+>       assert not missing, (
+            f"{query_id}: required tool(s) {sorted(missing)} never called "
+            f"(actual path: {record['tool_path']}, failure_tags: "
+            f"{record['failure_tags']})"
+        )
+E       AssertionError: H04: required tool(s) ['check_deprecation'] never called (actual path: ['compare_versions'], failure_tags: ['missing_required_tool'])
+E       assert not frozenset({'check_deprecation'})
+
+week8_trajectory_eval\test_trajectory_eval.py:85: AssertionError
+______________________ test_required_tools_present[H06] _______________________
+
+query_id = 'H06'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_required_tools_present(query_id):
+        """Every tool this query REQUIRES (e.g. check_deprecation on the 4
+        dependency questions) must actually appear in the trajectory - this is
+        the assertion the false-positive trace in REPORT.md fails."""
+        traces = _traces()
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_tools = set(record["tool_path"])
+        missing = spec["required_tools"] - actual_tools
+>       assert not missing, (
+            f"{query_id}: required tool(s) {sorted(missing)} never called "
+            f"(actual path: {record['tool_path']}, failure_tags: "
+            f"{record['failure_tags']})"
+        )
+E       AssertionError: H06: required tool(s) ['check_deprecation'] never called (actual path: ['compare_versions', 'get_parameter_default', 'search_docs'], failure_tags: ['missing_required_tool', 'wrong_tool_choice'])
+E       assert not frozenset({'check_deprecation'})
+
+week8_trajectory_eval\test_trajectory_eval.py:85: AssertionError
+______________________ test_required_tools_present[H08] _______________________
+
+query_id = 'H08'
+
+    @pytest.mark.parametrize("query_id", sorted(TRAJECTORY_SPECS.keys()))
+    def test_required_tools_present(query_id):
+        """Every tool this query REQUIRES (e.g. check_deprecation on the 4
+        dependency questions) must actually appear in the trajectory - this is
+        the assertion the false-positive trace in REPORT.md fails."""
+        traces = _traces()
+        record = traces[query_id]
+        spec = TRAJECTORY_SPECS[query_id]
+    
+        actual_tools = set(record["tool_path"])
+        missing = spec["required_tools"] - actual_tools
+>       assert not missing, (
+            f"{query_id}: required tool(s) {sorted(missing)} never called "
+            f"(actual path: {record['tool_path']}, failure_tags: "
+            f"{record['failure_tags']})"
+        )
+E       AssertionError: H08: required tool(s) ['check_deprecation'] never called (actual path: ['compare_versions', 'search_docs'], failure_tags: ['missing_required_tool'])
+E       assert not frozenset({'check_deprecation'})
+
+week8_trajectory_eval\test_trajectory_eval.py:85: AssertionError
+=========================== short test summary info ===========================
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H01]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H04]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H06]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H07]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_tool_path_in_expected_set[H08]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H01]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H04]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H06]
+FAILED week8_trajectory_eval/test_trajectory_eval.py::test_required_tools_present[H08]
+======================== 9 failed, 31 passed in 0.43s =========================

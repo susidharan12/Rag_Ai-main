@@ -1,0 +1,84 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 9506.08it/s]
+
+============================================================
+  WEEK 8 TRAJECTORY EVAL — before (enforce_deprecation_check=False)
+============================================================
+  H01: outcome=PASS traj=FAIL tags=['missing_required_tool'] path=('compare_versions', 'get_version_info', 'search_docs')
+  H02: outcome=PASS traj=PASS tags=[] path=('compare_versions',)
+  H03: outcome=PASS traj=PASS tags=[] path=('search_docs',)
+  H04: outcome=PASS traj=FAIL tags=['missing_required_tool'] path=('compare_versions',)
+  H05: outcome=PASS traj=FAIL tags=['invalid_argument'] path=('search_docs', 'get_version_info')
+  H06: outcome=PASS traj=FAIL tags=['missing_required_tool', 'wrong_tool_choice'] path=('compare_versions', 'get_parameter_default', 'search_docs')
+  H07: outcome=PASS traj=FAIL tags=['invalid_argument'] path=('compare_versions', 'search_docs', 'get_version_info')
+  H08: outcome=PASS traj=FAIL tags=['missing_required_tool'] path=('compare_versions', 'search_docs')
+  H09: outcome=PASS traj=PASS tags=[] path=('compare_versions',)
+  H10: outcome=PASS traj=FAIL tags=['invalid_argument'] path=('search_docs', 'get_version_info')
+
+============================================================
+  WEEK 8 TRAJECTORY EVAL — after (enforce_deprecation_check=True)
+============================================================
+  H01: outcome=PASS traj=FAIL tags=['missing_required_tool'] path=('compare_versions', 'get_version_info', 'search_docs')
+  H02: outcome=PASS traj=PASS tags=[] path=('compare_versions',)
+  H03: outcome=PASS traj=PASS tags=[] path=('search_docs',)
+  H04: outcome=PASS traj=PASS tags=[] path=('compare_versions', 'check_deprecation')
+  H05: outcome=FAIL traj=FAIL tags=['invalid_argument'] path=('search_docs', 'get_version_info', 'check_deprecation')
+  H06: outcome=FAIL traj=FAIL tags=['missing_required_tool'] path=('search_docs',)
+  H07: outcome=FAIL traj=PASS tags=[] path=('search_docs',)
+  H08: outcome=PASS traj=FAIL tags=['missing_required_tool'] path=('compare_versions', 'get_version_info')
+  H09: outcome=PASS traj=PASS tags=[] path=('search_docs',)
+  H10: outcome=PASS traj=PASS tags=[] path=('search_docs',)
+
+============================================================
+  RESULTS
+============================================================
+  Before: outcome_pass_rate=100% trajectory_pass_rate=30% gap=+0.700
+  After:  outcome_pass_rate=70% trajectory_pass_rate=60% gap=+0.100
+  Mitigation target 'missing_required_tool': 4 -> 3 (delta -1)
+  Price paid: {"added_p50_latency_ms": -10427.9, "added_max_latency_ms": -8865.5, "added_p50_cost_usd": -0.000305, "added_max_cost_usd": -0.000498, "total_est_tokens_before": 30443, "total_est_tokens_after": 19478}
+  Regression matrix: [
+  {
+    "failure_mode": "no_tool_before_finish",
+    "before": 0,
+    "after": 0,
+    "delta": 0,
+    "regressed": false
+  },
+  {
+    "failure_mode": "missing_required_tool",
+    "before": 4,
+    "after": 3,
+    "delta": -1,
+    "regressed": false
+  },
+  {
+    "failure_mode": "wrong_tool_choice",
+    "before": 1,
+    "after": 0,
+    "delta": -1,
+    "regressed": false
+  },
+  {
+    "failure_mode": "invalid_argument",
+    "before": 3,
+    "after": 1,
+    "delta": -2,
+    "regressed": false
+  },
+  {
+    "failure_mode": "redundant_repeat",
+    "before": 0,
+    "after": 0,
+    "delta": 0,
+    "regressed": false
+  },
+  {
+    "failure_mode": "premature_stop_parse_error",
+    "before": 0,
+    "after": 0,
+    "delta": 0,
+    "regressed": false
+  }
+]
+
+  Wrote traces_before.json, traces_after.json, report.json in C:\Users\Akash.t\Rag_Ai-main\week8_trajectory_eval

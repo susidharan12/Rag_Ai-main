@@ -2380,6 +2380,12 @@ body {
 
 .agent-card { border-color: rgba(79, 70, 229, 0.3); }
 .workflow-card { border-color: rgba(13, 148, 136, 0.3); }
+.before-card { border-color: rgba(239, 68, 68, 0.3); }
+.before-card .race-card-header { background: rgba(239, 68, 68, 0.08); color: var(--bad); }
+.after-card { border-color: rgba(16, 185, 129, 0.3); }
+.after-card .race-card-header { background: rgba(16, 185, 129, 0.08); color: var(--good); }
+
+.traj-tag { color: var(--bad); border-color: rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.06); }
 
 .race-card-header {
   display: flex;

@@ -7,7 +7,8 @@ import StatsPanel from './components/StatsPanel.jsx'
 import AnalyticsView from './components/AnalyticsView.jsx'
 import BenchmarkView from './components/BenchmarkView.jsx'
 import AgentView from './components/AgentView.jsx'
-import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval, fetchBonusRagas } from './api.js'
+import TrajectoryView from './components/TrajectoryView.jsx'
+import { fetchDocuments, fetchBenchmark, fetchJudgeEval, fetchTrackEEval, fetchBonusRagas, fetchTrajectoryEval } from './api.js'
 
 export default function App() {
   const [docs, setDocs] = useState([])
@@ -20,6 +21,7 @@ export default function App() {
   const [judgeEval, setJudgeEval] = useState(null)
   const [trackEEval, setTrackEEval] = useState(null)
   const [bonusRagas, setBonusRagas] = useState(null)
+  const [trajectoryEval, setTrajectoryEval] = useState(null)
   const [docsOpen, setDocsOpen] = useState(false)
 
   const refresh = useCallback(async () => {
@@ -68,6 +70,15 @@ export default function App() {
     }
   }, [])
 
+  const refreshTrajectoryEval = useCallback(async () => {
+    try {
+      const data = await fetchTrajectoryEval()
+      setTrajectoryEval(data)
+    } catch (e) {
+      showToast(`Trajectory eval unavailable: ${e.message}`)
+    }
+  }, [])
+
   const showToast = (msg) => {
     setToast({ key: Date.now(), msg })
     setTimeout(() => setToast(null), 4200)
@@ -79,7 +90,8 @@ export default function App() {
     refreshJudgeEval()
     refreshTrackEEval()
     refreshBonusRagas()
-  }, [refresh, refreshBenchmark, refreshJudgeEval, refreshTrackEEval, refreshBonusRagas])
+    refreshTrajectoryEval()
+  }, [refresh, refreshBenchmark, refreshJudgeEval, refreshTrackEEval, refreshBonusRagas, refreshTrajectoryEval])
 
   const recordTurn = (turn) => setTurns((t) => [turn, ...t].slice(0, 50))
 
@@ -139,6 +151,17 @@ export default function App() {
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                 >
                   <BenchmarkView benchmark={benchmark} turns={turns} />
+                </motion.div>
+              ) : activeView === 'trajectory' ? (
+                <motion.div
+                  key="trajectory"
+                  className="view-transition"
+                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
+                  <TrajectoryView trajectoryEval={trajectoryEval} />
                 </motion.div>
               ) : (
                 <motion.div
