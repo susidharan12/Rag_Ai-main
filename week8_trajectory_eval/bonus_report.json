@@ -17,11 +17,11 @@
   "measured_overhead": {
     "n_observations_scanned": 16,
     "n_answers_scanned": 10,
-    "sanitize_total_ms": 0.433,
-    "sanitize_ms_per_observation": 0.0271,
-    "guardrail_total_ms": 0.269,
-    "guardrail_ms_per_answer": 0.0269,
-    "added_latency_ms_per_query": 0.0702,
+    "sanitize_total_ms": 0.406,
+    "sanitize_ms_per_observation": 0.0254,
+    "guardrail_total_ms": 0.256,
+    "guardrail_ms_per_answer": 0.0256,
+    "added_latency_ms_per_query": 0.0662,
     "char_delta_from_sanitization": 0,
     "any_real_observation_flagged": false
   },

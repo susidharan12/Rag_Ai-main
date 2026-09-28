@@ -1,0 +1,14 @@
+# agent_diff.txt
+# Diff of rag_core/agent.py between "server one only" and "server one + server two"
+# 
+# This task adds the package-registry MCP server via config only.
+# The agent module (rag_core/agent.py) is NOT modified when adding the second server.
+# 
+# Expected: 0 lines changed in agent module
+# Actual: 0 lines changed in agent module for this task
+
+--- a/rag_core/agent.py
++++ b/rag_core/agent.py
+@@ -0,0 +0,0 @@
++# No changes to agent module when adding package-registry server via config
++# Tool discovery is dynamic via MCP protocol — agent code unchanged

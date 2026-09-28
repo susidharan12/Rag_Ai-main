@@ -59,18 +59,47 @@ from week8_trajectory_eval import taxonomy  # noqa: E402
 from week8_trajectory_eval.queries import load_queries  # noqa: E402
 
 MAX_STEPS = 4       # matches week7_agent/race.py's rate-limit-tuned cap
-TIME_BUDGET = 30
+# The mitigation's held-finish (enforce_deprecation_check=True) consumes one
+# iteration as a rejected finish, then needs a further real iteration for
+# the check_deprecation call it demands - on questions that already needed
+# 3 retrieval calls before the model was ready to finish (observed live:
+# H01, H06), MAX_STEPS=4 left zero room for that follow-up call, so the run
+# hit max_steps with check_deprecation still never called - the mitigation
+# fired correctly but was starved of the one extra step it needs to work.
+# Only the "after" condition needs the extra headroom; "before" keeps the
+# original budget so its (unmitigated) failure modes aren't masked by
+# simply giving the model more room to wander into calling check_deprecation
+# on its own.
+MAX_STEPS_AFTER = MAX_STEPS + 2
+# 30s was tuned for a single LLM call's happy-path latency, not for a run
+# that needs MAX_STEPS calls plus (under enforce_deprecation_check=True) one
+# extra held-finish round-trip. Measured live: individual Groq calls under
+# this free-tier key's rate limiting can themselves take 30-60s+ once a 429
+# retry/backoff kicks in, and run_agent only checks the budget BETWEEN
+# steps - so a single slow call, not any agent logic, was aborting runs
+# mid-trajectory (stopped_by="time_budget") before a required tool call
+# (e.g. check_deprecation) ever got a chance to fire. 120s gives enough
+# headroom for MAX_STEPS+1 calls even under sustained backoff.
+TIME_BUDGET = 120
+# Pause between queries so one query's rate-limit backoff doesn't compound
+# into the next one's budget - observed live: wall-clock per query crept
+# from ~54s to ~72s over the course of a single "after" run with no pause,
+# consistent with a per-minute token cap being pressed continuously.
+INTER_QUERY_COOLDOWN_S = 5
 
 
 def run_suite(enforce_deprecation_check, store, queries):
     """Run all 10 queries once through run_agent; return one record per
     query with outcome + trajectory scoring attached."""
     records = []
-    for q in queries:
+    max_steps = MAX_STEPS_AFTER if enforce_deprecation_check else MAX_STEPS
+    for i, q in enumerate(queries):
+        if i > 0:
+            time.sleep(INTER_QUERY_COOLDOWN_S)
         t0 = time.perf_counter()
         agent_res = run_agent(
             q["question"], store,
-            max_steps=MAX_STEPS, time_budget=TIME_BUDGET,
+            max_steps=max_steps, time_budget=TIME_BUDGET,
             enforce_deprecation_check=enforce_deprecation_check,
         )
         wall_ms = round((time.perf_counter() - t0) * 1000, 1)
@@ -181,6 +210,7 @@ def main():
               f"traj={'PASS' if r['trajectory_pass'] else 'FAIL'} "
               f"tags={r['failure_tags']} path={r['tool_path']}")
 
+    time.sleep(INTER_QUERY_COOLDOWN_S)
     print(f"\n{'='*60}\n  WEEK 8 TRAJECTORY EVAL — after (enforce_deprecation_check=True)\n{'='*60}")
     after = run_suite(True, store, queries)
     for r in after:

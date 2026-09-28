@@ -93,7 +93,13 @@ def _comparison_spec(valid_versions):
 
 
 _GITHUB_VERSIONS = frozenset({"2022-11-28", "2025-06-01"})
-_SWAGGER_VERSIONS = frozenset({"2.x", "3.x"})
+# Both "2.x"/"3.x" (the version family label used in these questions) and
+# "v2"/"v3" (what the corpus PDFs and get_version_info's sdk_version filter
+# actually use, e.g. "Swagger Codegen Reference - v3") are genuinely correct
+# identifiers for this corpus - a tool call naming either is grounded, not
+# hallucinated, so both must count as valid here or a correct call gets
+# wrongly tagged invalid_argument.
+_SWAGGER_VERSIONS = frozenset({"2.x", "3.x", "v2", "v3"})
 
 # id -> trajectory spec. IDs and version families match
 # week7_agent/golden_sets/gs_hard.json's first 10 non-negative cases

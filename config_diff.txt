@@ -1,0 +1,20 @@
+# config_diff.txt
+# MCP configuration diff: adding package-registry server (server two)
+
+--- a/mcp_config.json
++++ b/mcp_config.json
+@@ -1,7 +1,14 @@
+ {
+   "mcpServers": {
+     "docs-search": {
+       "command": "python",
+       "args": ["-m", "mcp_servers.docs_search_server"],
+       "env": {}
+     },
++    "package-registry": {
++      "command": "python",
++      "args": ["-m", "mcp_servers.package_registry_server"],
++      "env": {}
++    }
+   }
+ }

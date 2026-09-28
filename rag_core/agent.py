@@ -46,11 +46,16 @@ TOOL_DESCRIPTIONS = {
     ),
     "get_error_info": (
         "Look up error code information (HTTP status codes, error names, "
-        "retryability). Use for questions about specific error codes."
+        "retryability). Use for questions about specific error codes. "
+        "Not for version-to-version comparison or migration questions."
     ),
     "get_parameter_default": (
         "Look up a specific parameter's default value, type, and description "
-        "from the parameter tables. Use for questions about parameter defaults."
+        "from the parameter tables. Use ONLY when the question asks what a "
+        "parameter's default/type/description is today - never for a "
+        "question about how a parameter changed, was added, or was replaced "
+        "between two api_versions (use compare_versions or check_deprecation "
+        "for those instead)."
     ),
     # Week 7 · Task Set E — third tool. Single job only: given a named
     # endpoint/parameter/feature that you already identified and a specific
@@ -429,6 +434,12 @@ def _call_llm(system_prompt, messages):
 _VERSION_RE = re.compile(r"2022-11-28|2025-06-01|\b2\.x\b|\b3\.x\b")
 _SNAKE_CASE_RE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
 _CAMEL_CASE_RE = re.compile(r"\b[a-z][a-z0-9]*(?:[A-Z][a-z0-9]*)+\b")
+# Compound identifiers written with hyphens rather than underscores (e.g.
+# "auto-merge", "maintainer-can-modify") - a real subject name just as much
+# as a snake_case one, but _SNAKE_CASE_RE doesn't match a hyphen and the
+# version string regex above already claims bare digit-hyphen-digit
+# patterns, so this needs its own check rather than folding into either.
+_KEBAB_CASE_RE = re.compile(r"\b[a-z][a-z0-9]*(?:-[a-z0-9]+)+\b")
 _CHANGE_MARKERS = (
     "no longer", "removed", "replaced", "did not exist", "requires a "
     "follow-up", "undocumented", "heuristic", "no way to", "instead",
@@ -464,12 +475,14 @@ _NAMED_FIELD_RE = re.compile(
 def _extract_subject(question):
     """Best-effort guess at the specific endpoint/parameter/flag the
     question is about: prefer an unambiguous identifier-looking token
-    (snake_case or camelCase, e.g. 'make_latest'), then fall back to a
-    plain word explicitly called out as "the X parameter/field/..."
-    (e.g. 'context' in "the context parameter format changed")."""
+    (snake_case, camelCase, or kebab-case, e.g. 'make_latest', 'auto-merge'),
+    then fall back to a plain word explicitly called out as "the X
+    parameter/field/..." (e.g. 'context' in "the context parameter format
+    changed")."""
     m = (
         _SNAKE_CASE_RE.search(question)
         or _CAMEL_CASE_RE.search(question)
+        or _KEBAB_CASE_RE.search(question)
         or _NAMED_FIELD_RE.search(question)
     )
     return m.group(1) if m and m.re is _NAMED_FIELD_RE else (m.group() if m else None)
@@ -658,9 +671,11 @@ def run_agent(question, store, max_steps=5, time_budget=30,
             call is held back once if the context already contains
             change/replacement language for a subject+version this
             question names but check_deprecation was never called (see
-            _needs_deprecation_check) - the agent gets one more
-            observation telling it to call check_deprecation before
-            finishing, instead of being allowed to answer from a partial
+            _needs_deprecation_check) - check_deprecation is then run for
+            the model (rather than merely telling it to call check_deprecation
+            and trusting it to comply - see the mitigation block's comment
+            for why), and the model gets that result as its next
+            observation instead of being allowed to answer from a partial
             reading of what changed. Bounded to fire at most once per run
             (deprecation_holds < 1), so this cannot turn into a new
             infinite loop - it is still subject to every other existing
@@ -789,29 +804,52 @@ def run_agent(question, store, max_steps=5, time_budget=30,
         # the question clearly needs a check_deprecation follow-up the
         # agent hasn't made yet (see _needs_deprecation_check). Checked
         # BEFORE execution so a held finish never counts as a real tool
-        # call or gets added to tools_used. ---
+        # call or gets added to tools_used.
+        #
+        # This DETERMINISTICALLY EXECUTES check_deprecation itself rather
+        # than only asking the model to call it on its own next turn -
+        # observed live against this project's actual (small, free-tier)
+        # model: told "call check_deprecation before finishing", it would
+        # frequently just re-submit the same finish answer verbatim instead
+        # of complying, leaving the required tool never called even though
+        # the gate fired correctly. Auto-running the check and handing the
+        # model its result (rather than trusting a weaker model to follow a
+        # text instruction) is what actually guarantees the required
+        # follow-up happens - the model still writes the final answer, and
+        # still decides what to do with this new observation next. ---
         if (tool == "finish" and enforce_deprecation_check
                 and deprecation_holds < 1
                 and _needs_deprecation_check(question, context_results, tools_used)):
             deprecation_holds += 1
+            subject = _extract_subject(question)
+            target_version = _pick_target_version(_extract_versions(question))
+            dep_observation, dep_raw_results = _execute_tool(
+                "check_deprecation",
+                {"subject": subject, "api_version": target_version},
+                store,
+            )
+            est_tokens_used += estimate_tokens(dep_observation)
+            tools_used.add("check_deprecation")
+            context_results.extend(dep_raw_results)
             observation = (
-                "finish rejected: the retrieved context indicates this "
-                "subject changed for the target api_version, but "
-                "check_deprecation has not been called yet. Call "
-                "check_deprecation before finishing."
+                "finish held back: the retrieved context indicated this "
+                f"subject changed for the target api_version, so "
+                f"check_deprecation was run on your behalf for '{subject}' "
+                f"at {target_version} before your finish could be accepted. "
+                f"Use this result, then call finish again.\n\n{dep_observation}"
             )
             steps.append({
                 "step": step_num + 1,
                 "thought": thought,
-                "tool": tool,
-                "args": args,
-                "observation": observation,
+                "tool": "check_deprecation",
+                "args": {"subject": subject, "api_version": target_version},
+                "observation": observation[:800],
             })
             if llm_available:
                 conversation.append({"role": "assistant", "content": raw})
                 conversation.append({
                     "role": "user",
-                    "content": f"Observation:\n{observation}\n\nNow decide the next step.",
+                    "content": f"Observation:\n{observation[:1000]}\n\nNow decide the next step.",
                 })
             continue
 

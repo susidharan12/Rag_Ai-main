@@ -1,0 +1,835 @@
+{
+  "server_1_docs_search": {
+    "server": "docs-search",
+    "initialize": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "capabilities": {
+          "experimental": {},
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "protocolVersion": "2024-11-05",
+        "serverInfo": {
+          "name": "docs-search",
+          "version": ""
+        }
+      }
+    },
+    "tools_list": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "description": "Search the indexed documentation for chunks relevant to a query. Returns the top matching text chunks with source info.",
+            "inputSchema": {
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "type": "object"
+            },
+            "name": "search_docs"
+          },
+          {
+            "description": "Get documentation chunks specific to a named version (e.g. 'v2', 'v3', or an API version string). Use when the question asks about one specific version. If the version doesn't exist in the corpus, the tool returns a recoverable error with the list of available versions and a suggested alternative.",
+            "inputSchema": {
+              "properties": {
+                "version": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string",
+                  "default": ""
+                }
+              },
+              "required": [
+                "version"
+              ],
+              "type": "object"
+            },
+            "name": "get_version_info"
+          },
+          {
+            "description": "Retrieve documentation for two versions side by side. Use when the question asks for differences or changes between versions.",
+            "inputSchema": {
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "default": "differences between versions"
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "name": "compare_versions"
+          },
+          {
+            "description": "Look up error code information (HTTP status codes, error names, retryability). Use for questions about specific error codes. Not for version-to-version comparison or migration questions.",
+            "inputSchema": {
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "default": ""
+                },
+                "query": {
+                  "type": "string",
+                  "default": ""
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "name": "get_error_info"
+          },
+          {
+            "description": "Look up a specific parameter's default value, type, and description from the parameter tables. Use ONLY when the question asks what a parameter's default/type/description is today - never for a question about how a parameter changed, was added, or was replaced between two api_versions (use compare_versions or check_deprecation for those instead).",
+            "inputSchema": {
+              "properties": {
+                "param": {
+                  "type": "string",
+                  "default": ""
+                },
+                "query": {
+                  "type": "string",
+                  "default": ""
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "name": "get_parameter_default"
+          },
+          {
+            "description": "Check whether one specific named endpoint, parameter, or CLI flag was removed, changed, or replaced in a given target api_version, and return its replacement if one exists. Use ONLY as a follow-up once you already know the subject and the target version from an earlier step \u00e2\u20ac\u201d not for open-ended searching or side-by-side version comparison.",
+            "inputSchema": {
+              "properties": {
+                "subject": {
+                  "type": "string"
+                },
+                "api_version": {
+                  "type": "string",
+                  "enum": [
+                    "2022-11-28",
+                    "2025-06-01",
+                    "2.x",
+                    "3.x"
+                  ]
+                }
+              },
+              "required": [
+                "subject",
+                "api_version"
+              ],
+              "type": "object"
+            },
+            "name": "check_deprecation"
+          }
+        ]
+      }
+    },
+    "messages": [
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "mcp-client",
+              "version": "1.0.0"
+            }
+          },
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "capabilities": {
+              "experimental": {},
+              "tools": {
+                "listChanged": false
+              }
+            },
+            "protocolVersion": "2024-11-05",
+            "serverInfo": {
+              "name": "docs-search",
+              "version": ""
+            }
+          }
+        }
+      },
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {},
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "tools": [
+              {
+                "description": "Search the indexed documentation for chunks relevant to a query. Returns the top matching text chunks with source info.",
+                "inputSchema": {
+                  "properties": {
+                    "query": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ],
+                  "type": "object"
+                },
+                "name": "search_docs"
+              },
+              {
+                "description": "Get documentation chunks specific to a named version (e.g. 'v2', 'v3', or an API version string). Use when the question asks about one specific version. If the version doesn't exist in the corpus, the tool returns a recoverable error with the list of available versions and a suggested alternative.",
+                "inputSchema": {
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string",
+                      "default": ""
+                    }
+                  },
+                  "required": [
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_version_info"
+              },
+              {
+                "description": "Retrieve documentation for two versions side by side. Use when the question asks for differences or changes between versions.",
+                "inputSchema": {
+                  "properties": {
+                    "query": {
+                      "type": "string",
+                      "default": "differences between versions"
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                },
+                "name": "compare_versions"
+              },
+              {
+                "description": "Look up error code information (HTTP status codes, error names, retryability). Use for questions about specific error codes. Not for version-to-version comparison or migration questions.",
+                "inputSchema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "query": {
+                      "type": "string",
+                      "default": ""
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                },
+                "name": "get_error_info"
+              },
+              {
+                "description": "Look up a specific parameter's default value, type, and description from the parameter tables. Use ONLY when the question asks what a parameter's default/type/description is today - never for a question about how a parameter changed, was added, or was replaced between two api_versions (use compare_versions or check_deprecation for those instead).",
+                "inputSchema": {
+                  "properties": {
+                    "param": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "query": {
+                      "type": "string",
+                      "default": ""
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                },
+                "name": "get_parameter_default"
+              },
+              {
+                "description": "Check whether one specific named endpoint, parameter, or CLI flag was removed, changed, or replaced in a given target api_version, and return its replacement if one exists. Use ONLY as a follow-up once you already know the subject and the target version from an earlier step \u00e2\u20ac\u201d not for open-ended searching or side-by-side version comparison.",
+                "inputSchema": {
+                  "properties": {
+                    "subject": {
+                      "type": "string"
+                    },
+                    "api_version": {
+                      "type": "string",
+                      "enum": [
+                        "2022-11-28",
+                        "2025-06-01",
+                        "2.x",
+                        "3.x"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "subject",
+                    "api_version"
+                  ],
+                  "type": "object"
+                },
+                "name": "check_deprecation"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "server_2_package_registry": {
+    "server": "package-registry",
+    "initialize": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "capabilities": {
+          "experimental": {},
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "protocolVersion": "2024-11-05",
+        "serverInfo": {
+          "name": "package-registry",
+          "version": ""
+        }
+      }
+    },
+    "tools_list": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "description": "Get all version metadata for a package including release dates and deprecation status.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package (e.g., 'requests', 'numpy')"
+                }
+              },
+              "required": [
+                "package_name"
+              ],
+              "type": "object"
+            },
+            "name": "get_package_versions"
+          },
+          {
+            "description": "Get the latest version information for a package.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                }
+              },
+              "required": [
+                "package_name"
+              ],
+              "type": "object"
+            },
+            "name": "get_latest_version"
+          },
+          {
+            "description": "Get deprecation notice and migration guide for a specific package version.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Specific version to check"
+                }
+              },
+              "required": [
+                "package_name",
+                "version"
+              ],
+              "type": "object"
+            },
+            "name": "get_deprecation_notice"
+          },
+          {
+            "description": "Check if a specific version exists for a package and get the latest available if not.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Version to check"
+                }
+              },
+              "required": [
+                "package_name",
+                "version"
+              ],
+              "type": "object"
+            },
+            "name": "check_version_exists"
+          }
+        ]
+      }
+    },
+    "messages": [
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "mcp-client",
+              "version": "1.0.0"
+            }
+          },
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "capabilities": {
+              "experimental": {},
+              "tools": {
+                "listChanged": false
+              }
+            },
+            "protocolVersion": "2024-11-05",
+            "serverInfo": {
+              "name": "package-registry",
+              "version": ""
+            }
+          }
+        }
+      },
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {},
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "tools": [
+              {
+                "description": "Get all version metadata for a package including release dates and deprecation status.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package (e.g., 'requests', 'numpy')"
+                    }
+                  },
+                  "required": [
+                    "package_name"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_package_versions"
+              },
+              {
+                "description": "Get the latest version information for a package.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    }
+                  },
+                  "required": [
+                    "package_name"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_latest_version"
+              },
+              {
+                "description": "Get deprecation notice and migration guide for a specific package version.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    },
+                    "version": {
+                      "type": "string",
+                      "description": "Specific version to check"
+                    }
+                  },
+                  "required": [
+                    "package_name",
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_deprecation_notice"
+              },
+              {
+                "description": "Check if a specific version exists for a package and get the latest available if not.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    },
+                    "version": {
+                      "type": "string",
+                      "description": "Version to check"
+                    }
+                  },
+                  "required": [
+                    "package_name",
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "name": "check_version_exists"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "tool_call_example": {
+    "server": "package-registry",
+    "tool_called": "get_package_versions",
+    "arguments": {
+      "package_name": "requests"
+    },
+    "initialize": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "capabilities": {
+          "experimental": {},
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "protocolVersion": "2024-11-05",
+        "serverInfo": {
+          "name": "package-registry",
+          "version": ""
+        }
+      }
+    },
+    "tools_list": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "description": "Get all version metadata for a package including release dates and deprecation status.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package (e.g., 'requests', 'numpy')"
+                }
+              },
+              "required": [
+                "package_name"
+              ],
+              "type": "object"
+            },
+            "name": "get_package_versions"
+          },
+          {
+            "description": "Get the latest version information for a package.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                }
+              },
+              "required": [
+                "package_name"
+              ],
+              "type": "object"
+            },
+            "name": "get_latest_version"
+          },
+          {
+            "description": "Get deprecation notice and migration guide for a specific package version.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Specific version to check"
+                }
+              },
+              "required": [
+                "package_name",
+                "version"
+              ],
+              "type": "object"
+            },
+            "name": "get_deprecation_notice"
+          },
+          {
+            "description": "Check if a specific version exists for a package and get the latest available if not.",
+            "inputSchema": {
+              "properties": {
+                "package_name": {
+                  "type": "string",
+                  "description": "Name of the package"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Version to check"
+                }
+              },
+              "required": [
+                "package_name",
+                "version"
+              ],
+              "type": "object"
+            },
+            "name": "check_version_exists"
+          }
+        ]
+      }
+    },
+    "tools_call": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "text": "{\n  \"package\": \"requests\",\n  \"description\": \"Python HTTP library for humans\",\n  \"latest_version\": \"2.32.3\",\n  \"versions\": [\n    {\n      \"version\": \"2.32.3\",\n      \"release_date\": \"2024-11-15\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.32.2\",\n      \"release_date\": \"2024-08-20\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.32.1\",\n      \"release_date\": \"2024-06-10\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.31.0\",\n      \"release_date\": \"2023-05-15\",\n      \"deprecated\": true,\n      \"yanked\": false,\n      \"deprecation_notice\": \"Use 2.32.x for security fixes. Migration guide: https://requests.readthedocs.io/en/latest/migration/\"\n    },\n    {\n      \"version\": \"2.30.0\",\n      \"release_date\": \"2023-01-10\",\n      \"deprecated\": true,\n      \"yanked\": false,\n      \"deprecation_notice\": \"End of life. Upgrade to 2.32.x.\"\n    }\n  ]\n}",
+            "type": "text"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "messages": [
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "mcp-client",
+              "version": "1.0.0"
+            }
+          },
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "capabilities": {
+              "experimental": {},
+              "tools": {
+                "listChanged": false
+              }
+            },
+            "protocolVersion": "2024-11-05",
+            "serverInfo": {
+              "name": "package-registry",
+              "version": ""
+            }
+          }
+        }
+      },
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {},
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "tools": [
+              {
+                "description": "Get all version metadata for a package including release dates and deprecation status.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package (e.g., 'requests', 'numpy')"
+                    }
+                  },
+                  "required": [
+                    "package_name"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_package_versions"
+              },
+              {
+                "description": "Get the latest version information for a package.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    }
+                  },
+                  "required": [
+                    "package_name"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_latest_version"
+              },
+              {
+                "description": "Get deprecation notice and migration guide for a specific package version.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    },
+                    "version": {
+                      "type": "string",
+                      "description": "Specific version to check"
+                    }
+                  },
+                  "required": [
+                    "package_name",
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "name": "get_deprecation_notice"
+              },
+              {
+                "description": "Check if a specific version exists for a package and get the latest available if not.",
+                "inputSchema": {
+                  "properties": {
+                    "package_name": {
+                      "type": "string",
+                      "description": "Name of the package"
+                    },
+                    "version": {
+                      "type": "string",
+                      "description": "Version to check"
+                    }
+                  },
+                  "required": [
+                    "package_name",
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "name": "check_version_exists"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "sent",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "method": "tools/call",
+          "params": {
+            "name": "get_package_versions",
+            "arguments": {
+              "package_name": "requests"
+            }
+          },
+          "result": null,
+          "error": null
+        }
+      },
+      {
+        "direction": "received",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "result": {
+            "content": [
+              {
+                "text": "{\n  \"package\": \"requests\",\n  \"description\": \"Python HTTP library for humans\",\n  \"latest_version\": \"2.32.3\",\n  \"versions\": [\n    {\n      \"version\": \"2.32.3\",\n      \"release_date\": \"2024-11-15\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.32.2\",\n      \"release_date\": \"2024-08-20\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.32.1\",\n      \"release_date\": \"2024-06-10\",\n      \"deprecated\": false,\n      \"yanked\": false\n    },\n    {\n      \"version\": \"2.31.0\",\n      \"release_date\": \"2023-05-15\",\n      \"deprecated\": true,\n      \"yanked\": false,\n      \"deprecation_notice\": \"Use 2.32.x for security fixes. Migration guide: https://requests.readthedocs.io/en/latest/migration/\"\n    },\n    {\n      \"version\": \"2.30.0\",\n      \"release_date\": \"2023-01-10\",\n      \"deprecated\": true,\n      \"yanked\": false,\n      \"deprecation_notice\": \"End of life. Upgrade to 2.32.x.\"\n    }\n  ]\n}",
+                "type": "text"
+              }
+            ],
+            "isError": false
+          }
+        }
+      }
+    ]
+  }
+}
