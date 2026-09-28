@@ -5,12 +5,61 @@ import os
 import re
 
 
-def _pdf_pages_from_bytes(data):
-    try:
-        import pypdf as _pypdf_reader_lib
-    except ImportError:
-        _pypdf_reader_lib = None
+def _clean_pdf_text(text):
+    """Undo common PDF text-extraction spacing artifacts - many PDF fonts/
+    encodings make the extractor emit a stray space before a hyphen or a
+    comma (e.g. "AI -powered", "third -party", "PostgreSQL ,"), which reads
+    as visibly broken once it lands in an answer. Line-wrap hyphenation
+    ("cross-\\nfunctional") is untouched since it has no such leading space.
+    """
+    # Require >=2 lowercase letters after the hyphen so this only joins a
+    # genuine compound word ("AI -powered" -> "AI-powered", "third -party"
+    # -> "third-party") and never a CLI short flag ("curl -X", "POST -H",
+    # "-d '{...}'") - those are always a single letter after the hyphen and
+    # would otherwise get wrongly glued onto the preceding word
+    # ("curl -X" -> "curl-X"), which then reads as one unbroken token.
+    text = re.sub(r"(?<=\w) -(?=[a-z]{2,})", "-", text)
+    # Mid-word line-wrap hyphenation ("speci-\nfying") reads as broken text
+    # once the newline is later collapsed to a space ("speci- fying"); join
+    # it back into one word. A real end-of-line hyphenated compound is rare
+    # enough here (reference/API docs, not prose) that this heuristic is
+    # safe - it only fires when a lowercase letter directly follows.
+    text = re.sub(r"(\w)-\n(?=[a-z])", r"\1", text)
+    text = re.sub(r"[ \t]+([,.;:])", r"\1", text)
+    text = re.sub(r"[ \t]{2,}", " ", text)
+    return text
 
+
+def _pdf_pages_from_bytes(data):
+    pages = _pymupdf_pages(data)
+    if pages is None:
+        pages = _pypdf2_pages(data)
+    return pages
+
+
+def _pymupdf_pages(data):
+    """Preferred extractor - PyMuPDF preserves inter-word spacing that
+    PyPDF2 silently drops on some PDF fonts/encodings (e.g. "the java
+    client generator" comes back as "thejavaclientgenerator" from PyPDF2 on
+    the same file), which otherwise poisons every downstream chunk/answer.
+    Returns None if pymupdf isn't installed so callers fall back to PyPDF2.
+    """
+    try:
+        import pymupdf
+    except ImportError:
+        return None
+
+    pages = []
+    with pymupdf.open(stream=data, filetype="pdf") as doc:
+        for i, page in enumerate(doc):
+            text = page.get_text() or ""
+            if text.strip() and len(text.strip()) < 20:
+                text = _ocr_fallback(data, i, text)
+            pages.append({"text": _clean_pdf_text(text), "page_number": i + 1})
+    return pages
+
+
+def _pypdf2_pages(data):
     import PyPDF2
 
     pages = []
@@ -19,7 +68,7 @@ def _pdf_pages_from_bytes(data):
         text = page.extract_text() or ""
         if text.strip() and len(text.strip()) < 20:
             text = _ocr_fallback(data, i, text)
-        pages.append({"text": text, "page_number": i + 1})
+        pages.append({"text": _clean_pdf_text(text), "page_number": i + 1})
     return pages
 
 

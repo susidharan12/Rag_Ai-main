@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "docs-search": {
+      "command": "python",
+      "args": ["-m", "mcp_servers.docs_search_server"],
+      "env": {}
+    },
+    "package-registry": {
+      "command": "python",
+      "args": ["-m", "mcp_servers.package_registry_server"],
+      "env": {}
+    }
+  }
+}

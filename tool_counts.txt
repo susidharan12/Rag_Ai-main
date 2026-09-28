@@ -1,0 +1,31 @@
+# Tool Count Report: Before and After Adding package-registry Server
+# Source: tools/list from MCP servers (not from notes)
+
+## Before (docs-search server only)
+Tool count: 6
+Tool names:
+  1. search_docs
+  2. get_version_info
+  3. compare_versions
+  4. get_error_info
+  5. get_parameter_default
+  6. check_deprecation
+
+## After (docs-search + package-registry servers)
+Tool count: 10
+Tool names:
+  1. search_docs
+  2. get_version_info
+  3. compare_versions
+  4. get_error_info
+  5. get_parameter_default
+  6. check_deprecation
+  7. get_package_versions        ← from package-registry
+  8. get_latest_version          ← from package-registry
+  9. get_deprecation_notice      ← from package-registry
+  10. check_version_exists       ← from package-registry
+
+## Summary
+Before: 6 tools
+After:  10 tools
+Delta:  +4 tools (all from package-registry server)

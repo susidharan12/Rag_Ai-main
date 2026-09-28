@@ -1,0 +1,1168 @@
+{
+  "generated_at": "2026-09-17T11:42:36.819344+00:00",
+  "summary": {
+    "total_questions": 10,
+    "dependency_questions": {
+      "count": 4,
+      "ids": [
+        "H01",
+        "H04",
+        "H06",
+        "H08"
+      ],
+      "agent_actually_called_check_deprecation": 0
+    },
+    "agent": {
+      "avg_latency_ms": 31330.8,
+      "p50_latency_ms": 28886.6,
+      "p99_latency_ms": 43913.8,
+      "pass_rate": 0.6,
+      "avg_relevance_score": 0.65,
+      "total_api_calls": 26,
+      "avg_steps": 3.6,
+      "total_est_tokens": 30449,
+      "total_est_cost_usd": 0.006412
+    },
+    "workflow": {
+      "avg_latency_ms": 2041.5,
+      "p50_latency_ms": 331.5,
+      "p99_latency_ms": 17409.9,
+      "pass_rate": 0.6,
+      "avg_relevance_score": 0.597,
+      "total_api_calls": 1,
+      "avg_steps": 4.0,
+      "total_est_tokens": 32860,
+      "total_est_cost_usd": 0.000912
+    },
+    "winner": {
+      "speed": "workflow",
+      "cost": "workflow",
+      "quality": "workflow",
+      "overall": "agent"
+    },
+    "question_wins": {
+      "agent": 3,
+      "workflow": 1,
+      "tie": 6
+    }
+  },
+  "agent_results": [
+    {
+      "answer": "Based on the provided documents, the `context` parameter for the \"Render a Markdown document\" endpoint changed significantly between API version 2022-11-28 and 2025-06-01:\n\n* **API Version 2022-11-28:**\n * **Type:** String.\n * **Format:** A plain string representing the repository context, typically in the format `owner/repo` (e.g., `\"octocat/Hello-World\"`).\n * **Source:** Source 2 lists `context` as a `string` type. Source 4 explicitly states that the prior version accepted `context` as a \"plain string (e.g. 'octocat/Hello-World') rather than a structured object.\"\n\n* **API Version 2025-06-01:**\n * **Type:** Object.\n * **Format:** A structured object containing `owner` and `repo` fields (e.g., `{\"owner\": \"...\", \"repo\": \"...\"}`).\n * **Source:** Source 1 states that in this version, \"the context field now accepts an owner/repo pair as a structured object rather than a plain string.\" It defines the parameter as `context (object, optional) — { \"owner\": \"...\", \"repo\": \"...\" }`.\n\n**Summary of Change:**\nThe format shifted from a **single string** (e.g., `\"owner/repo\"`) in the 2022-11-28 version to a **structured JSON object** with distinct `owner` and `repo` keys in the 2025-06-01 version. This change is part of the broader updates in the 2025-06-01 version, which also introduced the `wrap_tables` flag",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "The question asks for differences between two specific API versions, so compare_versions is the right tool.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "context parameter format for rendering Markdown between 2022-11-28 and 2025-06-01"
+          },
+          "observation": "=== 2022-11-28 ===\n[github_combined_reference.pdf] Render a Markdown document\nApplies to API version 2025-06-01 and later.\nRenders a Markdown document server-side, returning either an HTML fragment or raw text\ndepending on the requested mode.\nTwo changes from earlier API versions: the context field now accepts an owner/repo pair as a\nstructured object rather than a plain string, and a new wrap_tables flag controls whether wide\ntables are wrapped f\n[github_combined_reference.pdf] Name\nType\nRequired\nDescription\ntext\nstring\nYes\nThe Markdown text\nto render in HTML.\nmode\nstring\nNo\nThe rendering mode.\nDefault: markdown.\nCan be one of: mark\ndown, gfm.\ncontext\nstring\nNo\nThe repository\ncontext to use when\ncreating references\nin gfm mode.\nResponse\n\"<p>Hello <strong>world</strong></p>\"\nNotes\nIn raw m"
+        },
+        {
+          "step": 2,
+          "thought": "The 2022-11-28 section shows context as a string; I need the 2025-06-01 section to confirm the new structured object format.",
+          "tool": "get_version_info",
+          "args": {
+            "version": "2025-06-01",
+            "query": "context parameter format for rendering Markdown"
+          },
+          "observation": "No chunks found specifically for version 2025-06-01."
+        },
+        {
+          "step": 3,
+          "thought": "The version-specific lookup failed, so I'll search the docs for the 2025-06-01 context parameter details.",
+          "tool": "search_docs",
+          "args": {
+            "query": "2025-06-01 context parameter owner repo structured object render Markdown"
+          },
+          "observation": "--- Chunk 1: github_combined_reference.pdf, page 3 (score: 0.553) ---\nRender a Markdown document\nApplies to API version 2025-06-01 and later.\nRenders a Markdown document server-side, returning either an HTML fragment or raw text\ndepending on the requested mode.\nTwo changes from earlier API versions: the context field now accepts an owner/repo pair as a\nstructured object rather than a plain string, and a new wrap_tables flag controls whether wide\ntables are wrapped for narrow viewports.\ncurl -L \\\n-X POST \\\n-H \"Accept: application/vnd.github+json\" \\\n-H \"Authorization: Bearer <YOUR-TOKEN>\" \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/markdown \\\n\n\n--- Chunk 2: github_combined_reference.pdf, page 2 (score: 0.481) ---\nName\nType\nRequired\nDescription\ntext\nstring\nYes\nThe Markdow"
+        },
+        {
+          "step": 4,
+          "thought": "I have both versions' context parameter details: 2022-11-28 uses a plain string, 2025-06-01 uses a structured owner/repo object. I can answer now.",
+          "tool": "finish",
+          "args": {
+            "answer": "The context parameter format changed between GitHub API versions 2022-11-28 and 2025-06-01 for rendering Markdown as follows:\n\n- In API version 2022-11-28, the context parameter was a plain string (Type: string, Required: No), described as \"The repository context to use when creating references in gfm mode.\"\n\n- In API version 2025-06-01 and later, the context field now accepts an owner/repo pair as a structured object rather than a plain string. This is one of two changes from earlier API versions (the other being a new wrap_tables flag that controls whether wide tables are wrapped for narrow viewports).\n\nIn short, the context parameter changed from a simple string to a structured object representing an owner/repo pair."
+          },
+          "observation": "The context parameter format changed between GitHub API versions 2022-11-28 and 2025-06-01 for rendering Markdown as follows:\n\n- In API version 2022-11-28, the context parameter was a plain string (Type: string, Required: No), described as \"The repository context to use when creating references in gfm mode.\"\n\n- In API version 2025-06-01 and later, the context field now accepts an owner/repo pair as a structured object rather than a plain string. This is one of two changes from earlier API versions (the other being a new wrap_tables flag that controls whether wide tables are wrapped for narrow viewports).\n\nIn short, the context parameter changed from a simple string to a structured object representing an owner/repo pair."
+        }
+      ],
+      "metrics": {
+        "latency_ms": 4214.0,
+        "api_calls": 3,
+        "tools_used": [
+          "compare_versions",
+          "finish",
+          "get_version_info",
+          "search_docs"
+        ],
+        "steps_taken": 4,
+        "stopped_by": "finished",
+        "est_tokens": 3208,
+        "est_cost_usd": 0.000728,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H01",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "agent",
+      "question_winner_reason": "relevance score"
+    },
+    {
+      "answer": "In Swagger Codegen v3, the `.swagger-codegen-ignore` file supports **negation patterns** using the `!` prefix (e.g., `!pattern`). This syntax allows you to **re-include** a specific file that was previously excluded by a broader glob pattern listed above it.\n\nThis feature is **missing in v2**, which only supported plain glob-style exclude patterns (similar to `.gitignore` syntax) without any mechanism to override or re-include files once they had been excluded.\n\n**Example from the v3 documentation:**\n```text\n# Ignore everything in docs/\ndocs/**/*\n#...except this one file\n!docs/keep-this.md\n```\n\nIn v2, if you wrote `docs/**/*` to skip a folder, every file underneath would be skipped with no way to keep a specific hand-edited file",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "This asks about a difference between v2 and v3, so compare_versions is the right first tool.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "negation syntax in .swagger-codegen-ignore file"
+          },
+          "observation": "=== v2 ===\n[swagger_v3_reference.pdf] The.swagger-codegen-ignore file (v3)\nBehaves as in 2.x, with one addition: v3 also honors a.openapi-generator-ignore-style negation\npattern (!pattern) to re-include a file that a broader glob above it excluded — this negation\nsupport did not exist in 2.x.\n# Ignore everything in docs/\ndocs/**/*\n#...except this one file\n!docs/keep-this.md\nAs in v2, place the file in the output directory root before \n[swagger_v2_reference.pdf] .swagger-codegen-ignore\nSwagger Codegen 2.x supports a.swagger-codegen-ignore file, similar in syntax to.gitignore,\nplaced in the output directory before generation.\n# Ignore this specific file\ndocs/some-doc.md\n# Ignore all files ending in.foo\n*.foo\n# Ignore everything under a folder\nbuild/**/*\nRules are read once, at the start of g"
+        },
+        {
+          "step": 2,
+          "thought": "The comparison clearly shows v3 adds the !pattern negation syntax that v2 lacks. I have enough to answer.",
+          "tool": "finish",
+          "args": {
+            "answer": "In Swagger Codegen v3, the .swagger-codegen-ignore file supports a .openapi-generator-ignore-style negation pattern using a leading exclamation mark (!pattern). This lets you re-include a file that a broader glob above it had excluded (e.g., ignore docs/**/* then re-include with !docs/keep-this.md). This negation support did not exist in v2, which only supported plain .gitignore-style patterns without the ! negation."
+          },
+          "observation": "In Swagger Codegen v3, the .swagger-codegen-ignore file supports a .openapi-generator-ignore-style negation pattern using a leading exclamation mark (!pattern). This lets you re-include a file that a broader glob above it had excluded (e.g., ignore docs/**/* then re-include with !docs/keep-this.md). This negation support did not exist in v2, which only supported plain .gitignore-style patterns without the ! negation."
+        }
+      ],
+      "metrics": {
+        "latency_ms": 24905.8,
+        "api_calls": 1,
+        "tools_used": [
+          "compare_versions",
+          "finish"
+        ],
+        "steps_taken": 2,
+        "stopped_by": "finished",
+        "est_tokens": 1868,
+        "est_cost_usd": 0.000418,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H02",
+      "category": "Ignore File Migration",
+      "depends_on_step2": false,
+      "question_winner": "agent",
+      "question_winner_reason": "pass/fail"
+    },
+    {
+      "answer": "The top-level configuration key introduced in Swagger Codegen v3 config files to nest generator-specific options is **`additionalProperties`**.\n\nKey details from the provided documents:\n* **Functionality:** It allows language-specific or generator-specific options to be nested under a single key rather than being listed as flat, top-level keys.\n* **Precedence:** If the `additionalProperties` key is present, any flat top-level keys with the same name are ignored in favor of the nested values.\n* **v2 Comparison:** This feature did not exist in Swagger Codegen v2. In v2, all options had to be specified as flat top-level keys, which became unwieldy when many language-specific overrides were needed in a single config file",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "I need to find what top-level config key was introduced in v3 to nest generator-specific options, so I'll search the docs for this.",
+          "tool": "search_docs",
+          "args": {
+            "query": "top-level configuration key introduced in v3 to nest generator-specific options not in v2"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 6 (score: 0.608) ---\nonly — YAML config files were not recognized, and\npassing one would fail with a parse error rather than being auto-detected. There was also no\nadditionalProperties nesting; every option had to be specified as a flat top-level key, exactly\nas shown in the v2 example above, which became unwieldy once a generator needed many\nlanguage-specific overrides in a single config file.\n6\n\n--- Chunk 2: swagger_v3_reference.pdf, page 6 (score: 0.514) ---\nConfig file usage (v3)\nHow it works\nSame -c config.json mechanism as v2. v3 additionally allows a.yaml config file (auto-detected\nby extension) as an alternative to JSON, and supports a top-level additionalProperties key that\nnests language-specific values instead of listing them flat.\nSup"
+        },
+        {
+          "step": 2,
+          "thought": "The docs clearly state v3 supports a top-level additionalProperties key that nests language-specific values, which didn't exist in v2. I have enough to answer.",
+          "tool": "finish",
+          "args": {
+            "answer": "The top-level configuration key introduced in Swagger Codegen v3 config files is `additionalProperties`. It allows you to nest language-specific (generator-specific) values instead of listing them as flat top-level keys, which was the only option in v2."
+          },
+          "observation": "The top-level configuration key introduced in Swagger Codegen v3 config files is `additionalProperties`. It allows you to nest language-specific (generator-specific) values instead of listing them as flat top-level keys, which was the only option in v2."
+        }
+      ],
+      "metrics": {
+        "latency_ms": 28886.6,
+        "api_calls": 1,
+        "tools_used": [
+          "finish",
+          "search_docs"
+        ],
+        "steps_taken": 2,
+        "stopped_by": "finished",
+        "est_tokens": 1923,
+        "est_cost_usd": 0.000425,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H03",
+      "category": "Config File Migration",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "Based on the provided documents, the ability to set `maintainer_can_modify` during pull request creation changed significantly between the two API versions:\n\n* **API Version 2022-11-28:**\n * You **could not** set `maintainer_can_modify` at creation time.\n * The field defaulted to `true`.\n * To change this value, you were required to make a separate, follow-up `PATCH` request after the pull request was created.\n\n* **API Version 2025-06-01:**\n * You **can** now specify `maintainer_can_modify` directly in the request body when creating the pull request.\n * The default value remains `true`, but it is now settable at creation time, eliminating the need for a subsequent `PATCH` call if you want to override the default.\n\n**Example from the 2025-06-01 documentation:**\n```json\n{\n \"title\": \"Amazing feature\",\n \"head\": \"octocat:new-feature\",\n \"base\": \"master\",\n \"maintainer_can_modify\": false\n}\n```\nIn this example, `maintainer_can_modify` is explicitly set to `false` during the initial `POST` request to create the pull request",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "This is a version comparison question about a specific parameter, so I'll use compare_versions.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "maintainer_can_modify parameter during pull request creation"
+          },
+          "observation": "=== v2 ===\n[github_combined_reference.pdf] Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction wi\n[github_combined_reference.pdf] \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior versi"
+        },
+        {
+          "step": 2,
+          "thought": "The comparison clearly shows the change: previously it couldn't be set at creation, now it can. I have enough to answer.",
+          "tool": "finish",
+          "args": {
+            "answer": "In API version 2022-11-28, the maintainer_can_modify field could not be set at pull request creation time — it was true by default with no way to override it until a follow-up PATCH call was made. Starting with API version 2025-06-01, the API supports specifying maintainer_can_modify directly at creation time, so a separate PATCH call is no longer required. (The default value itself did not change; only the ability to set it at creation was added.)"
+          },
+          "observation": "In API version 2022-11-28, the maintainer_can_modify field could not be set at pull request creation time — it was true by default with no way to override it until a follow-up PATCH call was made. Starting with API version 2025-06-01, the API supports specifying maintainer_can_modify directly at creation time, so a separate PATCH call is no longer required. (The default value itself did not change; only the ability to set it at creation was added.)"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 26232.2,
+        "api_calls": 1,
+        "tools_used": [
+          "compare_versions",
+          "finish"
+        ],
+        "steps_taken": 2,
+        "stopped_by": "finished",
+        "est_tokens": 1916,
+        "est_cost_usd": 0.00048,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H04",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 2 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.\n- 3 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "Search docs for Java generator config changes between Swagger Codegen 2.x and 3.x, focusing on oneOf and webclient.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Java generator configuration changes Swagger Codegen 2.x to 3.x oneOf webclient config keys"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 1 (score: 0.681) ---\nSwagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\nGetting the CLI\nwget https://repo1.maven.org/maven2/io/swagger/codegen/v3/swagger-codegen-cli/3.0.71/\\\nswagger-codegen-cli-3.0.71.jar -O swagger-codegen-cli.jar\nRunning\njava-jar swagger-codegen-cli.jar genera\n\n--- Chunk 2: swagger_v2_reference.pdf, page 1 (score: 0.667) ---\nSwagger Codegen Reference - v2\nContents\nSwagger Codegen CLI — genera"
+        },
+        {
+          "step": 2,
+          "thought": "Get v3 Java client generator config options to see oneOf and webclient keys.",
+          "tool": "get_version_info",
+          "args": {
+            "version": "v3",
+            "query": "Java client generator configuration options oneOf webclient library config keys"
+          },
+          "observation": "No chunks found specifically for version v3."
+        },
+        {
+          "step": 3,
+          "thought": "Search docs specifically for Java client generator config options in v3.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Java client generator configuration options v3 oneOf webclient library"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 3 (score: 0.510) ---\nJava client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g. oneOf/anyOf schema support).\nOptions table\nOption\nType\nDefault\nDescription\nsortParamsByRequire\ndFlag\nboolean\ntrue\nPlace required\nparameters before\noptional ones.\nensureUniqueParams\nboolean\ntrue\nEnsure parameter\nnames are unique\nper operation.\nallowUnicodeIdentifie\nrs\nboolean\nfalse\nAllow unicode\nidentifiers in\ngenerated names.\nuseOneOfInterfaces\nboolean\nfalse\nNew in v3.\nGenerates a Java\ninterface fo\n\n--- Chunk 2: swagger_v2_reference.pdf, page 2 (score: 0.480) ---\nJava client generator — configuration options\nConfig options for the"
+        },
+        {
+          "step": 4,
+          "thought": "Get full v3 Java client config options including webclient library key.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Java client generator v3 webclient library config option library"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 3 (score: 0.515) ---\nJava client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g. oneOf/anyOf schema support).\nOptions table\nOption\nType\nDefault\nDescription\nsortParamsByRequire\ndFlag\nboolean\ntrue\nPlace required\nparameters before\noptional ones.\nensureUniqueParams\nboolean\ntrue\nEnsure parameter\nnames are unique\nper operation.\nallowUnicodeIdentifie\nrs\nboolean\nfalse\nAllow unicode\nidentifiers in\ngenerated names.\nuseOneOfInterfaces\nboolean\nfalse\nNew in v3.\nGenerates a Java\ninterface fo\n\n--- Chunk 2: swagger_v2_reference.pdf, page 2 (score: 0.484) ---\nJava client generator — configuration options\nConfig options for the"
+        },
+        {
+          "step": 5,
+          "thought": "Reached maximum steps — synthesizing answer from gathered context.",
+          "tool": "finish",
+          "args": {
+            "answer": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 2 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.\n- 3 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g."
+          },
+          "observation": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 2 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.\n- 3 Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g."
+        }
+      ],
+      "metrics": {
+        "latency_ms": 39048.7,
+        "api_calls": 4,
+        "tools_used": [
+          "get_version_info",
+          "search_docs"
+        ],
+        "steps_taken": 5,
+        "stopped_by": "max_steps",
+        "est_tokens": 3660,
+        "est_cost_usd": 0.000699,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H05",
+      "category": "Java Generator Migration",
+      "depends_on_step2": false,
+      "question_winner": "workflow",
+      "question_winner_reason": "pass/fail"
+    },
+    {
+      "answer": "- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- Previous version (2022-11-28) The prior version had no discussion_category_name field, so linking a discussion to a release required a separate manual step in the UI after the release was published.\n- draft boolean No true makes the release a draft.\n- packageVersion, type string — python package version, default 1.0.0.",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "I need to compare the release creation behavior between the two API versions to understand the change.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "make_latest parameter in release creation, replacing undocumented heuristic for latest release"
+          },
+          "observation": "=== v2 ===\n[github_combined_reference.pdf] Create a release\nAPI version 2025-06-01\nSummary\nPublishes a new release against an existing or new tag. As of this version, discussion_categ\nory_name can be supplied to automatically open a linked discussion, and make_latest gives\nexplicit control over whether the release becomes the repository’s “Latest” release, replacing\nan older undocumented heuristic based purely on publish date.\nBody paramet\n[github_combined_reference.pdf] Example\ncurl -L -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/repos/octocat/Hello-World/releases \\\n-d '{\"tag_name\":\"v2.0.0\",\"make_latest\":\"true\",\"generate_release_notes\":true}'\nReturns 201 Created.\nPrevious version (2022-11-28)\nThe prior version had no discussion_category_name field, so linking a d"
+        },
+        {
+          "step": 2,
+          "thought": "I need to find the specific parameter table for make_latest to confirm its type and values.",
+          "tool": "get_parameter_default",
+          "args": {
+            "param": "make_latest",
+            "query": "make_latest parameter type and values for release creation"
+          },
+          "observation": "Parameter info for make_latest:\n\n[EXACT] github_combined_reference.pdf:\nCreate a release\nAPI version 2025-06-01\nSummary\nPublishes a new release against an existing or new tag. As of this version, discussion_categ\nory_name can be supplied to automatically open a linked discussion, and make_latest gives\nexplicit control over whether the release becomes the repository’s “Latest” release, replacing\nan older undocumented heuristic based purely on publish date.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntag_name\nstring\nYes\n—\nThe name of the\ntag.\ntarget_commiti\n\n[PARTIAL] github_combined_reference.pdf:\nName\nType\nRequired\nDescription\ngenerate_release_not\nes\nboolean\nNo\nWhether to\nautomatically\ngenerate the name\nand body for this\nrelease. Default: fals\ne.\ncurl -L -X POST https://api.gith"
+        },
+        {
+          "step": 3,
+          "thought": "I need the exact type and allowed values for make_latest, so I'll search the parameter table specifically.",
+          "tool": "search_docs",
+          "args": {
+            "query": "make_latest parameter type string values latest not_latest prerelease"
+          },
+          "observation": "--- Chunk 1: github_combined_reference.pdf, page 12 (score: 0.477) ---\nCreate a release\nAPI version 2025-06-01\nSummary\nPublishes a new release against an existing or new tag. As of this version, discussion_categ\nory_name can be supplied to automatically open a linked discussion, and make_latest gives\nexplicit control over whether the release becomes the repository’s “Latest” release, replacing\nan older undocumented heuristic based purely on publish date.\nBody parameters\nName\nType\nRequired\nDefault\nDescription\ntag_name\nstring\nYes\n—\nThe name of the\ntag.\ntarget_commitis\nh\nstring\nNo\ndefault branch\nCommitish value\nthe tag is\ncreated from, if\nit doesn’t\nalready exist.\nn\n\n--- Chunk 2: github_combined_reference.pdf, page 13 (score: 0.484) ---\nExample\ncurl -L -X POST -H \"X-GitHub-Api-Version: 2025-0"
+        },
+        {
+          "step": 4,
+          "thought": "I have enough information: make_latest gives explicit control over Latest status, replacing the old publish-date heuristic. I'll finish.",
+          "tool": "finish",
+          "args": {
+            "answer": "In GitHub API version 2025-06-01, the release creation endpoint (POST /repos/{owner}/{repo}/releases) introduces a new body parameter called make_latest. This parameter gives explicit, caller-controlled authority over whether the newly created release becomes the repository's \"Latest\" release. It replaces the older, undocumented heuristic used in API version 2022-11-28, which determined \"Latest\" status purely based on the release's publish date (i.e., the most recently published release automatically became \"Latest\").\n\nKey points:\n- In 2022-11-28 there was no make_latest field; \"Latest\" was assigned implicitly by an undocumented rule tied to publish date, so a release could unexpectedly become (or fail to become) \"Latest\" depending on timing.\n- In 2025-06-01, make_latest lets you explicitly set whether the release is marked as the repository's \"Latest\" release, removing reliance on that date-based heuristic. For example: curl -L -X POST -H \"X-GitHub-Api-Version: 2025-06-01\" https://api.github.com/repos/octocat/Hello-World/releases -d '{\"tag_name\":\"v2.0.0\",\"make_latest\":\"true\",\"generate_release_notes\":true}' returns 201 Created.\n\nIn short, make_latest converts the previously implicit, date-driven \"Latest\" assignment into an explicit, documented, and controllable parameter."
+          },
+          "observation": "In GitHub API version 2025-06-01, the release creation endpoint (POST /repos/{owner}/{repo}/releases) introduces a new body parameter called make_latest. This parameter gives explicit, caller-controlled authority over whether the newly created release becomes the repository's \"Latest\" release. It replaces the older, undocumented heuristic used in API version 2022-11-28, which determined \"Latest\" status purely based on the release's publish date (i.e., the most recently published release automatically became \"Latest\").\n\nKey points:\n- In 2022-11-28 there was no make_latest field; \"Latest\" was assigned implicitly by an undocumented rule tied to publish date, so a release could unexpectedly become (or fail to become) \"Latest\" depending on timing.\n- In 2025-06-01, make_latest lets you explicitl"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 41899.6,
+        "api_calls": 3,
+        "tools_used": [
+          "compare_versions",
+          "finish",
+          "get_parameter_default",
+          "search_docs"
+        ],
+        "steps_taken": 4,
+        "stopped_by": "finished",
+        "est_tokens": 4013,
+        "est_cost_usd": 0.000682,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 0.5,
+      "passed": false,
+      "question_id": "H06",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Java client generator — configuration options (v3) Overview The java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful of new ones related to OpenAPI 3 features (e.g.\n- Compared to v2 Swagger Codegen 2.x’s java generator documented these same options — sortParamsByReq uiredFlag, ensureUniqueParams, allowUnicodeIdentifiers, library, modelPackage — as a plain bulleted list rather than a table, and defaults for each were written inline in prose, e.g.\n- Java client generator — configuration options Config options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso n.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config options 4 The.swagger-codegen-ignore file (v3) 5 Config file usage (v3) 6 Swagger Codegen CLI — general options (v3) Swagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x specs (2.x does not).",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "This is a version comparison question, so I should use compare_versions to get side-by-side docs.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "Java client generator documentation format and options list differences between Swagger Codegen 2.x and 3.x"
+          },
+          "observation": "=== 2.x ===\n[swagger_v3_reference.pdf] Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g. oneOf/anyOf schema support).\nOptions table\nOption\nType\nDefault\nDescription\nsortParamsByRequire\ndFlag\nboolean\ntrue\nPlace required\nparameters before\noptional ones.\nensureUniqueParams\nboolean\ntrue\nEnsure \n[swagger_v3_reference.pdf] Note: v3 rejects OpenAPI 2.0 (Swagger) specs by default; use --verbose for spec-conversion\ndiagnostics if generation fails unexpectedly on an older spec file.\nCompared to v2\nIn Swagger Codegen 2.x, the equivalent jar was fetched from the io.swagger Maven group\n(not io.swagger.codegen.v3), and the same -i, -l, -o, and -c flags behav"
+        },
+        {
+          "step": 2,
+          "thought": "The comparison excerpt is truncated; I need more detail on the 2.x options list and markdown flag differences.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Swagger Codegen 2.x Java client generator options list generate-markdown flag documentation format"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 2 (score: 0.726) ---\nNote: v3 rejects OpenAPI 2.0 (Swagger) specs by default; use --verbose for spec-conversion\ndiagnostics if generation fails unexpectedly on an older spec file.\nCompared to v2\nIn Swagger Codegen 2.x, the equivalent jar was fetched from the io.swagger Maven group\n(not io.swagger.codegen.v3), and the same -i, -l, -o, and -c flags behaved identically for basic\ngeneration. The --generate-markdown flag did not exist in 2.x — anyone wanting standalone\nAPI documentation in v2 had to generate it separately via a documentation-only generator\ntarget (e.g. -l html2) rather than getting it alongside client \n\n--- Chunk 2: swagger_v2_reference.pdf, page 2 (score: 0.692) ---\nJava client generator — configuration options\nConfig options for the"
+        },
+        {
+          "step": 3,
+          "thought": "I have the key differences: Maven group, --generate-markdown flag, and options. Let me confirm the 2.x options list details.",
+          "tool": "get_version_info",
+          "args": {
+            "version": "v2",
+            "query": "Java client generator configuration options list sortParamsByRequiredFlag ensureUniqueParams"
+          },
+          "observation": "No chunks found specifically for version v2."
+        },
+        {
+          "step": 4,
+          "thought": "Version-specific lookup failed; let me search the 2.x reference directly for the full options list.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Swagger Codegen 2.x Java client generator config options sortParamsByRequiredFlag ensureUniqueParams apiPackage modelPackage"
+          },
+          "observation": "--- Chunk 1: swagger_v2_reference.pdf, page 2 (score: 0.801) ---\nJava client generator — configuration options\nConfig options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso\nn.\n• sortParamsByRequiredFlag — Sort method arguments to place required parameters\nbefore optional parameters. (Default: true)\n• ensureUniqueParams — Whether to ensure parameter names are unique in an operation. (Default: true)\n• allowUnicodeIdentifiers — Toggles whether unicode identifiers are allowed in names.\n(Default: false)\n• modelPackage — Package for generated models.\n• apiPackage — Package for generated api classes.\n• library — Library template t\n\n--- Chunk 2: swagger_v3_reference.pdf, page 3 (score: 0.716) ---\nv2’s and the two config-help outputs should not be assumed interchan"
+        },
+        {
+          "step": 5,
+          "thought": "Reached maximum steps — synthesizing answer from gathered context.",
+          "tool": "finish",
+          "args": {
+            "answer": "- Java client generator — configuration options (v3) Overview The java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful of new ones related to OpenAPI 3 features (e.g.\n- Compared to v2 Swagger Codegen 2.x’s java generator documented these same options — sortParamsByReq uiredFlag, ensureUniqueParams, allowUnicodeIdentifiers, library, modelPackage — as a plain bulleted list rather than a table, and defaults for each were written inline in prose, e.g.\n- Java client generator — configuration options Config options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso n.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config options 4 The.swagger-codegen-ignore file (v3) 5 Config file usage (v3) 6 Swagger Codegen CLI — general options (v3) Swagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x specs (2.x does not)."
+          },
+          "observation": "- Java client generator — configuration options (v3) Overview The java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful of new ones related to OpenAPI 3 features (e.g.\n- Compared to v2 Swagger Codegen 2.x’s java generator documented these same options — sortParamsByReq uiredFlag, ensureUniqueParams, allowUnicodeIdentifiers, library, modelPackage — as a plain bulleted list rather than a table, and defaults for each were written inline in prose, e.g.\n- Java client generator — configuration options Config options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso n.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config o"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 39624.5,
+        "api_calls": 4,
+        "tools_used": [
+          "compare_versions",
+          "get_version_info",
+          "search_docs"
+        ],
+        "steps_taken": 5,
+        "stopped_by": "max_steps",
+        "est_tokens": 3565,
+        "est_cost_usd": 0.000727,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H07",
+      "category": "Documentation Format Comparison",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- The interaction between d raft and auto-merge settings also behaved differently: a draft PR could not have auto-merge enabled until explicitly marked ready for review, whereas this version allows auto-merge to be pre-armed on a draft.\n- GitHub REST API Reference - Combined (v2022-11-28 and v2025-06-01) Contents Render a Markdown document 1 Render a Markdown document 3 Create an issue 4 Create an issue 5 Create a pull request 6 Create a pull request 7 Create a repository for the authenticated user 8 Create a repository for the authenticated user 9 Create a release 10 Create a release 12 Render a Markdown document Use the REST API to render a Markdown document as an HTML page or as raw text.",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "This asks for differences between two API versions, so compare_versions is the right tool.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "draft pull requests and auto-merge settings behavior in API version 2022-11-28 versus 2025-06-01"
+          },
+          "observation": "=== 2022-11-28 ===\n[github_combined_reference.pdf] Create a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction wi\n[github_combined_reference.pdf] \\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the pri"
+        },
+        {
+          "step": 2,
+          "thought": "The excerpt is truncated and doesn't fully cover auto-merge interaction with drafts; I'll search docs for that specific topic.",
+          "tool": "search_docs",
+          "args": {
+            "query": "draft pull requests auto-merge settings interaction"
+          },
+          "observation": "--- Chunk 1: github_combined_reference.pdf, page 7 (score: 0.619) ---\nCreate a pull request\nVersion 2025-06-01 · reference\nOverview\nOpens a pull request against the given repository. Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call),\nand draft pull requests can be created directly as ready-for-review by omitting the field entirely\n— its default has not changed but its interaction with auto-merge settings has.\nPath parameters\nName\nType\nowner\nstring\nrepo\nstring\nRequest body\nField\nType\nRequired\nNotes\ntitle\nstring\nYes\nRequired unless issue\nis specified.\nhead\nstring\nYes\nBranch or use\n\n--- Chunk 2: github_combined_reference.pdf, page 7 (score: 0.574) ---\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\"
+        },
+        {
+          "step": 3,
+          "thought": "The chunks confirm the interaction changed but don't detail the specifics; I'll search for the auto-merge and draft details.",
+          "tool": "search_docs",
+          "args": {
+            "query": "auto-merge enabled on draft pull request 2022-11-28 2025-06-01 change"
+          },
+          "observation": "--- Chunk 1: github_combined_reference.pdf, page 7 (score: 0.660) ---\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version\n\n--- Chunk 2: github_combined_reference.pdf, page 7 (score: 0.528) ---\nCreate a pull request\nVersion 2025-06-01 · reference\nOverv"
+        },
+        {
+          "step": 4,
+          "thought": "The chunk is cut off right at the key detail about the new version's behavior; I'll search to get the continuation describing the 2025-06-01 behavior.",
+          "tool": "search_docs",
+          "args": {
+            "query": "draft PR auto-merge enabled while still draft 2025-06-01 ready for review"
+          },
+          "observation": "--- Chunk 1: github_combined_reference.pdf, page 7 (score: 0.564) ---\n\\\nhttps://api.github.com/repos/octocat/Hello-World/pulls \\\n-d '{\"title\":\"Amazing feature\",\n\"head\":\"octocat:new-feature\",\n\"base\":\"master\",\n\"maintainer_can_modify\":false}'\nReturns 201 Created with the pull request object.\nPrevious version (2022-11-28)\nmaintainer_can_modify could not be set at creation time in the prior version — it was true by\ndefault with no way to override it until a follow-up PATCH request. The interaction between d\nraft and auto-merge settings also behaved differently: a draft PR could not have auto-merge\nenabled until explicitly marked ready for review, whereas this version\n\n--- Chunk 2: github_combined_reference.pdf, page 7 (score: 0.409) ---\nCreate a pull request\nVersion 2025-06-01 · reference\nOverv"
+        },
+        {
+          "step": 5,
+          "thought": "Reached maximum steps — synthesizing answer from gathered context.",
+          "tool": "finish",
+          "args": {
+            "answer": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- The interaction between d raft and auto-merge settings also behaved differently: a draft PR could not have auto-merge enabled until explicitly marked ready for review, whereas this version allows auto-merge to be pre-armed on a draft.\n- GitHub REST API Reference - Combined (v2022-11-28 and v2025-06-01) Contents Render a Markdown document 1 Render a Markdown document 3 Create an issue 4 Create an issue 5 Create a pull request 6 Create a pull request 7 Create a repository for the authenticated user 8 Create a repository for the authenticated user 9 Create a release 10 Create a release 12 Render a Markdown document Use the REST API to render a Markdown document as an HTML page or as raw text."
+          },
+          "observation": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- The interaction between d raft and auto-merge settings also behaved differently: a draft PR could not have auto-merge enabled until explicitly marked ready for review, whereas this version allows auto-merge to be pre-armed on a draft.\n- GitHub REST API Reference - Combined (v2022-11-28 and v2025-06-01) Contents Render a Markdown document 1 Render a Markdown document 3 Crea"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 43913.8,
+        "api_calls": 4,
+        "tools_used": [
+          "compare_versions",
+          "search_docs"
+        ],
+        "steps_taken": 5,
+        "stopped_by": "max_steps",
+        "est_tokens": 4391,
+        "est_cost_usd": 0.000869,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H08",
+      "category": "GitHub REST API Feature Interaction",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "Based on the provided GitHub REST API Reference, the behavior for rendering Markdown tables changed significantly between API version `2022-11-28` and `2025-06-01` due to the introduction of a new parameter.\n\n**API Version 2022-11-28**\n* **No Wrapping Option:** This version did not include a `wrap_tables` parameter.\n* **Overflow Behavior:** Wide tables in the rendered output would simply **overflow their container**. There was no built-in mechanism to handle wide tables gracefully, leading to potential layout issues on narrow viewports.\n\n**API Version 2025-06-01**\n* **New `wrap_tables` Flag:** This version introduced a new optional boolean parameter called `wrap_tables` (default: `false`).\n* **Controlled Wrapping:** When `wrap_tables` is set to `true`, wide tables are rendered with **horizontal scroll wrappers** instead of overflowing. This allows the table to remain contained within its viewport, with users able to scroll horizontally to see the full content.\n* **Default Behavior:** If `wrap_tables` is omitted or set to `false`, the behavior likely reverts to the previous overflow style, though the documentation explicitly highlights the new capability to prevent overflow when the flag is enabled.\n\n**Summary of Change**\nThe key improvement in the `2025-06-01` version is the ability to explicitly control how wide tables are handled. Developers can now opt into a user-friendly scrolling experience for wide tables, whereas the `2022-11-28` version offered no such control, resulting in uncontrolled overflow",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "The question asks for differences between two specific API versions, so compare_versions is the right tool.",
+          "tool": "compare_versions",
+          "args": {
+            "query": "Markdown table rendering behavior between API version 2022-11-28 and 2025-06-01"
+          },
+          "observation": "=== 2022-11-28 ===\n[github_combined_reference.pdf] Render a Markdown document\nApplies to API version 2025-06-01 and later.\nRenders a Markdown document server-side, returning either an HTML fragment or raw text\ndepending on the requested mode.\nTwo changes from earlier API versions: the context field now accepts an owner/repo pair as a\nstructured object rather than a plain string, and a new wrap_tables flag controls whether wide\ntables are wrapped f\n[github_combined_reference.pdf] gfm-mode reference\nlinking.\n• wrap_tables (boolean, optional, default false) — When true, wide tables render with horizontal scroll wrappers instead of overflowing.\nResponse body is an HTML string (or raw text, in raw mode). Content must be 400 KB or less.\nPrevious version (2022-11-28)\nThe prior version of this end"
+        },
+        {
+          "step": 2,
+          "thought": "The comparison shows the key change: a new wrap_tables flag was added in 2025-06-01 that controls horizontal scroll wrappers for wide tables, while 2022-11-28 had no such option. I have enough to answer.",
+          "tool": "finish",
+          "args": {
+            "answer": "Between GitHub API version 2022-11-28 and 2025-06-01, the Markdown rendering endpoint (\"Render a Markdown document\") changed its table rendering behavior as follows:\n\n- In 2022-11-28, the endpoint accepted only `text`, `mode`, and `context` (where `context` was a plain string). There was no option to control how wide tables were rendered, so wide tables could overflow.\n\n- In 2025-06-01, a new `wrap_tables` boolean flag was introduced (optional, default `false`). When set to `true`, wide tables render with horizontal scroll wrappers instead of overflowing. (Additionally, the `context` field changed from a plain string to a structured owner/repo object, but that is separate from table rendering.)\n\nIn short, the 2025-06-01 version adds explicit control over wide-table rendering via the `wrap_tables` flag, whereas the 2022-11-28 version had no such control."
+          },
+          "observation": "Between GitHub API version 2022-11-28 and 2025-06-01, the Markdown rendering endpoint (\"Render a Markdown document\") changed its table rendering behavior as follows:\n\n- In 2022-11-28, the endpoint accepted only `text`, `mode`, and `context` (where `context` was a plain string). There was no option to control how wide tables were rendered, so wide tables could overflow.\n\n- In 2025-06-01, a new `wrap_tables` boolean flag was introduced (optional, default `false`). When set to `true`, wide tables render with horizontal scroll wrappers instead of overflowing. (Additionally, the `context` field changed from a plain string to a structured owner/repo object, but that is separate from table rendering.)\n\nIn short, the 2025-06-01 version adds explicit control over wide-table rendering via the `wrap_"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 25618.2,
+        "api_calls": 1,
+        "tools_used": [
+          "compare_versions",
+          "finish"
+        ],
+        "steps_taken": 2,
+        "stopped_by": "finished",
+        "est_tokens": 2290,
+        "est_cost_usd": 0.00063,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H09",
+      "category": "GitHub REST API Feature Comparison",
+      "depends_on_step2": false,
+      "question_winner": "agent",
+      "question_winner_reason": "relevance score"
+    },
+    {
+      "answer": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 1 Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- Yes\n1 Swagger Codegen Reference - v2\nContents\nSwagger Codegen CLI — general options\n1\nJava client generator — configuration options\n2\npython generator config options\n3\n.swagger-codegen-ignore\n4\nUsing a JSON config file (-c)\n5\nSwagger Codegen CLI — general options\nSwagger Codegen 2.x is distributed under the Maven group id io.swagger.",
+      "steps": [
+        {
+          "step": 1,
+          "thought": "I need to find documentation about migrating Python client configuration from Swagger Codegen 2.x to 3.x, so I'll search the docs.",
+          "tool": "search_docs",
+          "args": {
+            "query": "migrate Python client configuration Swagger Codegen 2.x to 3.x asynchronous execution YAML format"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 1 (score: 0.627) ---\nSwagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\nGetting the CLI\nwget https://repo1.maven.org/maven2/io/swagger/codegen/v3/swagger-codegen-cli/3.0.71/\\\nswagger-codegen-cli-3.0.71.jar -O swagger-codegen-cli.jar\nRunning\njava-jar swagger-codegen-cli.jar genera\n\n--- Chunk 2: swagger_v2_reference.pdf, page 1 (score: 0.614) ---\nSwagger Codegen Reference - v2\nContents\nSwagger Codegen CLI — genera"
+        },
+        {
+          "step": 2,
+          "thought": "I need to find the Python generator config options in v3, so I'll get version-specific info for v3.",
+          "tool": "get_version_info",
+          "args": {
+            "version": "v3",
+            "query": "Python generator config options asynchronous execution YAML format"
+          },
+          "observation": "No chunks found specifically for version v3."
+        },
+        {
+          "step": 3,
+          "thought": "The version-specific lookup failed, so I'll search the docs directly for the Python generator config options in v3.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Python generator config options v3 asynchronous execution YAML format"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 6 (score: 0.556) ---\nConfig file usage (v3)\nHow it works\nSame -c config.json mechanism as v2. v3 additionally allows a.yaml config file (auto-detected\nby extension) as an alternative to JSON, and supports a top-level additionalProperties key that\nnests language-specific values instead of listing them flat.\nSupported keys\nKey\nType\nv2 equivalent\nNotes\nmodelPackage\nstring\nsame\nUnchanged.\napiPackage\nstring\nsame\nUnchanged.\ninvokerPackage\nstring\nsame\nUnchanged.\ngroupId / artifactId /\nartifactVersion\nstring\nsame\nUnchanged,\nMaven-target\nlanguages only.\nadditionalProperties\nobject\n(new)\nNests\ngenerator-specific\noptions; if\n\n--- Chunk 2: swagger_v2_reference.pdf, page 3 (score: 0.536) ---\npython generator config options\npackageName, type string — python pa"
+        },
+        {
+          "step": 4,
+          "thought": "I need the full v3 Python generator config options including async and YAML details, so I'll search more specifically.",
+          "tool": "search_docs",
+          "args": {
+            "query": "Python generator v3 asyncApiCall asynchronous execution config option"
+          },
+          "observation": "--- Chunk 1: swagger_v3_reference.pdf, page 4 (score: 0.571) ---\nPython generator — config options\nv3 notes\nSame core options as v2’s python generator, plus library selection between urllib3 (default,\nunchanged) and asyncio (new in v3, generates async/await client methods).\nOption\nDefault\nNotes\npackageName\nswagger_client\nUnchanged from v2.\nprojectName\nderived from packageName\nUnchanged.\npackageVersion\n1.0.0\nUnchanged.\nlibrary\nurllib3\nv3 adds asyncio as a selectable value.\nsortParamsByRequiredFlag\ntrue\nUnchanged.\n{\n\"packageName\": \"petstore_api\",\n\"library\": \"asyncio\"\n}\nGenerated code differs meaningfully when library=asyncio is set — calling code must await\nA\n\n--- Chunk 2: swagger_v2_reference.pdf, page 3 (score: 0.440) ---\npython generator config options\npackageName, type string — python pa"
+        },
+        {
+          "step": 5,
+          "thought": "Reached maximum steps — synthesizing answer from gathered context.",
+          "tool": "finish",
+          "args": {
+            "answer": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 1 Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- Yes\n1 Swagger Codegen Reference - v2\nContents\nSwagger Codegen CLI — general options\n1\nJava client generator — configuration options\n2\npython generator config options\n3\n.swagger-codegen-ignore\n4\nUsing a JSON config file (-c)\n5\nSwagger Codegen CLI — general options\nSwagger Codegen 2.x is distributed under the Maven group id io.swagger."
+          },
+          "observation": "- Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- 1 Swagger Codegen Reference - v3\nContents\nSwagger Codegen CLI — general options (v3)\n1\nJava client generator — configuration options (v3)\n3\nPython generator — config options\n4\nThe.swagger-codegen-ignore file (v3)\n5\nConfig file usage (v3)\n6\nSwagger Codegen CLI — general options (v3)\nSwagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x\nspecs (2.x does not).\n- Yes\n1 Sw"
+        }
+      ],
+      "metrics": {
+        "latency_ms": 38965.0,
+        "api_calls": 4,
+        "tools_used": [
+          "get_version_info",
+          "search_docs"
+        ],
+        "steps_taken": 5,
+        "stopped_by": "max_steps",
+        "est_tokens": 3615,
+        "est_cost_usd": 0.000754,
+        "deprecation_holds": 0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H10",
+      "category": "Python Generator Migration",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    }
+  ],
+  "workflow_results": [
+    {
+      "answer": "- POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees array, so an issue could only be assigned to one user at creation time — assigning multiple users required a separate follow-up call.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- Previous version (2022-11-28) The prior version of this endpoint accepted only text, mode, and context, where context was a plain string (e.g.\n- Render a Markdown document Applies to API version 2025-06-01 and later.",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 23.6
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=2025-06-01 (0 chunks).",
+          "latency_ms": 14.7
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'context' changed at api_version=2025-06-01 (5 chunks).",
+          "latency_ms": 9.0
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 284.1
+        }
+      ],
+      "metrics": {
+        "latency_ms": 331.5,
+        "retrieve_latency_ms": 47.3,
+        "generate_latency_ms": 284.1,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 8,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 2938,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.8,
+      "passed": true,
+      "question_id": "H01",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "agent",
+      "question_winner_reason": "relevance score"
+    },
+    {
+      "answer": "- Compared to v2 Swagger Codegen 2.x’s.swagger-codegen-ignore file supported only plain glob-style exclude patterns, matching.gitignore syntax exactly.\n- .swagger-codegen-ignore Swagger Codegen 2.x supports a.swagger-codegen-ignore file, similar in syntax to.gitignore, placed in the output directory before generation.\n- Swagger Codegen Reference - v2 Contents Swagger Codegen CLI — general options 1 Java client generator — configuration options 2 python generator config options 3 .swagger-codegen-ignore 4 Using a JSON config file (-c) 5 Swagger Codegen CLI — general options Swagger Codegen 2.x is distributed under the Maven group id io.swagger.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config options 4 The.swagger-codegen-ignore file (v3) 5 Config file usage (v3) 6 Swagger Codegen CLI — general options (v3) Swagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x specs (2.x does not).",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 18.9
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=3.x (0 chunks).",
+          "latency_ms": 10.9
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=3.x (5 chunks).",
+          "latency_ms": 10.2
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 289.0
+        }
+      ],
+      "metrics": {
+        "latency_ms": 329.0,
+        "retrieve_latency_ms": 40.0,
+        "generate_latency_ms": 289.0,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 10,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3580,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H02",
+      "category": "Ignore File Migration",
+      "depends_on_step2": false,
+      "question_winner": "agent",
+      "question_winner_reason": "pass/fail"
+    },
+    {
+      "answer": "- There was also no additionalProperties nesting; every option had to be specified as a flat top-level key, exactly as shown in the v2 example above, which became unwieldy once a generator needed many language-specific overrides in a single config file.\n- v3 additionally allows a.yaml config file (auto-detected by extension) as an alternative to JSON, and supports a top-level additionalProperties key that nests language-specific values instead of listing them flat.\n- Java client generator — configuration options Config options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso n.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config options 4 The.swagger-codegen-ignore file (v3) 5 Config file usage (v3) 6 Swagger Codegen CLI — general options (v3) Swagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x specs (2.x does not).",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 33.1
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=3.x (0 chunks).",
+          "latency_ms": 13.8
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=3.x (5 chunks).",
+          "latency_ms": 9.0
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 276.1
+        }
+      ],
+      "metrics": {
+        "latency_ms": 332.2,
+        "retrieve_latency_ms": 55.9,
+        "generate_latency_ms": 276.1,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 10,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3526,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H03",
+      "category": "Config File Migration",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the prior version — it was true by default with no way to override it until a follow-up PATCH request.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- Previous version (2022-11-28) The prior version only had the boolean private field — there was no visibility enum, and organizations offering “internal” visibility had no way to request it through this endpoint.",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 23.4
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=2025-06-01 (0 chunks).",
+          "latency_ms": 13.6
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'maintainer_can_modify' changed at api_version=2025-06-01 (5 chunks).",
+          "latency_ms": 9.3
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 273.2
+        }
+      ],
+      "metrics": {
+        "latency_ms": 319.6,
+        "retrieve_latency_ms": 46.3,
+        "generate_latency_ms": 273.2,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 7,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3104,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H04",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "Based on the provided documents, migrating a Java generator configuration from Swagger Codegen 2.x to 3.x to support `oneOf` schemas and the `webclient` library involves the following changes and considerations:\n\n### 1. New Configuration Keys for v3 Features\n* **`useOneOfInterfaces`**: This is a new boolean option in v3 (default: `false`). To generate a Java interface for each OpenAPI `oneOf` schema, you must explicitly set this to `true`. This option did not exist in v2 because OpenAPI 2.0 specs (targeted by v2) do not have a `oneOf` construct.\n* **`library`**: While the key name remains `library`, the available values have expanded. In v2, the `webclient` option was not available. In v3, `webclient` is a valid choice for the `library` enum. You should set `library: webclient` in your configuration.\n\n### 2. Configuration File Format Changes\n* **File Format**: v3 supports both JSON and YAML configuration files (auto-detected by extension). v2 only accepted JSON. If you are using a `.yaml` file, it will work in v3 but would have failed in v2.\n* **`additionalProperties` Nesting**: v3 introduces a top-level `additionalProperties` key that allows nesting language-specific options.\n * In v2, all options (like `library` and `modelPackage`) had to be flat top-level keys.\n * In v3, you can nest generator-specific options under `additionalProperties`. If this key is present, flat top-level keys of the same name are ignored in favor of the nested value.\n * *Example structure for v3:*\n ```yaml\n modelPackage: com.example.model\n additionalProperties:\n library: webclient\n useOneOfInterfaces: true\n ```\n\n### 3. Unchanged Keys\nThe following keys remain unchanged in name and function between v2 and v3:\n* `modelPackage`\n* `apiPackage`\n* `invokerPackage`\n* `groupId` / `artifactId` / `artifactVersion` (for Maven-target languages)\n* `sortParamsByRequiredFlag`\n* `ensureUniqueParams`\n* `allowUnicodeIdentifiers`\n\n### 4. Important Migration Notes\n* **CLI Version**: Ensure you are using the v3 CLI jar (`io.swagger.codegen.v3` group ID). The v2 CLI does not support OpenAPI 3.0.x specs or the new options.\n* **Config Help**: Do not assume the `config-help` output from v2 is interchangeable with v3. Run `config-help -l java` against your v3 CLI jar to get the authoritative list of options for your specific version.\n* **Spec Version**: Ensure your OpenAPI specification is version 3.0.x, as v3 Codegen supports OpenAPI 3.0.x specs, while v2 does not.\n\n### Summary of Config Key Changes\n| Key | v2 Status | v3 Status | Action Required |\n|:--- |:--- |:--- |:--- |\n| `useOneOfInterfaces` | Not available | New (boolean) | Add and set to `true` if using `oneOf`. |\n| `library` | Limited options | Expanded options | Set to `webclient` (newly available). |\n| `additionalProperties` | Not available | New (object) | Optional: Use to nest `library` and `useOneOfInterfaces`. |\n| `modelPackage`, etc. | Flat top-level | Flat or Nested | No change needed, but can be nested under `additionalProperties` if used. |",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 23.9
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=3.x (0 chunks).",
+          "latency_ms": 13.6
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'oneOf' changed at api_version=3.x (1 chunks).",
+          "latency_ms": 7.0
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "qwen/qwen3.8-27b",
+          "detail": "Generated the final answer using qwen/qwen3.8-27b.",
+          "latency_ms": 17365.3
+        }
+      ],
+      "metrics": {
+        "latency_ms": 17409.9,
+        "retrieve_latency_ms": 44.5,
+        "generate_latency_ms": 17365.3,
+        "api_calls": 1,
+        "tool_calls": 3,
+        "chunks_retrieved": 6,
+        "chunks_used": 5,
+        "model": "qwen/qwen3.8-27b",
+        "est_tokens": 3067,
+        "est_cost_usd": 0.000912
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H05",
+      "category": "Java Generator Migration",
+      "depends_on_step2": false,
+      "question_winner": "workflow",
+      "question_winner_reason": "pass/fail"
+    },
+    {
+      "answer": "- POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees array, so an issue could only be assigned to one user at creation time — assigning multiple users required a separate follow-up call.\n- Create a release API version 2025-06-01 Summary Publishes a new release against an existing or new tag.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.\n- Previous version (2022-11-28) The prior version had no discussion_category_name field, so linking a discussion to a release required a separate manual step in the UI after the release was published.",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 22.6
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=2025-06-01 (0 chunks).",
+          "latency_ms": 15.0
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'make_latest' changed at api_version=2025-06-01 (5 chunks).",
+          "latency_ms": 8.5
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 299.2
+        }
+      ],
+      "metrics": {
+        "latency_ms": 345.4,
+        "retrieve_latency_ms": 46.1,
+        "generate_latency_ms": 299.2,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 6,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 2978,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.5,
+      "passed": false,
+      "question_id": "H06",
+      "category": "GitHub REST API Migration",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Java client generator — configuration options (v3) Overview The java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful of new ones related to OpenAPI 3 features (e.g.\n- Compared to v2 Swagger Codegen 2.x’s java generator documented these same options — sortParamsByReq uiredFlag, ensureUniqueParams, allowUnicodeIdentifiers, library, modelPackage — as a plain bulleted list rather than a table, and defaults for each were written inline in prose, e.g.\n- Java client generator — configuration options Config options for the java client generator in Swagger Codegen 2.x, settable via -c config.jso n.\n- Swagger Codegen Reference - v3 Contents Swagger Codegen CLI — general options (v3) 1 Java client generator — configuration options (v3) 3 Python generator — config options 4 The.swagger-codegen-ignore file (v3) 5 Config file usage (v3) 6 Swagger Codegen CLI — general options (v3) Swagger Codegen 3.x uses Maven group id io.swagger.codegen.v3 and supports OpenAPI 3.0.x specs (2.x does not).",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 20.5
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=3.x (0 chunks).",
+          "latency_ms": 19.8
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=3.x (5 chunks).",
+          "latency_ms": 9.7
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 260.8
+        }
+      ],
+      "metrics": {
+        "latency_ms": 310.9,
+        "retrieve_latency_ms": 50.0,
+        "generate_latency_ms": 260.8,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 8,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3159,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H07",
+      "category": "Documentation Format Comparison",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- Since 2025-06-01, the API supports specifying maintainer_can_modify at creation time (previously this required a follow-up PATCH call), and draft pull requests can be created directly as ready-for-review by omitting the field entirely — its default has not changed but its interaction with auto-merge settings has.\n- POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees array, so an issue could only be assigned to one user at creation time — assigning multiple users required a separate follow-up call.\n- The interaction between d raft and auto-merge settings also behaved differently: a draft PR could not have auto-merge enabled until explicitly marked ready for review, whereas this version allows auto-merge to be pre-armed on a draft.\n- Create an issue POST /repos/{owner}/{repo}/issues API version 2025-06-01 Creates an issue on the specified repository.",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 25.8
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=2025-06-01 (0 chunks).",
+          "latency_ms": 17.7
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=2025-06-01 (5 chunks).",
+          "latency_ms": 12.3
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 319.9
+        }
+      ],
+      "metrics": {
+        "latency_ms": 375.8,
+        "retrieve_latency_ms": 55.8,
+        "generate_latency_ms": 319.9,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 9,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3517,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 1.0,
+      "passed": true,
+      "question_id": "H08",
+      "category": "GitHub REST API Feature Interaction",
+      "depends_on_step2": true,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    },
+    {
+      "answer": "- POST \\ -H \"X-GitHub-Api-Version: 2025-06-01\" \\ https://api.github.com/repos/octocat/Hello-World/issues \\ -d '{\"title\":\"Found a bug\",\"assignees\":[\"octocat\"],\"type\":\"Bug\"}' Previous version (2022-11-28) The prior version of this endpoint only accepted a single assignee (string) rather than an as signees array, so an issue could only be assigned to one user at creation time — assigning multiple users required a separate follow-up call.\n- Render a Markdown document Applies to API version 2025-06-01 and later.\n- Previous version (2022-11-28) maintainer_can_modify could not be set at creation time in the prior version — it was true by default with no way to override it until a follow-up PATCH request.\n- Previous version (2022-11-28) The prior version had no discussion_category_name field, so linking a discussion to a release required a separate manual step in the UI after the release was published.",
+      "refused": false,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 20.3
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=2025-06-01 (0 chunks).",
+          "latency_ms": 16.4
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=2025-06-01 (5 chunks).",
+          "latency_ms": 12.8
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 272.6
+        }
+      ],
+      "metrics": {
+        "latency_ms": 322.3,
+        "retrieve_latency_ms": 49.5,
+        "generate_latency_ms": 272.6,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 10,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3717,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.6666666666666666,
+      "passed": true,
+      "question_id": "H09",
+      "category": "GitHub REST API Feature Comparison",
+      "depends_on_step2": false,
+      "question_winner": "agent",
+      "question_winner_reason": "relevance score"
+    },
+    {
+      "answer": "I could not find the answer in the provided documents.",
+      "refused": true,
+      "steps": [
+        {
+          "step": 1,
+          "name": "find docs page",
+          "tool": "search_docs",
+          "detail": "Retrieved 5 chunks for the question.",
+          "latency_ms": 24.2
+        },
+        {
+          "step": 2,
+          "name": "read version-scoped spec",
+          "tool": "get_version_info",
+          "detail": "Read docs scoped to api_version=3.x (0 chunks).",
+          "latency_ms": 13.4
+        },
+        {
+          "step": 3,
+          "name": "check changelog / deprecation",
+          "tool": "check_deprecation",
+          "detail": "Checked whether 'the referenced endpoint or parameter' changed at api_version=3.x (5 chunks).",
+          "latency_ms": 9.3
+        },
+        {
+          "step": 4,
+          "name": "generate",
+          "tool": "extractive-v2 (fallback)",
+          "detail": "Generated the final answer using extractive-v2 (fallback).",
+          "latency_ms": 291.5
+        }
+      ],
+      "metrics": {
+        "latency_ms": 338.5,
+        "retrieve_latency_ms": 46.9,
+        "generate_latency_ms": 291.5,
+        "api_calls": 0,
+        "tool_calls": 3,
+        "chunks_retrieved": 10,
+        "chunks_used": 9,
+        "model": "extractive-v2 (fallback)",
+        "est_tokens": 3274,
+        "est_cost_usd": 0.0
+      },
+      "relevance_score": 0.0,
+      "passed": false,
+      "question_id": "H10",
+      "category": "Python Generator Migration",
+      "depends_on_step2": false,
+      "question_winner": "tie",
+      "question_winner_reason": "identical pass/fail and relevance score"
+    }
+  ],
+  "recommendation": "Decision rule: does the correct path vary by input? Only 4/10 questions (H01, H04, H06, H08) have step 3 depend on what step 2 finds (a named parameter changed for a target api_version, so check_deprecation must resolve the replacement) — the agent actually took that branch on 0/4 of them, the workflow never branches (it always runs all 3 tools). Even so, that variation is one describable rule, not open-ended planning: pass rate is 60% (agent) vs 60% (workflow), the workflow is 15.3x faster (2042ms vs 31331ms), and tokens/cost are 30449 tok/$0.0064 (agent) vs 32860 tok/$0.0009 (workflow) - workflow is cheaper here, but that ordering isn't the point: the branch itself is one describable rule, so it belongs hard-coded as a conditional in the fixed workflow rather than run through a full autonomous loop either way. Verdict: none of these 10 questions needs a genuine autonomous loop."
+}

@@ -1,0 +1,19 @@
+Prediction written 2026-09-04T07:26:37Z, before judge_v2 was written or run,
+based on judge_v1's real 7 disagreements (eval_015, eval_016, eval_018,
+eval_019, eval_021, eval_022, eval_026; agreement_before = 18/25 = 72.0%):
+
+Teaching the judge, from eval_019 (a false negative: v1 rejected a
+correct refusal because "I could not find the answer..." shares almost no
+vocabulary with the question) and eval_022 (a false positive: v1 accepted
+an answer that states an unrelated pagination limit instead of the
+undocumented payload-size detail actually asked about), to (a) trust the
+exact refusal sentence as correct without requiring topical term overlap,
+and (b) reject an answer that doesn't actually address the specific
+thing asked about even when it shares surface vocabulary, will fix
+eval_019 and, by the same refusal-recognition rule, eval_021 (the same
+pattern), plus eval_022 - raising agreement above the 72.0% baseline.
+eval_015, eval_016, eval_018, and eval_026 involve different mechanisms
+(a citation-less but genuinely correct answer scored as unhelpful, and a
+raw-token overlap check that treats "max_retries" and "retries" as
+unrelated words) that these two examples don't teach the judge to fix, so
+I expect those four to remain disagreements after this iteration.

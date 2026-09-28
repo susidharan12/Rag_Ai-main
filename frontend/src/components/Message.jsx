@@ -1,20 +1,29 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { Bot, ChevronDown, FileText, Sparkles, User } from 'lucide-react'
 
-function renderWithCitations(text) {
-  const parts = text.split(/(\[(?:nimbus-sdk-[^:\]]+|complete-guide[^:\]]+):p\d+:c\d+\])/g)
-  return parts.map((p, i) =>
-    /^\[.+:p\d+:c\d+\]$/.test(p) ? (
-      <span key={i} className="cite">{p.slice(1, -1)}</span>
-    ) : (
-      p
-    )
-  )
+// Matches any "[doc-slug:pN:cN]" citation tag regardless of which corpus the
+// doc-slug came from. Attribution is already shown separately in the
+// Sources row below the answer, so these raw bracket tags are stripped
+// from the rendered text instead of being kept inline.
+const CITATION_RE = /\s?\[[^\[\]]+:p\d+:c\d+\]/g
+
+function stripCitations(text) {
+  return text.replace(CITATION_RE, '')
 }
 
 function timeOf() {
   return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
+const MD_COMPONENTS = {
+  table: ({ node, ...props }) => (
+    <div className="table-wrap">
+      <table {...props} />
+    </div>
+  ),
 }
 
 export default function Message({ msg }) {
@@ -51,8 +60,14 @@ export default function Message({ msg }) {
       </div>
 
       <div className="body">
-        <div className={`bubble ${!isUser && msg.refused ? 'refused' : ''}`}>
-          {isUser ? msg.text : renderWithCitations(shown)}
+        <div className={`bubble ${!isUser ? 'md' : ''} ${!isUser && msg.refused ? 'refused' : ''}`}>
+          {isUser ? (
+            msg.text
+          ) : (
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+              {stripCitations(shown)}
+            </ReactMarkdown>
+          )}
           {!isUser && !done && (
             <span className="typing">
               <span className="typing-dot" />

@@ -15,10 +15,84 @@ Both return {"answer": str, "model": str, "prompt_version": str,
 """
 
 import re
+import time
 
 import requests
 
 from rag_core import settings
+
+_GROQ_MAX_RETRIES = 2
+
+
+_MAX_WORTHWHILE_RETRY_WAIT_S = 15
+
+
+def _post_groq_with_retry(payload):
+    """POST one chat completion to Groq, retrying on HTTP 429 (rate limit).
+
+    Groq's free tier caps tokens-per-minute quite low (observed: 8000 TPM,
+    shared across every model on the key, not per-model) — several LLM
+    calls in quick succession (the agent's per-step calls, or a full
+    10-question race) can burn through that budget mid-run. Without a
+    retry, a 429 silently degraded a call to the deterministic extractive
+    fallback (observed directly: a full 10-question race where every
+    workflow answer quietly fell back to "extractive-v2 (fallback)" with
+    real Groq calls confirmed working when tested standalone) — invisible
+    in the UI as anything other than a misleadingly low "quality" number.
+    Backoffs are kept short (3s/8s) rather than long: this is called from
+    the interactive Agent Playground, where a rare rate-limit hit should
+    degrade to the extractive fallback in a few seconds, not hang for a
+    minute — the token-per-minute window observed resetting in well under
+    60s in practice anyway.
+
+    A 429 can also mean a much longer-lived cap than the per-minute one —
+    Groq's tokens-PER-DAY limit (undocumented in this project until hit
+    directly: `{"code":"rate_limit_exceeded", ...on tokens per day (TPD)...
+    "Please try again in 1m50s"}`), which a short retry window cannot ever
+    close. Retrying anyway wastes real wall-clock time on attempts that are
+    guaranteed to 429 again — measured directly: 2 blind retries at the old
+    15s-capped backoff added ~30s to a single call before finally falling
+    back to the deterministic planner, which was available immediately.
+    So: only retry when the server's own reported wait (Retry-After, or our
+    short default backoff when it sends none) is itself short enough to be
+    worth closing here; otherwise fail fast on the first 429 and let the
+    caller's fallback path (deterministic planner / extractive generator)
+    run right away instead of sitting through a wait it can't shorten.
+    """
+    backoffs = [3, 8]
+    last_exc = None
+    for attempt in range(_GROQ_MAX_RETRIES + 1):
+        try:
+            response = requests.post(
+                settings.GROQ_URL,
+                headers={"Authorization": f"Bearer {settings.GROQ_API_KEY}",
+                         "Content-Type": "application/json"},
+                json=payload,
+                timeout=settings.GROQ_TIMEOUT,
+            )
+            if response.status_code == 429:
+                wait_s = float(response.headers.get(
+                    "retry-after", backoffs[min(attempt, len(backoffs) - 1)]))
+                worth_retrying = (
+                    attempt < _GROQ_MAX_RETRIES
+                    and wait_s <= _MAX_WORTHWHILE_RETRY_WAIT_S
+                )
+                if worth_retrying:
+                    time.sleep(wait_s)
+                    continue
+                # Not worth retrying (or out of retries) - fall through to
+                # raise_for_status() below, which raises for this 429.
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]
+        except requests.exceptions.RequestException as e:
+            last_exc = e
+            if getattr(e.response, "status_code", None) == 429:
+                raise  # already decided above whether this 429 was worth retrying
+            if attempt < _GROQ_MAX_RETRIES:
+                time.sleep(backoffs[attempt])
+                continue
+            raise
+    raise last_exc
 
 _STOPWORDS = {
     "the", "a", "an", "is", "are", "was", "were", "of", "in", "on", "for",
@@ -38,8 +112,319 @@ def _terms(text):
 
 
 def _sentences(text):
-    parts = re.split(r"(?<=[.!?])\s+|\n+", text)
+    # PDF extraction hard-wraps every visual line with "\n", even mid-sentence
+    # ("...now the recommended\nstarting point..."). Splitting on bare "\n"
+    # (as this used to) chops such wraps into truncated fragments that read as
+    # broken answers ("...now the recommended [citation]" with no
+    # continuation). Collapse every newline into a space first so only real
+    # sentence-ending punctuation ends a sentence.
+    collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", text)
+    # "e.g." / "i.e." / "etc." read as a sentence end to the naive
+    # punctuation split below, truncating answers mid-parenthetical (e.g.
+    # "...a plain string (e.g." with the actual example silently dropped) -
+    # exclude those specific abbreviations from counting as a boundary.
+    parts = re.split(
+        r"(?<!\be\.g)(?<!\bi\.e)(?<!\betc)(?<=[.!?])\s+", collapsed)
     return [s.strip() for s in parts if s.strip()]
+
+
+_BROAD_INTENT_RE = re.compile(
+    r"\b(tell me about|summarize|summary of|overview of|give (?:me )?(?:an|a) overview|"
+    r"describe (?:the|this)|what(?:'s| is) this (?:document|resume|cv|file|page|pdf) about|"
+    r"who is (?:the|this)|about (?:the|this) (?:candidate|document|resume|cv|person))\b",
+    re.IGNORECASE,
+)
+
+
+def _dominant_source_doc(results, min_fraction=0.6):
+    """If most of the retrieved chunks come from a single source document,
+    return that document's name; otherwise None."""
+    if not results:
+        return None
+    counts = {}
+    for r in results:
+        counts[r["source_doc"]] = counts.get(r["source_doc"], 0) + 1
+    doc, count = max(counts.items(), key=lambda kv: kv[1])
+    return doc if count / len(results) >= min_fraction else None
+
+
+_LABEL_LINE_RE = re.compile(
+    # [ \t]*, not \s*, around the colon: \s also matches newlines, which
+    # would silently swallow the description's own first line into this
+    # match before the capture group even starts.
+    r"(?im)^[^A-Za-z0-9\n]*(?:project name|title|company|position|role|name)[ \t]*:[ \t]*(.+)$"
+)
+_SECTION_HEADING_RE = re.compile(
+    r"(?im)^[^A-Za-z0-9\n]*(?:description|summary|overview)[ \t]*:[ \t]*(.*)$"
+)
+_BARE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z /]{1,30}:?$")
+
+
+def _chunk_label(text):
+    """A short heading for one chunk, e.g. the value of a 'Project Name:'
+    line, used both to describe what the chunk is about and to dedupe
+    chunks that belong to the same section (a resume's project often
+    spans 2+ chunks - description in one, responsibilities in the next)."""
+    m = _LABEL_LINE_RE.search(text)
+    return m.group(1).strip(" \t.-") if m else None
+
+
+def _chunk_gist(text, max_chars=220, max_sentences=1):
+    """A short, representative narrative snippet from one chunk.
+
+    PDF-extracted text (resumes especially) line-wraps mid-sentence and
+    interleaves 'Label: value' metadata lines with real prose, so naively
+    grabbing the first few _sentences() results (which splits on every
+    newline) mostly returns metadata fragments like 'Project Name: X'
+    and 'Team Size: 12' instead of ever reaching the actual description.
+    Prefer the text after a Description/Summary/Overview label (the real
+    prose) when present; either way, collapse single newlines (usually
+    just PDF line-wraps, not paragraph breaks) into spaces before
+    sentence-splitting, and skip bare 'Label:' fragments.
+
+    max_sentences > 1 returns a fuller multi-sentence blurb (used for a
+    document's own summary/identity section) instead of the single
+    representative line used for a project/table-row entry.
+    """
+    m = _SECTION_HEADING_RE.search(text)
+    body = text[m.end():] if m else text
+    collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", body).strip()
+    collapsed = re.sub(r"\s{2,}", " ", collapsed)
+    picked = []
+    for s in _sentences(collapsed):
+        s = re.sub(r"^[^A-Za-z0-9]+", "", s).strip()
+        if len(s) > 20 and not _BARE_LABEL_RE.match(s):
+            picked.append(s)
+            if len(picked) >= max_sentences:
+                break
+    if not picked:
+        return ""
+    gist = " ".join(picked)
+    return gist if len(gist) <= max_chars else gist[:max_chars].rsplit(" ", 1)[0] + "…"
+
+
+_TECH_LINE_RE = re.compile(r"(?im)^[ \t]*technologies[ \t]*:[ \t]*(.+)$")
+
+
+def _chunk_tech(text):
+    """The value of a 'Technologies:' line in one chunk, if present -
+    turns a project entry into a richer table row instead of just a
+    name+description pair. Returns None (not a table column) for
+    documents that don't carry this field."""
+    m = _TECH_LINE_RE.search(text)
+    return m.group(1).strip(" \t.,-") if m else None
+
+
+_NAME_LINE_RE = re.compile(r"^[A-Z][a-zA-Z.'-]+(?:\s+[A-Z][a-zA-Z.'-]*){0,3}$")
+# Job-title words that would otherwise false-positive-match _NAME_LINE_RE
+# (e.g. a running page header like "Senior CMS Developer") as a person's
+# name, since both are just a few capitalized words with no punctuation.
+_TITLE_WORDS = {
+    "developer", "engineer", "manager", "director", "specialist",
+    "consultant", "analyst", "designer", "architect", "lead", "senior",
+    "junior", "administrator", "coordinator", "officer", "executive",
+    "president", "founder", "intern", "associate", "head", "chief",
+}
+
+
+def _document_opening_chunks(store, doc_id, limit=2):
+    """The document's own first `limit` chunks, in true page/chunk order -
+    regardless of whether they were retrieved for this query. A resume's
+    name/title/summary lives on its opening page, but a short identity
+    block doesn't necessarily win a similarity search against longer
+    project-description prose, so it can be genuinely absent from the
+    retrieved set even when it's exactly what a "tell me about X"
+    question wants. Returns [] if store is unavailable - callers must
+    keep working (just without this enrichment) when it is."""
+    if not store or not doc_id:
+        return []
+    try:
+        store.ensure_loaded()
+        chunks, metadata = store._state["chunks"], store._state["metadata"]
+    except Exception:
+        return []
+    matches = sorted(
+        (
+            (meta.get("page_number", 0), meta.get("chunk_index", 0), text, meta)
+            for text, meta in zip(chunks, metadata)
+            if meta.get("doc_id") == doc_id
+        ),
+        key=lambda m: (m[0], m[1]),
+    )
+    return [
+        {"chunk_id": meta["chunk_id"], "source_doc": meta.get("source_file", ""),
+         "text": text, "score": 1.0, "rank": 0}
+        for _page, _idx, text, meta in matches[:limit]
+    ]
+
+
+def _guess_name(text):
+    """A short, title-case, label-free, digit-free line near the top of a
+    document's opening chunk - works well for a resume's name line
+    ("Susidharan A"), harmlessly finds nothing for most other documents."""
+    for line in text.splitlines():
+        line = line.strip(" \t|")
+        if not line or ":" in line or any(ch.isdigit() for ch in line) or "@" in line:
+            continue
+        if not (2 <= len(line) <= 40 and _NAME_LINE_RE.match(line)):
+            continue
+        if any(w in _TITLE_WORDS for w in line.lower().split()):
+            continue
+        return line
+    return None
+
+
+def _guess_title(text):
+    """A short professional-title line near the top of a document's
+    opening chunk (e.g. a resume's running "Senior CMS Developer"
+    header) - the counterpart line _guess_name() deliberately skips."""
+    for line in text.splitlines():
+        line = line.strip(" \t|")
+        if not line or ":" in line or any(ch.isdigit() for ch in line) or "@" in line:
+            continue
+        if not (2 <= len(line) <= 40 and _NAME_LINE_RE.match(line)):
+            continue
+        if any(w in _TITLE_WORDS for w in line.lower().split()):
+            return line
+    return None
+
+
+def _broad_overview_answer(question, results, store=None):
+    """A generic 'tell me about X' / 'summarize this' question shares almost
+    no literal vocabulary with detailed source text (a resume never
+    literally says "this is about the candidate") even when the retrieval
+    is genuinely on-topic - so the lexical-overlap gate that protects
+    against real out-of-corpus questions (M3) would otherwise refuse a
+    perfectly answerable broad question. Not domain-specific: this fires
+    for any uploaded document, not just the SDK/sports corpora.
+
+    Instead of trusting the near-zero overlap score here, use a different
+    signal: if most of the retrieved chunks come from the SAME document
+    (and there's at least a little real semantic signal, not pure noise),
+    that document is almost certainly what's being asked about.
+
+    A document's own opening chunk(s) - name, title, summary - are fetched
+    directly from the store (bypassing retrieval ranking entirely) and
+    always led with, because a "tell me about X" answer should say who/
+    what X is before its first project, even when that identity block
+    didn't score highly enough to be retrieved for this specific query.
+    The rest of the answer synthesizes across every distinct section of
+    the document present in the retrieved chunks (deduped by
+    _chunk_label, since one section/project commonly spans multiple
+    chunks), not just the single top chunk.
+    """
+    if not _BROAD_INTENT_RE.search(question.lower()):
+        return None
+    dominant_doc = _dominant_source_doc(results)
+    if not dominant_doc:
+        return None
+    doc_chunks = sorted(
+        (r for r in results if r["source_doc"] == dominant_doc),
+        key=lambda r: r["rank"],
+    )
+    if not doc_chunks or doc_chunks[0]["score"] < 0.12:
+        return None
+
+    doc_id = doc_chunks[0].get("doc_id")
+    opening = _document_opening_chunks(store, doc_id)
+    opening_ids = {o["chunk_id"] for o in opening}
+    ordered = opening + [r for r in doc_chunks if r["chunk_id"] not in opening_ids]
+
+    name, title, name_chunk_id = None, None, None
+    for o in opening:
+        name = _guess_name(o["text"])
+        if name:
+            title = _guess_title(o["text"])
+            name_chunk_id = o["chunk_id"]
+            break
+
+    used = []
+    if name:
+        used.append(next(o for o in opening if o["chunk_id"] == name_chunk_id))
+
+    # Every distinct labeled section (a resume's projects, a report's named
+    # subsystems, ...) becomes one table/bullet entry; unlabeled prose (a
+    # summary/overview paragraph) becomes part of the lead-in instead, so the
+    # answer reads as "who/what this is" followed by a scannable breakdown -
+    # not one long run-on sentence mixing both.
+    intro_sentences, entries, seen = [], [], set()
+    for r in ordered:
+        if r["chunk_id"] == name_chunk_id:
+            continue
+        label = _chunk_label(r["text"])
+        dedupe_key = (label or r["text"][:30]).strip().lower()
+        if dedupe_key in seen:
+            continue
+        if label:
+            gist = _chunk_gist(r["text"])
+            if not gist:
+                continue
+            seen.add(dedupe_key)
+            entries.append({"label": label, "tech": _chunk_tech(r["text"]),
+                             "gist": gist, "is_project": bool(
+                                 re.search(r"(?i)project\s*name\s*:", r["text"]))})
+            used.append(r)
+        elif not intro_sentences:
+            gist = _chunk_gist(r["text"], max_chars=500, max_sentences=3)
+            if not gist:
+                continue
+            seen.add(dedupe_key)
+            intro_sentences.append(gist)
+            used.append(r)
+        if len(entries) >= 8:
+            break
+
+    if not intro_sentences and not entries:
+        return None
+
+    def cell(s):
+        return (s or "-").replace("|", "/")
+
+    md = []
+    if name:
+        md.append(f"**{name}**" + (f" — {title}" if title else ""))
+    if intro_sentences:
+        md.append(intro_sentences[0])
+    if entries:
+        header = "Projects" if sum(e["is_project"] for e in entries) >= \
+            max(1, len(entries) // 2) else "Details"
+        md.append(f"**{header}:**")
+        if any(e["tech"] for e in entries):
+            rows = ["| Name | Technologies | Description |", "|---|---|---|"]
+            for e in entries:
+                rows.append(f"| {cell(e['label'])} | {cell(e['tech'])} | {cell(e['gist'])} |")
+            md.append("\n".join(rows))
+        else:
+            md.append("\n".join(f"- **{e['label']}:** {e['gist']}" for e in entries))
+
+    return "\n\n".join(md), used
+
+
+_TERMINAL_PUNCT_RE = re.compile(r"[.!?][\"'”’)]*$")
+
+
+def _is_unterminated(cand):
+    """True when a candidate doesn't end in sentence-ending punctuation -
+    i.e. it isn't a real complete sentence, just wherever a chunk boundary
+    happened to land."""
+    return not _TERMINAL_PUNCT_RE.search(cand.strip())
+
+
+_CURL_RE = re.compile(r"\bcurl\b", re.IGNORECASE)
+_CURL_FLAG_RE = re.compile(r"(?:^|\s)-{1,2}[A-Za-z](?:\s|$)")
+
+
+def _looks_like_code(cand):
+    """True for a curl/HTTP-request example block masquerading as a
+    "sentence". A multi-line curl invocation (flags, headers, a JSON body)
+    has no sentence-ending punctuation until its very last line, so
+    _sentences() hands it back as one giant candidate - and because it
+    literally repeats the parameter/endpoint name from the question, it can
+    out-score the actual prose explanation sitting right next to it. An
+    example command block should never itself be "the answer"."""
+    if not _CURL_RE.search(cand):
+        return False
+    return len(_CURL_FLAG_RE.findall(cand)) >= 2
 
 
 def _candidates(text):
@@ -51,6 +436,8 @@ def _candidates(text):
     """
     cands = []
     for sent in _sentences(text):
+        if _looks_like_code(sent):
+            continue
         if "|" in sent:
             for cell in sent.split("|"):
                 cell = cell.strip()
@@ -63,20 +450,18 @@ def _candidates(text):
 
 # ----------------------------------------------------------------- groq ----
 
-PROMPT_TEMPLATE = """You are a developer-documentation assistant.
+PROMPT_TEMPLATE = """You are a knowledgeable and helpful assistant that answers questions about the user's uploaded documents. The documents could be anything - technical documentation, resumes/CVs, reference material, reports - so ground your tone in whatever the context actually is, not in an assumed domain.
 
-Answer the user's question using ONLY the numbered context chunks below.
-
-Rules:
-1. Cite the chunk you used as [chunk_id] right after the claim.
-2. If the context does not contain the answer, reply with exactly one
-   sentence: "{refusal}"
-3. Do not make up parameter names, defaults or code.
-4. Keep the answer short: 4 to 5 lines maximum.
-5. Answer the question directly with only the facts it asks for. Do not add
-   a person's profile, bio, strengths, skills or background, and do not
-   summarize a document, unless the question explicitly asks for that.
-6. Stop writing once the answer to the question is complete.
+Instructions:
+1. Answer the user's question using the context chunks below as your source of truth.
+2. Synthesize information from multiple chunks when needed to give a complete answer.
+3. Provide clear, well-structured explanations — use bullet points, numbered lists, or paragraphs as appropriate.
+4. If the context contains relevant information, use it to give a thorough answer. Do NOT refuse unless the context is completely unrelated to the question.
+5. Broad or exploratory questions ("tell me about X", "summarize this", "give me an overview", "who is this about") are answerable as long as the context is topically relevant, even when the context never uses those exact words — synthesize a helpful overview from what's there instead of requiring literal phrase matches.
+6. Only say "I could not find the answer in the provided documents" if the context has absolutely no relevant information for the question.
+7. Do not fabricate facts, names, parameter values, or details — only use what is explicitly stated in the context.
+8. Use a natural, conversational tone appropriate to the material — informative and precise for technical content, clear and professional for something like a resume.
+9. If the answer requires multiple facts from different chunks, combine them into a cohesive response.
 
 Context chunks:
 {context}
@@ -89,15 +474,19 @@ Answer:"""
 
 def build_context(results):
     blocks = []
-    for r in results:
+    for i, r in enumerate(results, 1):
+        source = r.get('source_doc', 'unknown')
+        page = r.get('page_number', '?')
+        version = r.get('sdk_version', '')
+        version_tag = f" [{version}]" if version else ""
         blocks.append(
-            f"[{r['chunk_id']}] ({r['source_doc']} p{r['page_number']})\n{r['text']}"
+            f"--- Source {i}: {source}, page {page}{version_tag} ---\n{r['text']}"
         )
     return "\n\n".join(blocks)
 
 
-def generate_groq(question, results):
-    params = {"temperature": 0.0, "max_tokens": 300}
+def generate_groq(question, results, store=None):  # noqa: ARG001 - store unused, kept for a uniform GENERATORS call signature
+    params = {"temperature": 0.2, "max_tokens": 1024}
 
     if not results:
         return {"answer": _REFUSAL, "model": settings.GROQ_MODEL,
@@ -107,21 +496,19 @@ def generate_groq(question, results):
     prompt = PROMPT_TEMPLATE.format(
         refusal=_REFUSAL, context=build_context(results), question=question
     )
+    payload = {
+        "model": settings.GROQ_MODEL,
+        "messages": [
+            {"role": "system", "content": "You are a helpful, accurate, and thorough assistant for the user's uploaded documents, whatever their domain. Always provide complete answers based on the provided context, including for broad or exploratory questions like 'tell me about X' or 'summarize this'."},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.2,
+        "max_tokens": 1024,
+        "top_p": 0.9,
+    }
     try:
-        response = requests.post(
-            settings.GROQ_URL,
-            headers={"Authorization": f"Bearer {settings.GROQ_API_KEY}",
-                     "Content-Type": "application/json"},
-            json={
-                "model": settings.GROQ_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 300,
-            },
-            timeout=settings.GROQ_TIMEOUT,
-        )
-        response.raise_for_status()
-        answer = response.json()["choices"][0]["message"]["content"].strip()
+        message = _post_groq_with_retry(payload)
+        answer = (message.get("content") or "").strip() or (message.get("reasoning") or "").strip()
     except requests.exceptions.RequestException as e:
         return {"answer": f"Generator error: {e}", "model": settings.GROQ_MODEL,
                 "prompt_version": settings.PROMPT_VERSION,
@@ -136,22 +523,24 @@ def generate_groq(question, results):
 
 
 def _clean_answer(answer):
-    """Remove citation markers from the answer text and tidy trailing noise."""
+    """Clean up the answer text — remove citation artifacts and tidy formatting."""
     answer = answer.strip()
-    # drop citation tags like 【chunk:pN:cN】 or [chunk:pN:cN], including a
-    # truncated trailing citation (opened but cut off by max_tokens).
+    # Remove citation tags like [chunk:pN:cN] or 【chunk:pN:cN】 if present
     cite = r"[A-Za-z0-9_\-]+(?::p\d+)?(?::c\d+)?"
     answer = re.sub(r"[【\[]\s*" + cite + r"\s*[】\]]?", "", answer)
-    # collapse leftover double spaces / dangling separators
+    # Collapse double spaces
     answer = re.sub(r"[ \t]+", " ", answer)
+    # Remove trailing dangling separators
     answer = re.sub(r"[ \t]+([,.;:])", r"\1", answer)
+    # Strip raw chunk ids appended by extractive fallback
+    answer = re.sub(r"\s+\[[A-Za-z0-9_\-:p.c]+\]\s*$", "", answer)
     return answer.rstrip().rstrip("。.,;:")
 
 
 # ------------------------------------------------------------ extractive ----
 
 
-def generate_extractive(question, results):
+def generate_extractive(question, results, store=None):
     """Deterministic, question-aware extractive reader.
 
     Unlike v1 (which returned the first 2 term-overlapping sentences, dragging
@@ -170,12 +559,34 @@ def generate_extractive(question, results):
     asks_number = bool(re.search(r"\b(how many|what is the (default|maximum|"
                                  r"minimum)|what's the|how much|what value|"
                                  r"how big|limit|size|timeout|pool|how often|"
-                                 r"how long)\b", question.lower()))
+                                 r"how long|what year|which year|what date)\b",
+                                 question.lower()))
 
     if not results:
         return {"answer": _REFUSAL, "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"reason": "no_results"}, "refused": True}
+
+    max_overlap = max((r.get("lexical_overlap", 0.0) for r in results), default=0.0)
+    max_heading = max((r.get("heading_overlap", 0.0) for r in results), default=0.0)
+
+    if max_overlap < 0.05 and max_heading < 0.05:
+        broad = _broad_overview_answer(question, results, store)
+        if broad:
+            ans, chunks_used = broad
+            return {"answer": ans,
+                    "model": "extractive-v2",
+                    "prompt_version": settings.PROMPT_VERSION,
+                    "params": {"strategy": "broad_overview",
+                               "sections": len(chunks_used),
+                               "cited_chunks": [c["chunk_id"] for c in chunks_used]},
+                    "refused": False}
+        return {"answer": _REFUSAL, "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"reason": "no_question_overlap",
+                           "max_overlap": round(max_overlap, 3),
+                           "max_heading": round(max_heading, 3)},
+                "refused": True}
 
     top_score = max(r["score"] for r in results)
 
@@ -198,11 +609,21 @@ def generate_extractive(question, results):
     focused = _focused_answer(question, results)
     if focused:
         ans, r = focused
-        return {"answer": f"{ans} [{r['chunk_id']}]",
+        return {"answer": ans,
                 "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"strategy": "focused",
-                           "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
+                           "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES,
+                           "cited_chunk": r["chunk_id"]},
+                "refused": False}
+
+    definition = _definition_answer(question, results)
+    if definition:
+        ans, r = definition
+        return {"answer": ans,
+                "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"strategy": "definition"},
                 "refused": False}
 
     # Relevance gate 2: if no structured answer exists, the single highest
@@ -223,12 +644,22 @@ def generate_extractive(question, results):
             shared = q_terms & c_terms
             if not shared:
                 continue
-            # Prefer candidates that carry a value token for numeric questions
-            # and that mention the exact attribute named in the question.
             has_number = bool(re.search(r"\d", cand))
             qi = (len(shared) * 2.0
                   + (2.0 if has_number and asks_number else 0.0)
-                  - 0.01 * len(cand))
+                  - 0.01 * len(cand)
+                  + _candidate_rank(question, cand, r) * 4.0)
+            if _is_unterminated(cand):
+                # A candidate with no closing '.', '!' or '?' almost always
+                # means _sentences() ran off the end of the chunk mid-
+                # sentence (a word-window chunk boundary landed there, not
+                # a real sentence break) - not a genuine complete thought.
+                # A neighboring/overlapping chunk usually carries the same
+                # passage in full; heavily penalize the fragment so it only
+                # wins when literally nothing complete is on-topic, instead
+                # of winning on term-overlap while reading as a sentence cut
+                # off mid-word.
+                qi -= 3.0
             candidates.append((qi, shared, cand, r))
 
     # Relevance gate 2: nothing on-topic in the retrieved context -> refuse (M3).
@@ -250,6 +681,12 @@ def generate_extractive(question, results):
             continue
         picked.append((cand, r))
         used_chunks.add(r["chunk_id"])
+        # A number/year question is fully answered the moment its top-ranked
+        # candidate actually contains a number - stop instead of padding the
+        # answer with lower-relevance sentences from other chunks just to
+        # fill the quota.
+        if asks_number and re.search(r"\d", cand):
+            break
         if len(picked) >= settings.EXTRACTIVE_MAX_SENTENCES:
             break
 
@@ -267,13 +704,19 @@ def generate_extractive(question, results):
 
     parts, cited = [], []
     for cand, r in final:
-        parts.append(f"{cand} [{r['chunk_id']}]")
+        parts.append(cand)
         if r["chunk_id"] not in cited:
             cited.append(r["chunk_id"])
 
-    return {"answer": " ".join(parts), "model": "extractive-v2",
+    # Multiple distinct facts read as a scannable list, not one run-on
+    # paragraph stitching unrelated chunks together; a single fact stays a
+    # plain sentence.
+    answer_text = "\n".join(f"- {p}" for p in parts) if len(parts) > 1 else parts[0]
+
+    return {"answer": answer_text, "model": "extractive-v2",
             "prompt_version": settings.PROMPT_VERSION,
-            "params": {"max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
+            "params": {"max_sentences": settings.EXTRACTIVE_MAX_SENTENCES,
+                       "cited_chunks": cited},
             "refused": False}
 
 
@@ -386,19 +829,25 @@ def _find_parameter(question, results):
         ptype, default, desc = rows[param]
         if default in ("", "-", "None") and not desc:
             continue
+        # State the resolved SDK version explicitly (Week 5 M1/M2, Week 6
+        # Task E's api_version_stated check): a version-specific default is
+        # meaningless - even actively misleading - without saying which
+        # version it's from, and nothing else in this answer names it.
+        version = r.get("sdk_version", "")
+        prefix = f"In SDK {version}, " if version else ""
         if re.search(r"maximum allowed value|max allowed|max value|how big", low):
             # Maximum-value questions want the upper bound, not the default
             # (e.g. limit max is 200, but its default is 50).
             nums = [int(n) for n in re.findall(r"\d+", desc + " " + default)]
             upper = max(nums) if nums else None
             if upper is not None:
-                return f"{param} maximum allowed value is {upper}.", r
+                return f"{prefix}{param} maximum allowed value is {upper}.", r
             val = desc.strip(" ,.;:") if default in ("", "-") else default
-            return f"{param} max value: {val}.", r
+            return f"{prefix}{param} max value: {val}.", r
         if default == "None":
             val = "None (optional, default no filter)" if "filter" in desc else "None"
-            return f"{param} default is {val}.", r
-        return f"{param} default is {default}.", r
+            return f"{prefix}{param} default is {val}.", r
+        return f"{prefix}{param} default is {default}.", r
     return None
 
 
@@ -529,3 +978,77 @@ GENERATORS = {
     "groq": generate_groq,
     "extractive": generate_extractive,
 }
+
+
+def _heading_match_bonus(question, text):
+    q = re.sub(r"[^a-z0-9]+", " ", question.lower()).strip()
+    if not q:
+        return 0.0
+    q_tokens = {t for t in q.split() if len(t) > 2 and t not in _STOPWORDS}
+    if not q_tokens:
+        return 0.0
+    t = re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+    matches = sum(1 for tok in q_tokens if tok in t)
+    return matches / max(len(q_tokens), 1)
+
+
+_COMPARISON_INTENT_RE = re.compile(
+    r"\b(compare|comparison|difference|differ|changed|change|migrate|"
+    r"migration|versus|vs\.?|between)\b", re.IGNORECASE,
+)
+_COMPARISON_CUE_RE = re.compile(
+    r"\b(prior|previous|earlier|before|instead of|compared to|no longer|"
+    r"used to|whereas|rather than|in version|two changes|new(?:ly)?)\b",
+    re.IGNORECASE,
+)
+
+
+def _candidate_rank(question, cand, result):
+    base = 0.0
+    base += _heading_match_bonus(question, result["text"])
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", result["text"].lower()):
+        base += 0.25
+    # A "compare/changed between X and Y" question is best answered by the
+    # single sentence that actually names the before/after contrast - which
+    # is usually the longest, most information-dense candidate and would
+    # otherwise lose to short generic fragments under the per-char length
+    # penalty below. Reward it explicitly instead of shortening the penalty
+    # globally (which would regress the M6 "fact buried in table dump" fix).
+    if _COMPARISON_INTENT_RE.search(question) and _COMPARISON_CUE_RE.search(cand):
+        base += 0.6
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", (result.get("source_doc") or "").lower()):
+        base += 0.1
+    return base
+
+
+def _definition_answer(question, results):
+    """Handle 'what is X' / 'what are X' definitions from matching section text.
+
+    Matches on complete sentences (via _sentences(), which already collapses
+    PDF line-wraps), not raw text lines - a chunk's PDF line breaks land
+    wherever the page happens to wrap, so joining the "next few raw lines"
+    after a match reliably cut answers off mid-word/mid-thought and could
+    start them mid-sentence too, dragging in unrelated trailing prose.
+    """
+    low = question.lower()
+    if not re.search(r"\b(?:what is|what are|define|explain|tell me about)\b", low):
+        return None
+
+    q_norm = re.sub(r"[^a-z0-9]+", " ", low).strip()
+    phrase = q_norm
+    for prefix in ("what is ", "what are ", "define ", "explain "):
+        phrase = phrase.replace(prefix, "")
+    phrase = phrase.strip()
+    if not phrase:
+        return None
+
+    for r in results:
+        text = r.get("text") or ""
+        sentences = _sentences(text)
+        for i, sent in enumerate(sentences):
+            norm = re.sub(r"[^a-z0-9]+", " ", sent.lower()).strip()
+            if phrase in norm:
+                answer = " ".join(sentences[i: min(len(sentences), i + 2)])
+                if answer:
+                    return (answer.strip(), r)
+    return None

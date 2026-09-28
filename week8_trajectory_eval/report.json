@@ -1,0 +1,181 @@
+{
+  "generated_at": "2026-09-21T08:28:52.810918+00:00",
+  "n_queries": 10,
+  "before": {
+    "outcome_pass_rate": 0.7,
+    "trajectory_pass_rate": 0.8,
+    "gap": -0.1,
+    "metrics": {
+      "tool_choice_accuracy": 1.0,
+      "argument_validity_rate": 1.0,
+      "step_efficiency": {
+        "per_query": {
+          "H01": 1.5,
+          "H02": 1.0,
+          "H03": 1.0,
+          "H04": 0.5,
+          "H05": 3.0,
+          "H06": 1.5,
+          "H07": 2.0,
+          "H08": 1.5,
+          "H09": 2.0,
+          "H10": 2.0
+        },
+        "mean": 1.6
+      },
+      "cost_distribution_usd": {
+        "p50": 0.000545,
+        "max": 0.000673
+      },
+      "latency_distribution_ms": {
+        "p50": 1907.8,
+        "max": 29454.4
+      }
+    }
+  },
+  "after": {
+    "outcome_pass_rate": 0.6,
+    "trajectory_pass_rate": 1.0,
+    "gap": -0.4,
+    "metrics": {
+      "tool_choice_accuracy": 1.0,
+      "argument_validity_rate": 1.0,
+      "step_efficiency": {
+        "per_query": {
+          "H01": 1.5,
+          "H02": 2.0,
+          "H03": 2.0,
+          "H04": 1.5,
+          "H05": 3.0,
+          "H06": 1.5,
+          "H07": 2.0,
+          "H08": 1.5,
+          "H09": 2.0,
+          "H10": 2.0
+        },
+        "mean": 1.9
+      },
+      "cost_distribution_usd": {
+        "p50": 0.000569,
+        "max": 0.000655
+      },
+      "latency_distribution_ms": {
+        "p50": 1694.0,
+        "max": 2028.6
+      }
+    }
+  },
+  "false_positive_trace": {
+    "id": "H01",
+    "question": "Compare how the context parameter format changed between GitHub API version 2022-11-28 and 2025-06-01 for rendering Markdown.",
+    "outcome_score": 1.0,
+    "failure_tags": [
+      "missing_required_tool"
+    ],
+    "tool_path": [
+      "compare_versions",
+      "get_version_info",
+      "search_docs"
+    ],
+    "stopped_by": "finished",
+    "answer": "Based on the provided documents, the `context` parameter for the \"Render a Markdown document\" endpoint changed significantly between API version 2022-11-28 and 2025-06-01:\n\n* **API Version 2022-11-28:**\n * **Type:** String\n * **Format:** A plain string representing the repository context.\n * **Example:** `\"octocat/Hello-World\"`\n * **Usage:** Used for creating references in `gfm` mode.\n\n* **API Version 2025-06-01:**\n * **Type:** Object\n * **Format:** A structured object containing `owner` and `repo` fields.\n * **Example:** `{ \"owner\": \"...\", \"repo\": \"...\" }`\n * **Usage:** Used for `gfm`-mode reference linking.\n\n**Summary of Change:**\nThe primary change is that the `context` parameter shifted from a **plain string** (e.g., `\"owner/repo\"`) in the 2022-11-28 version to a **structured object** with explicit `owner` and `repo` keys in the 2025-06-01 version. This change is explicitly noted as one of the two main differences from earlier API versions, alongside the introduction of the `wrap_tables` flag",
+    "steps": [
+      {
+        "step": 1,
+        "thought": "The question asks for differences between two specific API versions, so compare_versions is the right tool.",
+        "tool": "compare_versions",
+        "args": {
+          "query": "context parameter format for rendering Markdown between 2022-11-28 and 2025-06-01"
+        },
+        "observation": "=== 2022-11-28 ===\n[github_combined_reference.pdf] Render a Markdown document\nApplies to API version 2025-06-01 and later.\nRenders a Markdown document server-side, returning either an HTML fragment or raw text\ndepending on the requested mode.\nTwo changes from earlier API versions: the context field now accepts an owner/repo pair as a\nstructured object rather than a plain string, and a new wrap_tables flag controls whether wide\ntables are wrapped f\n[github_combined_reference.pdf] Name\nType\nRequired\nDescription\ntext\nstring\nYes\nThe Markdown text\nto render in HTML.\nmode\nstring\nNo\nThe rendering mode.\nDefault: markdown.\nCan be one of: mark\ndown, gfm.\ncontext\nstring\nNo\nThe repository\ncontext to use when\ncreating references\nin gfm mode.\nResponse\n\"<p>Hello <strong>world</strong></p>\"\nNotes\nIn raw m"
+      },
+      {
+        "step": 2,
+        "thought": "The 2022-11-28 section shows context as a string; I need the 2025-06-01 section to confirm the new structured object format.",
+        "tool": "get_version_info",
+        "args": {
+          "version": "2025-06-01",
+          "query": "context parameter format for rendering Markdown"
+        },
+        "observation": "No chunks found specifically for version 2025-06-01."
+      },
+      {
+        "step": 3,
+        "thought": "The version-specific lookup failed, so I'll search the docs for the 2025-06-01 Markdown render context object format.",
+        "tool": "search_docs",
+        "args": {
+          "query": "2025-06-01 render Markdown context owner repo structured object"
+        },
+        "observation": "--- Chunk 1: github_combined_reference.pdf, page 3 (score: 0.546) ---\nRender a Markdown document\nApplies to API version 2025-06-01 and later.\nRenders a Markdown document server-side, returning either an HTML fragment or raw text\ndepending on the requested mode.\nTwo changes from earlier API versions: the context field now accepts an owner/repo pair as a\nstructured object rather than a plain string, and a new wrap_tables flag controls whether wide\ntables are wrapped for narrow viewports.\ncurl -L \\\n-X POST \\\n-H \"Accept: application/vnd.github+json\" \\\n-H \"Authorization: Bearer <YOUR-TOKEN>\" \\\n-H \"X-GitHub-Api-Version: 2025-06-01\" \\\nhttps://api.github.com/markdown \\\n\n\n--- Chunk 2: github_combined_reference.pdf, page 2 (score: 0.460) ---\nName\nType\nRequired\nDescription\ntext\nstring\nYes\nThe Markdow"
+      },
+      {
+        "step": 4,
+        "thought": "I have both versions' context formats: 2022-11-28 uses a plain string, 2025-06-01 uses a structured owner/repo object. I can answer.",
+        "tool": "finish",
+        "args": {
+          "answer": "For the 'Render a Markdown document' endpoint, the context parameter changed between the two API versions as follows:\n\n- API version 2022-11-28: context is a plain string (Type: string, Required: No), described as 'The repository context to use when creating references in gfm mode.'\n\n- API version 2025-06-01: context now accepts an owner/repo pair as a structured object rather than a plain string. The docs explicitly note this as one of two changes from earlier versions (the other being a new wrap_tables flag for wrapping wide tables on narrow viewports).\n\nIn short, the format changed from a simple string to a structured object containing the owner and repo pair."
+        },
+        "observation": "For the 'Render a Markdown document' endpoint, the context parameter changed between the two API versions as follows:\n\n- API version 2022-11-28: context is a plain string (Type: string, Required: No), described as 'The repository context to use when creating references in gfm mode.'\n\n- API version 2025-06-01: context now accepts an owner/repo pair as a structured object rather than a plain string. The docs explicitly note this as one of two changes from earlier versions (the other being a new wrap_tables flag for wrapping wide tables on narrow viewports).\n\nIn short, the format changed from a simple string to a structured object containing the owner and repo pair."
+      }
+    ]
+  },
+  "mitigation": {
+    "target_failure_mode": "missing_required_tool",
+    "fix": "rag_core.agent.run_agent(enforce_deprecation_check=True) - a `finish` call is held back once when the retrieved context already shows a change/replacement for a subject+version this question names but check_deprecation was never called (see _needs_deprecation_check); the agent gets one more observation telling it to call check_deprecation before finishing, bounded to fire at most once per run.",
+    "before_count": 2,
+    "after_count": 0,
+    "delta": -2,
+    "price_paid": {
+      "added_p50_latency_ms": -213.8,
+      "added_max_latency_ms": -27425.8,
+      "added_p50_cost_usd": 2.4e-05,
+      "added_max_cost_usd": -1.8e-05,
+      "total_est_tokens_before": 24002,
+      "total_est_tokens_after": 25540
+    }
+  },
+  "regression_matrix": [
+    {
+      "failure_mode": "no_tool_before_finish",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "regressed": false
+    },
+    {
+      "failure_mode": "missing_required_tool",
+      "before": 2,
+      "after": 0,
+      "delta": -2,
+      "regressed": false
+    },
+    {
+      "failure_mode": "wrong_tool_choice",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "regressed": false
+    },
+    {
+      "failure_mode": "invalid_argument",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "regressed": false
+    },
+    {
+      "failure_mode": "redundant_repeat",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "regressed": false
+    },
+    {
+      "failure_mode": "premature_stop_parse_error",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "regressed": false
+    }
+  ]
+}

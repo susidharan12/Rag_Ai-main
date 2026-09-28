@@ -1,0 +1,55 @@
+========================================================================
+Week 7 Task Set E - budget termination demo
+Question: Migrate a Java generator configuration from Swagger Codegen 2.x to 3.x that uses oneOf schemas and the webclient library. What config keys change?
+========================================================================
+
+--- Normal run (generous budgets — baseline, for comparison) ---
+kwargs: {'max_steps': 5, 'time_budget': 30, 'max_tokens': 6000, 'max_cost_usd': 0.01}
+stopped_by:   time_budget
+steps_taken:  1
+latency_ms:   46832.3
+est_tokens:   1614
+est_cost_usd: 0.000388
+answer (first 200 chars): '- Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.'
+
+--- max_steps=1 (iteration cap) ---
+kwargs: {'max_steps': 1, 'time_budget': 30, 'max_tokens': 6000, 'max_cost_usd': 0.01}
+stopped_by:   max_steps
+steps_taken:  2
+latency_ms:   166155.0
+est_tokens:   1702
+est_cost_usd: 0.000437
+answer (first 200 chars): '- Compared to v2\nSwagger Codegen 2.x’s java generator documented these same options — sortParamsByReq\nuiredFlag, ensureUniqueParams, allowUnicodeIdentifiers, library, modelPackage — as a plain\nbullete'
+CHECK: expected stopped_by='max_steps' -> PASS
+
+--- max_tokens=50 (token cap) ---
+kwargs: {'max_steps': 5, 'time_budget': 30, 'max_tokens': 50, 'max_cost_usd': 0.01}
+stopped_by:   token_budget
+steps_taken:  0
+latency_ms:   0.1
+est_tokens:   746
+est_cost_usd: 0.000122
+answer (first 200 chars): 'I could not find the answer in the provided documents.'
+CHECK: expected stopped_by='token_budget' -> PASS
+
+--- time_budget=0.0001s (wall-clock cap) ---
+kwargs: {'max_steps': 5, 'time_budget': 0.0001, 'max_tokens': 6000, 'max_cost_usd': 0.01}
+stopped_by:   time_budget
+steps_taken:  1
+latency_ms:   12235.9
+est_tokens:   1854
+est_cost_usd: 0.000457
+answer (first 200 chars): '- Java client generator — configuration options (v3)\nOverview\nThe java generator in Swagger Codegen 3.x carries over most 2.x options and adds a handful\nof new ones related to OpenAPI 3 features (e.g.'
+CHECK: expected stopped_by='time_budget' -> PASS
+
+--- max_cost_usd=0.000001 (cost cap, LLM call mocked so no real network request is made — proves the code path, not a live bill) ---
+stopped_by:   cost_budget
+steps_taken:  0
+est_tokens:   746
+est_cost_usd: 0.000122
+CHECK: expected stopped_by='cost_budget' -> PASS
+
+========================================================================
+All iteration/token/wall-clock budget checks: PASS
+No run raised an exception or exceeded its budget before stopping - every run returned a real (possibly partial) answer.
+========================================================================
