@@ -1,0 +1,603 @@
+{
+  "model": "qwen/qwen3.8-27b",
+  "cases": [
+    "eval_001",
+    "eval_004",
+    "eval_010",
+    "eval_014",
+    "eval_016",
+    "eval_017",
+    "eval_019",
+    "eval_023",
+    "eval_025",
+    "eval_026"
+  ],
+  "single": [
+    {
+      "id": "eval_001",
+      "latency_ms": 5007.2,
+      "passed": true,
+      "answer": "The default value and type of `retry_backoff_ms` on `Client.send()` depend on the SDK version:\n\n* **SDK v3:** The default value is **500** and the type is **int**.\n* **SDK v2:** The default value is **250** and the type is **int**.\n\nIn both versions, this parameter is optional and represents the base backoff time in milliseconds between retries after a failed send",
+      "tools": [
+        "finish",
+        "get_parameter_default"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 2954,
+      "output_tokens": 245,
+      "total_tokens": 3199,
+      "cost_usd": 0.000627
+    },
+    {
+      "id": "eval_004",
+      "latency_ms": 13067.3,
+      "passed": true,
+      "answer": "The default `pool_size` for `Client.connect()` depends on the SDK version:\n\n* **SDK v3:** The default `pool_size` is **10**.\n* **SDK v2:** The default `pool_size` was **5**.\n\nNote that SDK v2 is currently in maintenance mode, and new integrations are required to use SDK v3. Additionally, raising the `pool_size` above 32 requires a written quota increase from Nimbus support",
+      "tools": [
+        "finish",
+        "get_parameter_default"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 2883,
+      "output_tokens": 292,
+      "total_tokens": 3175,
+      "cost_usd": 0.000651
+    },
+    {
+      "id": "eval_010",
+      "latency_ms": 11567.6,
+      "passed": true,
+      "answer": "Yes, according to the error reference, HTTP error code 500 is retryable.\n\nSpecifically, the `INTERNAL` error code corresponds to HTTP status 500 and is marked as **retryable** in the error codes table. The documentation notes that this code indicates a \"Gateway-side fault.\" Additionally, the SDK's `send()` method automatically retries retryable codes (including 500) up to the `max_retries` limit, though application code should still catch `NimbusError` to handle any permanent failures",
+      "tools": [
+        "finish",
+        "get_error_info"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 2787,
+      "output_tokens": 271,
+      "total_tokens": 3058,
+      "cost_usd": 0.000621
+    },
+    {
+      "id": "eval_014",
+      "latency_ms": 32914.7,
+      "passed": true,
+      "answer": "When `Client.send()` receives a `429 RATE_LIMITED` response from the Nimbus gateway, it handles the situation through an automatic retry mechanism:\n\n* **Backoff and Retry:** The method honors the `retry_backoff_ms` parameter, waiting for the specified duration before attempting to resend the message.\n* **Retry Limit:** It will continue retrying up to the limit defined by the `max_retries` parameter.\n* **Failure Handling:** If all retry attempts are exhausted without a successful acknowledgement, the method raises a `SendError`. The last gateway response is attached to this exception under the `e.response` attribute.\n\n**Version-Specific Defaults:**\nThe default values for these retry parameters differ between SDK versions:\n* **SDK v3:** The default `retry_backoff_ms` is **500** and `max_retries` is **5**.\n* **SDK v2:** The default `retry_backoff_ms` is **250** and `max_retries` is **3**.\n\nAdditionally, the `timeout_ms` parameter (defaulting to 15000 ms in v3 and 30000 ms in v2) defines the total wall-clock budget for the entire send operation, including all retries. If this timeout elapses, the call will also fail",
+      "tools": [
+        "finish",
+        "search_docs"
+      ],
+      "llm_calls": 4,
+      "llm_errors": 0,
+      "input_tokens": 4698,
+      "output_tokens": 668,
+      "total_tokens": 5366,
+      "cost_usd": 0.001206
+    },
+    {
+      "id": "eval_016",
+      "latency_ms": 24967.1,
+      "passed": true,
+      "answer": "Based on the provided documentation for the Nimbus API, here is how cursor pagination works for the `list_events()` endpoint:\n\n### Core Mechanism\n* **Cursor-Based:** The API uses cursor pagination rather than offset-based pagination.\n* **Response Structure:** Every list response includes three key components:\n 1. `data`: The list of events for the current page.\n 2. `next_cursor`: An opaque string used to retrieve the next page of results.\n 3. `has_more`: A boolean flag indicating whether additional pages exist.\n* **Iteration Process:** To fetch all results, you pass the `next_cursor` from the previous response back into the `cursor` parameter of the next request. You continue this process until `has_more` is `false`, which indicates you have reached the end of the dataset.\n\n### Key Rules for Cursors\n* **Opaque Strings:** Cursors must be treated as opaque strings. You should never attempt to construct, decode, or modify them yourself.\n* **Expiration:** Cursors expire after **24 hours**. If you do not use a cursor within this timeframe, it will no longer be valid.\n\n### Parameters for `list_events()`\n* **`cursor`** (str, optional): The opaque cursor from a previous response. Defaults to `None`.\n* **`limit`** (int, optional): The number of items to return per page.\n * **Default:** 50\n * **Accepted Range:** 1 to 200\n * **Note:** In SDK v2, the maximum limit was 100, but this was raised to 200 in v3.\n* **`created_after`** (str, optional): An ISO-8601 timestamp used to filter events.\n\n### Error Handling\n* If you request a `limit` greater than 200, the client will raise a `ValueError` before sending the request.\n* If a request with an invalid limit reaches the server, it will be rejected with a `400 INVALID_ARGUMENT` error.\n\n### Example Usage\n```python\n# Initial request\npage = client.list_events(limit=100)\n\n# Process the first page\nfor event in page.data:\n process(event)\n\n# Continue fetching while there are more results\nwhile page.has_more:\n next_cursor = page.next_cursor\n page = client.list_events(limit=100, cursor=next_cursor)\n for event in page.data:\n process(event)\n```",
+      "tools": [
+        "finish",
+        "search_docs"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 2814,
+      "output_tokens": 922,
+      "total_tokens": 3736,
+      "cost_usd": 0.001114
+    },
+    {
+      "id": "eval_017",
+      "latency_ms": 29039.4,
+      "passed": true,
+      "answer": "Based on the provided documentation, the following changes were made to the default parameters for `Client.connect()` when moving from SDK v2 to SDK v3:\n\n* **`pool_size`**: The default value was doubled from **5** in v2 to **10** in v3. This parameter sets the maximum number of concurrent TCP connections held open to the gateway.\n* **`keepalive_ms`**: This parameter did not exist in v2, where keepalive behavior was fixed at 30-second intervals. In v3, `keepalive_ms` is an available parameter with a default value of **60000** (60 seconds), representing the interval between keepalive pings on idle connections.\n\nAdditionally, while not a change in the *default* value of an existing parameter, v3 introduces the `region` parameter (defaulting to `\"eu-west\"`) and requires an `api_key` (prefixed with `nk_live_` or `nk_test_`). It is also noted that v2 is in maintenance mode, and new integrations are required to use SDK v3",
+      "tools": [
+        "compare_versions",
+        "get_version_info",
+        "search_docs"
+      ],
+      "llm_calls": 5,
+      "llm_errors": 0,
+      "input_tokens": 6641,
+      "output_tokens": 475,
+      "total_tokens": 7116,
+      "cost_usd": 0.001352
+    },
+    {
+      "id": "eval_019",
+      "latency_ms": 39969.6,
+      "passed": false,
+      "answer": "- ## Example\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\nresponse = client.send(\n    message=\"order.created\",\n    topic=\"orders\",\n    retry_backoff_ms=750,\n)\n``` # Error handling\n\nAll SDK exceptions derive from `NimbusError`.\n- ## Notes\n\nIf the broker returns a `429 RATE_LIMITED` response, `Client.send()` will honor `retry_backoff_ms` before retrying, up to `max_retries` attempts.",
+      "tools": [
+        "search_docs"
+      ],
+      "llm_calls": 5,
+      "llm_errors": 0,
+      "input_tokens": 6704,
+      "output_tokens": 323,
+      "total_tokens": 7027,
+      "cost_usd": 0.001248
+    },
+    {
+      "id": "eval_023",
+      "latency_ms": 45186.1,
+      "passed": true,
+      "answer": "In Nimbus SDK v2, the default `retry_backoff_ms` for `Client.send()` is **250**.\n\nThis is confirmed by the v2 parameters table, which lists `retry_backoff_ms` with a default of 250, and the v2 notes, which state that \"the send path retries at most 3 times with a 250 ms base backoff.\" (For comparison, SDK v3 changed this default to 500 ms.)",
+      "tools": [
+        "finish",
+        "get_parameter_default",
+        "get_version_info",
+        "search_docs"
+      ],
+      "llm_calls": 5,
+      "llm_errors": 0,
+      "input_tokens": 6624,
+      "output_tokens": 357,
+      "total_tokens": 6981,
+      "cost_usd": 0.001261
+    },
+    {
+      "id": "eval_025",
+      "latency_ms": 13220.5,
+      "passed": true,
+      "answer": "Based on the provided documents, SDK v2 is **not fully supported** for new development. The documentation explicitly states that **v2 is in maintenance mode**.\n\nThis means:\n* **Only security fixes** are being shipped for v2.\n* **New integrations must use SDK v3.**\n\nWhile v2 remains available for existing users (with security patches), it is no longer the recommended version for new projects or features",
+      "tools": [
+        "finish",
+        "search_docs"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 2910,
+      "output_tokens": 248,
+      "total_tokens": 3158,
+      "cost_usd": 0.000623
+    },
+    {
+      "id": "eval_026",
+      "latency_ms": 13369.4,
+      "passed": true,
+      "answer": "Based on the provided documents, the number of retries you get when sending a message depends on the version of the SDK you are using:\n\n* **SDK v3:** The default `max_retries` is **5**.\n* **SDK v2:** The default `max_retries` is **3**.\n\nThese values represent the maximum number of retry attempts the `Client.send()` method will make for retryable errors (such as a `429 RATE_LIMITED` response) before raising a `SendError`. You can customize this behavior by explicitly passing the `max_retries` parameter to the `send()` method",
+      "tools": [
+        "finish",
+        "search_docs"
+      ],
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 3002,
+      "output_tokens": 304,
+      "total_tokens": 3306,
+      "cost_usd": 0.000678
+    }
+  ],
+  "multi": [
+    {
+      "id": "eval_001",
+      "latency_ms": 685.3,
+      "passed": true,
+      "answer": "In SDK v3, the `retry_backoff_ms` parameter on `Client.send()` has a default value of `500` and a type of `int` [client_send.md, page 2].",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 773,
+      "output_tokens": 34,
+      "total_tokens": 807,
+      "cost_usd": 0.000141
+    },
+    {
+      "id": "eval_004",
+      "latency_ms": 1491.7,
+      "passed": true,
+      "answer": "The default `pool_size` for `Client.connect()` in SDK v3 is `10`. [client_connect.md, page 4] [client_connect.md, page 2]",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 686,
+      "output_tokens": 30,
+      "total_tokens": 716,
+      "cost_usd": 0.000125
+    },
+    {
+      "id": "eval_010",
+      "latency_ms": 6807.0,
+      "passed": true,
+      "answer": "Yes, HTTP error code 500 is retryable. According to the error reference, the code `INTERNAL` maps to HTTP status 500 and is marked as \"yes\" in the retryable column [source_doc: errors.md, page 2]. The SDK automatically retries these errors up to the configured `max_retries` limit [source_doc].\n\n```python\nfrom nimbus.errors import ApiError\n\ntry:\n    client.send(message=\"ping\", topic=\"health\")\nexcept ApiError as e:\n    if e.retryable:\n        schedule_retry(e.code)\n```",
+      "status": "ok",
+      "workers": [
+        "version",
+        "code"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 389,
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 1588,
+      "output_tokens": 281,
+      "total_tokens": 1869,
+      "cost_usd": 0.000449
+    },
+    {
+      "id": "eval_014",
+      "latency_ms": 5026.9,
+      "passed": true,
+      "answer": "In SDK v3, when `Client.send()` receives a `429 RATE_LIMITED` response from the gateway, it treats the error as retryable, as the `RATE_LIMITED` error code (HTTP 429) is explicitly marked as retryable in the error codes table [source_doc: errors.md, page 2]. The method honors the `retry_backoff_ms` setting before attempting a retry, up to a maximum of `max_retries` attempts [source_doc: client_send.md, page 4]. If all retries are exhausted, the method raises a `SendError` with the last gateway response attached under `e.response` [source_doc: client_send.md, page 4].\n\n```python\nfrom nimbus import Client\n\nclient = Client(api_key=\"nk_live_...\")\ntry:\n    response = client.send(\n        message=\"order.created\",\n        topic=\"orders\",\n        retry_backoff_ms=750,\n    )\nexcept Exception as e:\n    if hasattr(e, \"response\"):\n        print(f\"Send failed after retries: {e.response}\")\n```",
+      "status": "ok",
+      "workers": [
+        "version",
+        "code"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 357,
+      "llm_calls": 3,
+      "llm_errors": 0,
+      "input_tokens": 1790,
+      "output_tokens": 538,
+      "total_tokens": 2328,
+      "cost_usd": 0.000672
+    },
+    {
+      "id": "eval_016",
+      "latency_ms": 12195.6,
+      "passed": true,
+      "answer": "[PARTIAL ANSWER] The version/deprecation check failed (429 Client Error: Too Many Requests for url: https://api.groq.com/openai/v1/chat/completions) after 0 retry, so this answer was NOT verified against an SDK version (assumed v3). Please confirm which SDK version you are on (v2 or v3).\n\n```python\ncursor = None\nwhile True:\n    page = client.list_events(limit=100, cursor=cursor)\n    for event in page.data:\n        process(event)\n    if not page.has_more:\n        break\n    cursor = page.next_cursor\n```\n\nCursor pagination for `list_events()` works by passing the `next_cursor` from the previous response as the `cursor` parameter in the next request until `has_more` is false [source_doc: pagination.md, page 1]. The `cursor` is an opaque string that expires after 24 hours and must not be constructed manually [source_doc: pagination.md, page 1].",
+      "status": "degraded",
+      "workers": [
+        "version",
+        "code"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 2,
+      "llm_errors": 1,
+      "input_tokens": 674,
+      "output_tokens": 140,
+      "total_tokens": 814,
+      "cost_usd": 0.000206,
+      "unbilled_error_tokens_removed": 644
+    },
+    {
+      "id": "eval_017",
+      "latency_ms": 837.6,
+      "passed": true,
+      "answer": "[PARTIAL ANSWER] The code-sample worker failed; no sample is included.\n\nBased on the provided documents, the following changes occurred in the defaults for `Client.connect()` between SDK v2 and v3:\n\n*   **`pool_size`**: The default value was doubled from `5` in SDK v2 to `10` in SDK v3 [source_doc: client_connect.md, page 4 [v3]].\n\nThe documents do not list any other specific parameter default changes for `Client.connect()` itself. While `timeout_ms` changed from `30000` to `15000` between versions, this parameter is explicitly associated with `Client.send()` in the provided context, not `Client.connect()` [source_doc: client_send.md, page 4 [v3]].",
+      "status": "degraded",
+      "workers": [
+        "version",
+        "code"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 2,
+      "llm_errors": 1,
+      "input_tokens": 724,
+      "output_tokens": 146,
+      "total_tokens": 870,
+      "cost_usd": 0.000218,
+      "unbilled_error_tokens_removed": 695
+    },
+    {
+      "id": "eval_019",
+      "latency_ms": 443.0,
+      "passed": true,
+      "answer": "I could not find the answer in the provided documents.",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 578,
+      "output_tokens": 14,
+      "total_tokens": 592,
+      "cost_usd": 9.7e-05
+    },
+    {
+      "id": "eval_023",
+      "latency_ms": 527.9,
+      "passed": true,
+      "answer": "In Nimbus SDK v2, the default `retry_backoff_ms` on `Client.send()` is `250` [source_doc: client_send.md, page 2 [v2]].",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 733,
+      "output_tokens": 30,
+      "total_tokens": 763,
+      "cost_usd": 0.000132
+    },
+    {
+      "id": "eval_025",
+      "latency_ms": 602.4,
+      "passed": true,
+      "answer": "Yes, SDK v2 is still supported, but it is in **maintenance mode**. Only security fixes are shipped for v2, and new integrations must use SDK v3. [client_connect.md]",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 566,
+      "output_tokens": 41,
+      "total_tokens": 607,
+      "cost_usd": 0.000116
+    },
+    {
+      "id": "eval_026",
+      "latency_ms": 477.1,
+      "passed": true,
+      "answer": "In SDK v3, the default number of retries is 5, as specified by the `max_retries` parameter default [client_send.md, page 2].",
+      "status": "ok",
+      "workers": [
+        "version"
+      ],
+      "retries": 0,
+      "duplicate_chunk_tokens": 0,
+      "llm_calls": 1,
+      "llm_errors": 0,
+      "input_tokens": 753,
+      "output_tokens": 31,
+      "total_tokens": 784,
+      "cost_usd": 0.000136
+    }
+  ],
+  "single_summary": {
+    "pass": 9,
+    "n": 10,
+    "p50_ms": 13369,
+    "p99_ms": 45186,
+    "input_tokens": 42017,
+    "output_tokens": 4105,
+    "total_tokens": 46122,
+    "cost_total": 0.009381,
+    "cost_per_q": 0.000938,
+    "llm_calls": 37,
+    "llm_errors": 0
+  },
+  "multi_summary": {
+    "pass": 10,
+    "n": 10,
+    "p50_ms": 685,
+    "p99_ms": 12196,
+    "input_tokens": 8865,
+    "output_tokens": 1285,
+    "total_tokens": 10150,
+    "cost_total": 0.002292,
+    "cost_per_q": 0.000229,
+    "llm_calls": 16,
+    "llm_errors": 2
+  },
+  "handoffs": [
+    {
+      "case_id": "eval_001",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 26,
+      "llm_in": 773,
+      "llm_out": 34,
+      "return_tokens": 34,
+      "latency_ms": 685.1,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 807
+    },
+    {
+      "case_id": "eval_004",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 19,
+      "llm_in": 686,
+      "llm_out": 30,
+      "return_tokens": 30,
+      "latency_ms": 1491.5,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 716
+    },
+    {
+      "case_id": "eval_010",
+      "hop": "orchestrator -> code_sample_worker",
+      "attempt": 1,
+      "brief_tokens": 21,
+      "llm_in": 632,
+      "llm_out": 114,
+      "return_tokens": 114,
+      "latency_ms": 739.6,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 746
+    },
+    {
+      "case_id": "eval_010",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 21,
+      "llm_in": 676,
+      "llm_out": 49,
+      "return_tokens": 49,
+      "latency_ms": 4936.5,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 725
+    },
+    {
+      "case_id": "eval_010",
+      "hop": "workers -> orchestrator synthesis (resend)",
+      "attempt": 1,
+      "brief_tokens": 163,
+      "llm_in": 280,
+      "llm_out": 118,
+      "return_tokens": 118,
+      "latency_ms": 1867.7,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 398
+    },
+    {
+      "case_id": "eval_014",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 24,
+      "llm_in": 764,
+      "llm_out": 133,
+      "return_tokens": 133,
+      "latency_ms": 783.5,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 897
+    },
+    {
+      "case_id": "eval_014",
+      "hop": "orchestrator -> code_sample_worker",
+      "attempt": 1,
+      "brief_tokens": 24,
+      "llm_in": 592,
+      "llm_out": 182,
+      "return_tokens": 182,
+      "latency_ms": 901.2,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 774
+    },
+    {
+      "case_id": "eval_014",
+      "hop": "workers -> orchestrator synthesis (resend)",
+      "attempt": 1,
+      "brief_tokens": 315,
+      "llm_in": 434,
+      "llm_out": 223,
+      "return_tokens": 223,
+      "latency_ms": 4121.3,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 657
+    },
+    {
+      "case_id": "eval_016",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 25,
+      "llm_in": 0,
+      "llm_out": 0,
+      "return_tokens": 0,
+      "latency_ms": 583.9,
+      "status": "error",
+      "note": "429 Client Error: Too Many Requests for url: https://api.groq.com/openai/v1/chat/completions",
+      "total_tokens": 0
+    },
+    {
+      "case_id": "eval_016",
+      "hop": "orchestrator -> code_sample_worker",
+      "attempt": 1,
+      "brief_tokens": 25,
+      "llm_in": 674,
+      "llm_out": 140,
+      "return_tokens": 140,
+      "latency_ms": 12193.5,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 814
+    },
+    {
+      "case_id": "eval_017",
+      "hop": "orchestrator -> code_sample_worker",
+      "attempt": 1,
+      "brief_tokens": 23,
+      "llm_in": 0,
+      "llm_out": 0,
+      "return_tokens": 0,
+      "latency_ms": 434.1,
+      "status": "error",
+      "note": "429 Client Error: Too Many Requests for url: https://api.groq.com/openai/v1/chat/completions",
+      "total_tokens": 0
+    },
+    {
+      "case_id": "eval_017",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 23,
+      "llm_in": 724,
+      "llm_out": 146,
+      "return_tokens": 146,
+      "latency_ms": 835.9,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 870
+    },
+    {
+      "case_id": "eval_019",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 21,
+      "llm_in": 578,
+      "llm_out": 14,
+      "return_tokens": 14,
+      "latency_ms": 443.0,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 592
+    },
+    {
+      "case_id": "eval_023",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 26,
+      "llm_in": 733,
+      "llm_out": 30,
+      "return_tokens": 30,
+      "latency_ms": 527.7,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 763
+    },
+    {
+      "case_id": "eval_025",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 11,
+      "llm_in": 566,
+      "llm_out": 41,
+      "return_tokens": 41,
+      "latency_ms": 602.3,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 607
+    },
+    {
+      "case_id": "eval_026",
+      "hop": "orchestrator -> version_deprecation_worker",
+      "attempt": 1,
+      "brief_tokens": 17,
+      "llm_in": 753,
+      "llm_out": 31,
+      "return_tokens": 31,
+      "latency_ms": 476.7,
+      "status": "ok",
+      "note": "",
+      "total_tokens": 784
+    }
+  ]
+}

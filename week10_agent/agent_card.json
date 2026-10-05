@@ -1,0 +1,34 @@
+{
+  "name": "Nimbus Docs Squad Orchestrator",
+  "description": "Answers developer questions about the Nimbus SDK (v2/v3). Delegates to a version/deprecation worker and a code-sample worker and returns one cited answer. Design-only card: this repo does not serve it over A2A yet.",
+  "url": "https://docs-squad.example.invalid/a2a",
+  "version": "0.1.0",
+  "provider": {"organization": "Soft Suave AI Engineering League (training project)"},
+  "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+  "securitySchemes": {
+    "bearer": {"type": "http", "scheme": "bearer", "description": "Per-developer API token; the orchestrator calls its workers with its own service credentials."}
+  },
+  "security": [{"bearer": []}],
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "version-deprecation-lookup",
+      "name": "Version and deprecation lookup",
+      "description": "Version-specific facts, defaults, error-code retryability and v2-to-v3 changes, cited to the docs.",
+      "tags": ["nimbus", "version", "deprecation", "defaults"],
+      "examples": ["For SDK v2, what pool_size does Client.connect() use by default?"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    },
+    {
+      "id": "code-sample",
+      "name": "Code sample for a target SDK version",
+      "description": "Short parseable Python usage snippet for the resolved SDK version. Needs a target version; asks for one (input-required) when the question does not state it and the version check is unavailable.",
+      "tags": ["nimbus", "code", "usage"],
+      "examples": ["Explain how Client.send() handles a RATE_LIMITED response from the gateway."],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain"]
+    }
+  ]
+}
