@@ -262,13 +262,19 @@ class DocStore:
             if idx == -1 or score < min_score:
                 continue
             meta = self._state["metadata"][idx]
+            text = self._state["chunks"][idx]
+            overlap = _lexical_overlap(query, text)
+            heading_match = _heading_overlap(query, meta)
+            phrase_match = _question_phrase_match(query, text)
+            # Soft gate: only drop chunks that have zero relevance signal
+            # AND the raw semantic score is very low
+            if overlap < 0.05 and heading_match < 0.05 and not phrase_match and float(score) < 0.25:
+                continue
             version = meta.get("sdk_version", "")
             score_used = float(score)
-            # Version preference is a re-rank bonus, not a hard filter: the
-            # preferred version gets a small lift so a near-identical v2 page no
-            # longer outranks the current v3 page, while unversioned chunks
-            # (sports PDF, reserved for sdk_version="") and genuinely different
-            # topics keep their raw similarity ordering.
+            # Balanced boost: semantic score is primary, lexical/heading are secondary
+            boost = (overlap * 0.25) + (heading_match * 0.20) + (0.5 if phrase_match else 0.0)
+            score_used += boost
             if pref and version:
                 if pref == "both":
                     pass
@@ -276,13 +282,13 @@ class DocStore:
                     score_used += settings.VERSION_PREFERENCE_BONUS
                 elif pref != "both" and version not in (pref, ""):
                     score_used -= settings.VERSION_PREJUDICE_PENALTY
-            rows.append((score_used, idx, float(score), meta))
+            rows.append((score_used, idx, float(score), meta, overlap, heading_match))
 
         # Stable re-rank by preference-adjusted similarity.
         rows.sort(key=lambda r: -r[0])
 
         results = []
-        for rank, (_, idx, raw_score, meta) in enumerate(rows[:top_k], start=1):
+        for rank, (_, idx, raw_score, meta, overlap, heading_match) in enumerate(rows[:top_k], start=1):
             results.append({
                 "rank": rank,
                 "chunk_id": meta["chunk_id"],
@@ -293,6 +299,8 @@ class DocStore:
                 "section": meta.get("section", ""),
                 "sdk_version": meta.get("sdk_version", ""),
                 "text": self._state["chunks"][idx],
+                "lexical_overlap": overlap,
+                "heading_overlap": heading_match,
             })
         return results
 
@@ -319,3 +327,79 @@ def _resolve_version_preference(query):
     if mentions_v3:
         return "v3"
     return "v3"
+
+
+def _lexical_boost(query, text, source_title=""):
+    """Add a modest lexical bonus for exact question terms and page headings.
+
+    This keeps the retriever from choosing a nearby but semantically wrong chunk
+    when the document contains a closer heading or exact wording match.
+    """
+    q_tokens = set(re.findall(r"[a-z0-9_]+", query.lower()))
+    if not q_tokens:
+        return 0.0
+
+    haystack = " ".join([
+        text.lower(),
+        source_title.lower(),
+    ])
+    matches = 0
+    for token in q_tokens:
+        if len(token) < 2:
+            continue
+        if token in haystack:
+            matches += 1
+    if not matches:
+        return 0.0
+    return matches / max(len(q_tokens), 1)
+
+
+def _lexical_overlap(query, text):
+    """Return a 0..1 score for how closely the chunk matches the user wording."""
+    q_tokens = [
+        t for t in re.findall(r"[a-z0-9_]+", (query or "").lower())
+        if len(t) > 2 and t not in {"what", "when", "where", "which", "who", "how", "why", "the", "this", "that", "with", "from", "into", "about"}
+    ]
+    if not q_tokens:
+        return 0.0
+    text_norm = re.sub(r"[^a-z0-9]+", " ", (text or "").lower())
+    matches = 0
+    seen = set()
+    for token in q_tokens:
+        if token in seen:
+            continue
+        seen.add(token)
+        if re.search(rf"\b{re.escape(token)}\b", text_norm):
+            matches += 1
+    return matches / max(len(q_tokens), 1)
+
+
+def _heading_overlap(query, meta):
+    text = " ".join([
+        meta.get("section", ""),
+        meta.get("doc_title", ""),
+        meta.get("source_file", ""),
+    ]).lower()
+    q_tokens = [t for t in re.findall(r"[a-z0-9_]+", (query or "").lower()) if len(t) > 2]
+    if not q_tokens:
+        return 0.0
+    hits = sum(1 for t in set(q_tokens) if t in text)
+    return hits / max(len(set(q_tokens)), 1)
+
+
+def _question_phrase_match(query, text):
+    """True when the chunk contains the key question phrase or heading text."""
+    q = re.sub(r"[^a-z0-9]+", " ", (query or "").lower()).strip()
+    t = re.sub(r"[^a-z0-9]+", " ", (text or "").lower()).strip()
+    if not q or not t:
+        return False
+    if q in t:
+        return True
+    q_tokens = [tok for tok in q.split() if len(tok) > 2 and tok not in {"what", "when", "where", "which", "who", "how", "why", "this", "that", "with", "from", "about", "into"}]
+    if not q_tokens:
+        return False
+    exact = 0
+    for tok in q_tokens:
+        if tok in t:
+            exact += 1
+    return exact >= max(1, len(q_tokens) // 2)

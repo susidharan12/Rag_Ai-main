@@ -1,0 +1,30 @@
+Track E docs-answer binary judge v1
+Single judged criterion: does the answer directly and correctly answer the question?
+Deterministic assertions are excluded (handled by eval/run_eval.py): code_sample_parses, endpoint_exists, api_version_stated, deprecated_symbol_migration.
+
+id	mode	human	judge
+eval_001	factual_lookup	1	1
+eval_002	factual_lookup	1	1
+eval_004	factual_lookup	1	1
+eval_005	factual_lookup	1	1
+eval_006	factual_lookup	1	1
+eval_007	factual_lookup	1	1
+eval_008	factual_lookup	1	1
+eval_009	factual_lookup	1	1
+eval_011	factual_lookup	1	1
+eval_012	factual_lookup	1	1
+eval_014	conceptual_explanation	0	0
+eval_015	conceptual_explanation	0	1
+eval_016	conceptual_explanation	1	0
+eval_017	conceptual_explanation	0	0
+eval_018	conceptual_explanation	1	0
+eval_019	unsupported_question	1	0
+eval_020	unsupported_question	1	1
+eval_021	unsupported_question	1	0
+eval_022	unsupported_question	0	1
+eval_023	version_specific	1	1
+eval_024	version_specific	1	1
+eval_025	version_specific	1	1
+eval_026	ambiguous_question	1	0
+eval_027	ambiguous_question	1	1
+eval_028	ambiguous_question	1	1

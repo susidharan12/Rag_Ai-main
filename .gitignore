@@ -26,3 +26,6 @@ frontend/dist/
 
 # Generated index artifacts
 data/index/registry.json
+
+# Track E eval - isolated, rebuildable index (see eval/run_eval.py)
+eval/.eval_index/

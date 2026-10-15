@@ -42,6 +42,204 @@ def _sentences(text):
     return [s.strip() for s in parts if s.strip()]
 
 
+_BROAD_INTENT_RE = re.compile(
+    r"\b(tell me about|summarize|summary of|overview of|give (?:me )?(?:an|a) overview|"
+    r"describe (?:the|this)|what(?:'s| is) this (?:document|resume|cv|file|page|pdf) about|"
+    r"who is (?:the|this)|about (?:the|this) (?:candidate|document|resume|cv|person))\b",
+    re.IGNORECASE,
+)
+
+
+def _dominant_source_doc(results, min_fraction=0.6):
+    """If most of the retrieved chunks come from a single source document,
+    return that document's name; otherwise None."""
+    if not results:
+        return None
+    counts = {}
+    for r in results:
+        counts[r["source_doc"]] = counts.get(r["source_doc"], 0) + 1
+    doc, count = max(counts.items(), key=lambda kv: kv[1])
+    return doc if count / len(results) >= min_fraction else None
+
+
+_LABEL_LINE_RE = re.compile(
+    # [ \t]*, not \s*, around the colon: \s also matches newlines, which
+    # would silently swallow the description's own first line into this
+    # match before the capture group even starts.
+    r"(?im)^[^A-Za-z0-9\n]*(?:project name|title|company|position|role|name)[ \t]*:[ \t]*(.+)$"
+)
+_SECTION_HEADING_RE = re.compile(
+    r"(?im)^[^A-Za-z0-9\n]*(?:description|summary|overview)[ \t]*:[ \t]*(.*)$"
+)
+_BARE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z /]{1,30}:?$")
+
+
+def _chunk_label(text):
+    """A short heading for one chunk, e.g. the value of a 'Project Name:'
+    line, used both to describe what the chunk is about and to dedupe
+    chunks that belong to the same section (a resume's project often
+    spans 2+ chunks - description in one, responsibilities in the next)."""
+    m = _LABEL_LINE_RE.search(text)
+    return m.group(1).strip(" \t.-") if m else None
+
+
+def _chunk_gist(text, max_chars=220):
+    """A short, representative narrative snippet from one chunk.
+
+    PDF-extracted text (resumes especially) line-wraps mid-sentence and
+    interleaves 'Label: value' metadata lines with real prose, so naively
+    grabbing the first few _sentences() results (which splits on every
+    newline) mostly returns metadata fragments like 'Project Name: X'
+    and 'Team Size: 12' instead of ever reaching the actual description.
+    Prefer the text after a Description/Summary/Overview label (the real
+    prose) when present; either way, collapse single newlines (usually
+    just PDF line-wraps, not paragraph breaks) into spaces before
+    sentence-splitting, and skip bare 'Label:' fragments.
+    """
+    m = _SECTION_HEADING_RE.search(text)
+    body = text[m.end():] if m else text
+    collapsed = re.sub(r"[ \t]*\n[ \t]*", " ", body).strip()
+    collapsed = re.sub(r"\s{2,}", " ", collapsed)
+    for s in _sentences(collapsed):
+        s = re.sub(r"^[^A-Za-z0-9]+", "", s).strip()
+        if len(s) > 20 and not _BARE_LABEL_RE.match(s):
+            return s if len(s) <= max_chars else s[:max_chars].rsplit(" ", 1)[0] + "…"
+    return ""
+
+
+_NAME_LINE_RE = re.compile(r"^[A-Z][a-zA-Z.'-]+(?:\s+[A-Z][a-zA-Z.'-]*){0,3}$")
+# Job-title words that would otherwise false-positive-match _NAME_LINE_RE
+# (e.g. a running page header like "Senior CMS Developer") as a person's
+# name, since both are just a few capitalized words with no punctuation.
+_TITLE_WORDS = {
+    "developer", "engineer", "manager", "director", "specialist",
+    "consultant", "analyst", "designer", "architect", "lead", "senior",
+    "junior", "administrator", "coordinator", "officer", "executive",
+    "president", "founder", "intern", "associate", "head", "chief",
+}
+
+
+def _document_opening_chunks(store, doc_id, limit=2):
+    """The document's own first `limit` chunks, in true page/chunk order -
+    regardless of whether they were retrieved for this query. A resume's
+    name/title/summary lives on its opening page, but a short identity
+    block doesn't necessarily win a similarity search against longer
+    project-description prose, so it can be genuinely absent from the
+    retrieved set even when it's exactly what a "tell me about X"
+    question wants. Returns [] if store is unavailable - callers must
+    keep working (just without this enrichment) when it is."""
+    if not store or not doc_id:
+        return []
+    try:
+        store.ensure_loaded()
+        chunks, metadata = store._state["chunks"], store._state["metadata"]
+    except Exception:
+        return []
+    matches = sorted(
+        (
+            (meta.get("page_number", 0), meta.get("chunk_index", 0), text, meta)
+            for text, meta in zip(chunks, metadata)
+            if meta.get("doc_id") == doc_id
+        ),
+        key=lambda m: (m[0], m[1]),
+    )
+    return [
+        {"chunk_id": meta["chunk_id"], "source_doc": meta.get("source_file", ""),
+         "text": text, "score": 1.0, "rank": 0}
+        for _page, _idx, text, meta in matches[:limit]
+    ]
+
+
+def _guess_name(text):
+    """A short, title-case, label-free, digit-free line near the top of a
+    document's opening chunk - works well for a resume's name line
+    ("Susidharan A"), harmlessly finds nothing for most other documents."""
+    for line in text.splitlines():
+        line = line.strip(" \t|")
+        if not line or ":" in line or any(ch.isdigit() for ch in line) or "@" in line:
+            continue
+        if not (2 <= len(line) <= 40 and _NAME_LINE_RE.match(line)):
+            continue
+        if any(w in _TITLE_WORDS for w in line.lower().split()):
+            continue
+        return line
+    return None
+
+
+def _broad_overview_answer(question, results, store=None):
+    """A generic 'tell me about X' / 'summarize this' question shares almost
+    no literal vocabulary with detailed source text (a resume never
+    literally says "this is about the candidate") even when the retrieval
+    is genuinely on-topic - so the lexical-overlap gate that protects
+    against real out-of-corpus questions (M3) would otherwise refuse a
+    perfectly answerable broad question. Not domain-specific: this fires
+    for any uploaded document, not just the SDK/sports corpora.
+
+    Instead of trusting the near-zero overlap score here, use a different
+    signal: if most of the retrieved chunks come from the SAME document
+    (and there's at least a little real semantic signal, not pure noise),
+    that document is almost certainly what's being asked about.
+
+    A document's own opening chunk(s) - name, title, summary - are fetched
+    directly from the store (bypassing retrieval ranking entirely) and
+    always led with, because a "tell me about X" answer should say who/
+    what X is before its first project, even when that identity block
+    didn't score highly enough to be retrieved for this specific query.
+    The rest of the answer synthesizes across every distinct section of
+    the document present in the retrieved chunks (deduped by
+    _chunk_label, since one section/project commonly spans multiple
+    chunks), not just the single top chunk.
+    """
+    if not _BROAD_INTENT_RE.search(question.lower()):
+        return None
+    dominant_doc = _dominant_source_doc(results)
+    if not dominant_doc:
+        return None
+    doc_chunks = sorted(
+        (r for r in results if r["source_doc"] == dominant_doc),
+        key=lambda r: r["rank"],
+    )
+    if not doc_chunks or doc_chunks[0]["score"] < 0.12:
+        return None
+
+    doc_id = doc_chunks[0].get("doc_id")
+    opening = _document_opening_chunks(store, doc_id)
+    opening_ids = {o["chunk_id"] for o in opening}
+    ordered = opening + [r for r in doc_chunks if r["chunk_id"] not in opening_ids]
+
+    name, name_chunk_id = None, None
+    for o in opening:
+        name = _guess_name(o["text"])
+        if name:
+            name_chunk_id = o["chunk_id"]
+            break
+
+    parts, used, seen = [], [], set()
+    if name:
+        parts.append(f"Name: {name}.")
+        used.append(next(o for o in opening if o["chunk_id"] == name_chunk_id))
+
+    for r in ordered:
+        if r["chunk_id"] == name_chunk_id:
+            continue  # already represented by the Name: line above
+        label = _chunk_label(r["text"])
+        dedupe_key = (label or r["text"][:30]).strip().lower()
+        if dedupe_key in seen:
+            continue
+        gist = _chunk_gist(r["text"])
+        if not gist:
+            continue
+        seen.add(dedupe_key)
+        parts.append(f"{label}: {gist}" if label else gist)
+        used.append(r)
+        if len(parts) >= 5:
+            break
+
+    if not parts or (name and len(parts) < 2):
+        return None
+    return " ".join(parts), used
+
+
 def _candidates(text):
     """Yield answer candidates as (sentence, single_table_row).
 
@@ -63,20 +261,18 @@ def _candidates(text):
 
 # ----------------------------------------------------------------- groq ----
 
-PROMPT_TEMPLATE = """You are a developer-documentation assistant.
+PROMPT_TEMPLATE = """You are a knowledgeable and helpful assistant that answers questions about the user's uploaded documents. The documents could be anything - technical documentation, resumes/CVs, reference material, reports - so ground your tone in whatever the context actually is, not in an assumed domain.
 
-Answer the user's question using ONLY the numbered context chunks below.
-
-Rules:
-1. Cite the chunk you used as [chunk_id] right after the claim.
-2. If the context does not contain the answer, reply with exactly one
-   sentence: "{refusal}"
-3. Do not make up parameter names, defaults or code.
-4. Keep the answer short: 4 to 5 lines maximum.
-5. Answer the question directly with only the facts it asks for. Do not add
-   a person's profile, bio, strengths, skills or background, and do not
-   summarize a document, unless the question explicitly asks for that.
-6. Stop writing once the answer to the question is complete.
+Instructions:
+1. Answer the user's question using the context chunks below as your source of truth.
+2. Synthesize information from multiple chunks when needed to give a complete answer.
+3. Provide clear, well-structured explanations — use bullet points, numbered lists, or paragraphs as appropriate.
+4. If the context contains relevant information, use it to give a thorough answer. Do NOT refuse unless the context is completely unrelated to the question.
+5. Broad or exploratory questions ("tell me about X", "summarize this", "give me an overview", "who is this about") are answerable as long as the context is topically relevant, even when the context never uses those exact words — synthesize a helpful overview from what's there instead of requiring literal phrase matches.
+6. Only say "I could not find the answer in the provided documents" if the context has absolutely no relevant information for the question.
+7. Do not fabricate facts, names, parameter values, or details — only use what is explicitly stated in the context.
+8. Use a natural, conversational tone appropriate to the material — informative and precise for technical content, clear and professional for something like a resume.
+9. If the answer requires multiple facts from different chunks, combine them into a cohesive response.
 
 Context chunks:
 {context}
@@ -89,15 +285,19 @@ Answer:"""
 
 def build_context(results):
     blocks = []
-    for r in results:
+    for i, r in enumerate(results, 1):
+        source = r.get('source_doc', 'unknown')
+        page = r.get('page_number', '?')
+        version = r.get('sdk_version', '')
+        version_tag = f" [{version}]" if version else ""
         blocks.append(
-            f"[{r['chunk_id']}] ({r['source_doc']} p{r['page_number']})\n{r['text']}"
+            f"--- Source {i}: {source}, page {page}{version_tag} ---\n{r['text']}"
         )
     return "\n\n".join(blocks)
 
 
-def generate_groq(question, results):
-    params = {"temperature": 0.0, "max_tokens": 300}
+def generate_groq(question, results, store=None):  # noqa: ARG001 - store unused, kept for a uniform GENERATORS call signature
+    params = {"temperature": 0.2, "max_tokens": 1024}
 
     if not results:
         return {"answer": _REFUSAL, "model": settings.GROQ_MODEL,
@@ -114,9 +314,13 @@ def generate_groq(question, results):
                      "Content-Type": "application/json"},
             json={
                 "model": settings.GROQ_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 300,
+                "messages": [
+                    {"role": "system", "content": "You are a helpful, accurate, and thorough assistant for the user's uploaded documents, whatever their domain. Always provide complete answers based on the provided context, including for broad or exploratory questions like 'tell me about X' or 'summarize this'."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.2,
+                "max_tokens": 1024,
+                "top_p": 0.9,
             },
             timeout=settings.GROQ_TIMEOUT,
         )
@@ -136,22 +340,24 @@ def generate_groq(question, results):
 
 
 def _clean_answer(answer):
-    """Remove citation markers from the answer text and tidy trailing noise."""
+    """Clean up the answer text — remove citation artifacts and tidy formatting."""
     answer = answer.strip()
-    # drop citation tags like 【chunk:pN:cN】 or [chunk:pN:cN], including a
-    # truncated trailing citation (opened but cut off by max_tokens).
+    # Remove citation tags like [chunk:pN:cN] or 【chunk:pN:cN】 if present
     cite = r"[A-Za-z0-9_\-]+(?::p\d+)?(?::c\d+)?"
     answer = re.sub(r"[【\[]\s*" + cite + r"\s*[】\]]?", "", answer)
-    # collapse leftover double spaces / dangling separators
+    # Collapse double spaces
     answer = re.sub(r"[ \t]+", " ", answer)
+    # Remove trailing dangling separators
     answer = re.sub(r"[ \t]+([,.;:])", r"\1", answer)
+    # Strip raw chunk ids appended by extractive fallback
+    answer = re.sub(r"\s+\[[A-Za-z0-9_\-:p.c]+\]\s*$", "", answer)
     return answer.rstrip().rstrip("。.,;:")
 
 
 # ------------------------------------------------------------ extractive ----
 
 
-def generate_extractive(question, results):
+def generate_extractive(question, results, store=None):
     """Deterministic, question-aware extractive reader.
 
     Unlike v1 (which returned the first 2 term-overlapping sentences, dragging
@@ -170,12 +376,34 @@ def generate_extractive(question, results):
     asks_number = bool(re.search(r"\b(how many|what is the (default|maximum|"
                                  r"minimum)|what's the|how much|what value|"
                                  r"how big|limit|size|timeout|pool|how often|"
-                                 r"how long)\b", question.lower()))
+                                 r"how long|what year|which year|what date)\b",
+                                 question.lower()))
 
     if not results:
         return {"answer": _REFUSAL, "model": "extractive-v2",
                 "prompt_version": settings.PROMPT_VERSION,
                 "params": {"reason": "no_results"}, "refused": True}
+
+    max_overlap = max((r.get("lexical_overlap", 0.0) for r in results), default=0.0)
+    max_heading = max((r.get("heading_overlap", 0.0) for r in results), default=0.0)
+
+    if max_overlap < 0.05 and max_heading < 0.05:
+        broad = _broad_overview_answer(question, results, store)
+        if broad:
+            ans, chunks_used = broad
+            cites = "".join(f" [{c['chunk_id']}]" for c in chunks_used)
+            return {"answer": f"{ans}{cites}",
+                    "model": "extractive-v2",
+                    "prompt_version": settings.PROMPT_VERSION,
+                    "params": {"strategy": "broad_overview",
+                               "sections": len(chunks_used)},
+                    "refused": False}
+        return {"answer": _REFUSAL, "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"reason": "no_question_overlap",
+                           "max_overlap": round(max_overlap, 3),
+                           "max_heading": round(max_heading, 3)},
+                "refused": True}
 
     top_score = max(r["score"] for r in results)
 
@@ -205,6 +433,15 @@ def generate_extractive(question, results):
                            "max_sentences": settings.EXTRACTIVE_MAX_SENTENCES},
                 "refused": False}
 
+    definition = _definition_answer(question, results)
+    if definition:
+        ans, r = definition
+        return {"answer": ans,
+                "model": "extractive-v2",
+                "prompt_version": settings.PROMPT_VERSION,
+                "params": {"strategy": "definition"},
+                "refused": False}
+
     # Relevance gate 2: if no structured answer exists, the single highest
     # retrieval score must clear the embedding noise floor (M3).
     if top_score < settings.MIN_ANSWER_SCORE:
@@ -223,12 +460,11 @@ def generate_extractive(question, results):
             shared = q_terms & c_terms
             if not shared:
                 continue
-            # Prefer candidates that carry a value token for numeric questions
-            # and that mention the exact attribute named in the question.
             has_number = bool(re.search(r"\d", cand))
             qi = (len(shared) * 2.0
                   + (2.0 if has_number and asks_number else 0.0)
-                  - 0.01 * len(cand))
+                  - 0.01 * len(cand)
+                  + _candidate_rank(question, cand, r) * 4.0)
             candidates.append((qi, shared, cand, r))
 
     # Relevance gate 2: nothing on-topic in the retrieved context -> refuse (M3).
@@ -250,6 +486,12 @@ def generate_extractive(question, results):
             continue
         picked.append((cand, r))
         used_chunks.add(r["chunk_id"])
+        # A number/year question is fully answered the moment its top-ranked
+        # candidate actually contains a number - stop instead of padding the
+        # answer with lower-relevance sentences from other chunks just to
+        # fill the quota.
+        if asks_number and re.search(r"\d", cand):
+            break
         if len(picked) >= settings.EXTRACTIVE_MAX_SENTENCES:
             break
 
@@ -529,3 +771,51 @@ GENERATORS = {
     "groq": generate_groq,
     "extractive": generate_extractive,
 }
+
+
+def _heading_match_bonus(question, text):
+    q = re.sub(r"[^a-z0-9]+", " ", question.lower()).strip()
+    if not q:
+        return 0.0
+    q_tokens = {t for t in q.split() if len(t) > 2 and t not in _STOPWORDS}
+    if not q_tokens:
+        return 0.0
+    t = re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+    matches = sum(1 for tok in q_tokens if tok in t)
+    return matches / max(len(q_tokens), 1)
+
+
+def _candidate_rank(question, cand, result):
+    base = 0.0
+    base += _heading_match_bonus(question, result["text"])
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", result["text"].lower()):
+        base += 0.25
+    if re.search(r"\b" + re.escape(question.lower().strip()) + r"\b", (result.get("source_doc") or "").lower()):
+        base += 0.1
+    return base
+
+
+def _definition_answer(question, results):
+    """Handle 'what is X' / 'what are X' definitions from matching section text."""
+    low = question.lower()
+    if not re.search(r"\b(?:what is|what are|define|explain|tell me about)\b", low):
+        return None
+
+    q_norm = re.sub(r"[^a-z0-9]+", " ", low).strip()
+    for r in results:
+        text = r.get("text") or ""
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+        for i, line in enumerate(lines):
+            norm = re.sub(r"[^a-z0-9]+", " ", line.lower()).strip()
+            if not norm:
+                continue
+            if norm == q_norm:
+                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
+                if answer:
+                    return (answer.strip(), r)
+            phrase = q_norm.replace("what is ", "").replace("what are ", "").replace("define ", "").replace("explain ", "").strip()
+            if phrase and (phrase in norm or norm in phrase):
+                answer = " ".join(lines[max(0, i + 1): min(len(lines), i + 4)])
+                if answer:
+                    return (answer.strip(), r)
+    return None

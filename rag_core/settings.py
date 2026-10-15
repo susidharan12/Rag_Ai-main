@@ -27,14 +27,13 @@ EMBEDDING_MODEL_NAME = os.environ.get(
     "RAG_EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
 )
 
-CHUNK_SIZE = int(os.environ.get("RAG_CHUNK_SIZE", "500"))
-# Week 5 C2: the old 50%-overlap default duplicated ~half the index text and
-# produced duplicate answer sentences. 20% overlap keeps boundary continuity
-# without the redundancy.
-CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "100"))
+CHUNK_SIZE = int(os.environ.get("RAG_CHUNK_SIZE", "1200"))
+# Larger context windows keep full answer sentences together while still
+# preserving continuity across section boundaries.
+CHUNK_OVERLAP = int(os.environ.get("RAG_CHUNK_OVERLAP", "300"))
 
-TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
-MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.12"))
+TOP_K = int(os.environ.get("RAG_TOP_K", "5"))
+MIN_SCORE = float(os.environ.get("RAG_MIN_SCORE", "0.08"))
 
 # Version-preference re-rank (Week 5 M1/M2 fix): a small lift for the resolved
 # SDK version so a near-identical v2 page stops outranking the current v3 one.
@@ -55,14 +54,14 @@ PROMPT_VERSION = os.environ.get("PROMPT_VERSION", "v1")
 
 # Relevance gate for the deterministic extractor (Week 5 M3): the best
 # retrieval score must clear the embedding noise floor before we answer.
-MIN_ANSWER_SCORE = float(os.environ.get("RAG_MIN_ANSWER_SCORE", "0.45"))
+MIN_ANSWER_SCORE = float(os.environ.get("RAG_MIN_ANSWER_SCORE", "0.30"))
 EXTRACTIVE_MAX_SENTENCES = int(
-    os.environ.get("RAG_EXTRACTIVE_MAX_SENTENCES", "2"))
+    os.environ.get("RAG_EXTRACTIVE_MAX_SENTENCES", "4"))
 
 # Generators that get a wider over-fetched retrieval window so structured
 # extraction can reach the parameter/error row even when it is outranked.
 GENERATORS_OVERFETCH = {"extractive"}
-EXTRACTIVE_CONTEXT = int(os.environ.get("RAG_EXTRACTIVE_CONTEXT", "10"))
+EXTRACTIVE_CONTEXT = int(os.environ.get("RAG_EXTRACTIVE_CONTEXT", "12"))
 
 
 def ensure_dirs():

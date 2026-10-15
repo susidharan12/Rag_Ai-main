@@ -2,10 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Bot, ChevronDown, FileText, Sparkles, User } from 'lucide-react'
 
+// Matches any "[doc-slug:pN:cN]" citation tag regardless of which corpus the
+// doc-slug came from, so newly-added documents render as styled chips
+// instead of leaking raw bracket text into the answer.
+const CITATION_RE = /(\[[^\[\]]+:p\d+:c\d+\])/g
+const CITATION_TEST_RE = /^\[[^\[\]]+:p\d+:c\d+\]$/
+
 function renderWithCitations(text) {
-  const parts = text.split(/(\[(?:nimbus-sdk-[^:\]]+|complete-guide[^:\]]+):p\d+:c\d+\])/g)
+  const parts = text.split(CITATION_RE)
   return parts.map((p, i) =>
-    /^\[.+:p\d+:c\d+\]$/.test(p) ? (
+    CITATION_TEST_RE.test(p) ? (
       <span key={i} className="cite">{p.slice(1, -1)}</span>
     ) : (
       p

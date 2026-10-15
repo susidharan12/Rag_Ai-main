@@ -10,13 +10,15 @@ import {
   TriangleAlert,
   XCircle,
 } from 'lucide-react'
+import JudgeValidationPanel from './JudgeValidationPanel.jsx'
+import RetrievalDiagnosisPanel from './RetrievalDiagnosisPanel.jsx'
 
 function pct(n) {
   if (!n) return '0%'
   return `${Math.round(n)}%`
 }
 
-export default function AnalyticsView({ stats, turns }) {
+export default function AnalyticsView({ stats, turns, judgeEval, trackEEval }) {
   const [expanded, setExpanded] = useState(null)
 
   const total = turns.length
@@ -52,6 +54,9 @@ export default function AnalyticsView({ stats, turns }) {
       </header>
 
       <div className="analytics-body">
+        <RetrievalDiagnosisPanel data={trackEEval} />
+        <JudgeValidationPanel data={judgeEval} />
+
         {!total ? (
           <div className="hero-empty">
             <div className="hero-orb"><Activity size={24} /></div>

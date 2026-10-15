@@ -1,0 +1,12 @@
+{
+  "source": "Checked-in Track E assertion fixture, same as week6_error_analysis/openapi_paths.json - the repository has no standalone OpenAPI document.",
+  "paths": [
+    "/v2/client/connect",
+    "/v2/client/send",
+    "/v3/client/connect",
+    "/v3/client/send",
+    "/v3/auth/refresh",
+    "/v3/events",
+    "/v3/webhooks/verify"
+  ]
+}
